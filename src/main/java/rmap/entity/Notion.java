@@ -7,14 +7,19 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EqualsAndHashCode(of = "id")
+@Data
 public class Notion {
 
     @Id
@@ -24,14 +29,24 @@ public class Notion {
     @Column(length = 30, nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "sourceNotion", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
-    private List<Edge> edges;
+    @Column(length = 200)
+    private String content;
 
-    public Notion(String name) {
+    @OneToMany(mappedBy = "sourceNotion", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Edge> edges = new ArrayList<>();
+
+    public Notion(String name, String content) {
         this.name = name;
+        this.content = content;
     }
 
-    public void setEdges(List<Edge> edges) {
-        this.edges = edges;
+    public Edge connectTo(Notion notion, String description) {
+        Edge edge = new Edge(this, notion, description);
+        if (edges.contains(edge)) {
+            throw new IllegalArgumentException();
+        }
+        edges.add(edge);
+        return edge;
     }
+
 }
