@@ -10,7 +10,6 @@ import jakarta.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +18,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(of = "id")
-@Data
 public class Notion {
 
     @Id
@@ -40,13 +38,19 @@ public class Notion {
         this.content = content;
     }
 
-    public Edge connectTo(Notion notion, String description) {
-        Edge edge = new Edge(this, notion, description);
+    public void connect(Edge edge) {
+        validate(edge);
+        edges.add(edge);
+    }
+
+    private void validate(Edge edge) {
+        if (!this.equals(edge.getSourceNotion())) {
+            throw new IllegalArgumentException("1");
+        }
+
         if (edges.contains(edge)) {
             throw new IllegalArgumentException();
         }
-        edges.add(edge);
-        return edge;
     }
 
 }

@@ -38,7 +38,7 @@ public class Edge {
     @Column(length = 70)
     private String description;
 
-     Edge(Notion sourceNotion, Notion targetNotion, String description) {
+     public Edge(Notion sourceNotion, Notion targetNotion, String description) {
         validateNotions(sourceNotion, targetNotion);
         this.sourceNotion = sourceNotion;
         this.targetNotion = targetNotion;

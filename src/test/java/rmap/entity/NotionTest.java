@@ -10,68 +10,53 @@ import org.springframework.test.util.ReflectionTestUtils;
 class NotionTest {
 
     @Nested
-    class 노션_연결 {
+    class 엣지_연결 {
+
         @Test
-        void 노션에_노션을_연결_할_수_있다() {
+        void 노션에_엣지를_연결_할_수_있다() {
             // given
             Notion notion = new Notion("개념", "내용");
             Notion notion1 = new Notion("개념1", "내용1");
             ReflectionTestUtils.setField(notion, "id", 1L);
             ReflectionTestUtils.setField(notion1, "id", 2L);
+
+            Edge edge = new Edge(notion, notion1, null);
 
             // when
-            Edge edge = notion.connectTo(notion1, "개념->개념1");
+            notion.connect(edge);
 
             // then
-            assertThat(edge.getSourceNotion()).isEqualTo(notion);
-            assertThat(edge.getTargetNotion()).isEqualTo(notion1);
-            assertThat(edge.getDescription()).isEqualTo("개념->개념1");
+            assertThat(notion.getEdges()).contains(edge);
         }
 
         @Test
-        void 자기_자신과_연결하는_경우_예외가_발생한다() {
-            // given
-            Notion notion = new Notion("개념", "내용");
-
-            // when, then
-            assertThatThrownBy(() -> notion.connectTo(notion, null))
-                    .isInstanceOf(IllegalArgumentException.class);
-        }
-
-        @Test
-        void 아이디가_존재하지_않는_경우_예외가_발생한다() {
-            // given
-            Notion notion = new Notion("개념", "내용");
-            Notion notion1 = new Notion("개념", "내용");
-
-            // when, then
-            assertThatThrownBy(() -> notion.connectTo(notion1, null))
-                    .isInstanceOf(IllegalArgumentException.class);
-
-        }
-
-        @Test
-        void 노션이_null_인_경우_예외가_발생한다() {
-            // given
-            Notion notion = new Notion("개념", "내용");
-            Notion notion1 = null;
-
-            // when, then
-            assertThatThrownBy(() -> notion.connectTo(notion1, null))
-                    .isInstanceOf(IllegalArgumentException.class);
-        }
-
-        @Test
-        void 이미_연결된_노션인_경우_예외가_발생한다() {
+        void 노션이_엣지의_출발_노션과_일치하지_않는_경우_예외가_발생_한다() {
             // given
             Notion notion = new Notion("개념", "내용");
             Notion notion1 = new Notion("개념1", "내용1");
             ReflectionTestUtils.setField(notion, "id", 1L);
             ReflectionTestUtils.setField(notion1, "id", 2L);
-            notion.connectTo(notion1, null);
+
+            Edge edge = new Edge(notion, notion1, null);
 
             // when, then
-            assertThatThrownBy(() -> notion.connectTo(notion1, null))
+            assertThatThrownBy(() -> notion1.connect(edge))
+                    .isInstanceOf(IllegalArgumentException.class);
+        }
+
+        @Test
+        void 노션에_같은_엣지가_존재하는_경우_예외가_발생_한다() {
+            // given
+            Notion notion = new Notion("개념", "내용");
+            Notion notion1 = new Notion("개념1", "내용1");
+            ReflectionTestUtils.setField(notion, "id", 1L);
+            ReflectionTestUtils.setField(notion1, "id", 2L);
+
+            Edge edge = new Edge(notion, notion1, null);
+            notion.connect(edge);
+
+            // when, then
+            assertThatThrownBy(() -> notion.connect(edge))
                     .isInstanceOf(IllegalArgumentException.class);
         }
     }
