@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @Getter
-@AllArgsConstructor
 public class BuildNotionRequest {
 
     private String name;
@@ -16,5 +15,10 @@ public class BuildNotionRequest {
     public BuildNotionRequest() {
     }
 
+    public BuildNotionRequest(String name, String content, RelatedNotionInfo relatedNotion) {
+        this.name = name;
+        this.content = content;
+        this.relatedNotion = relatedNotion;
+    }
 }
 
