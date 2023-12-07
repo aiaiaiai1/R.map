@@ -1,15 +1,17 @@
 package rmap.request;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
+@NoArgsConstructor
 public class BuildNotionRequest {
 
-    private final String name;
-    private final String content;
-    private final RelatedNotionInfo relatedNotion;
+    private String name;
+    private String content;
+    private RelatedNotionInfo relatedNotion;
 
 }
 
