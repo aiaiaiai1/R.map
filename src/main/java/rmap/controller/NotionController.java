@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import rmap.request.BuildNotionRequest;
+import rmap.response.NotionIdResponse;
 import rmap.response.NotionResponse;
 import rmap.service.NotionFacade;
 
@@ -19,9 +20,9 @@ public class NotionController {
     private final NotionFacade notionFacade;
 
     @PostMapping("/notions")
-    public ResponseEntity<Void> buildNotion(@RequestBody BuildNotionRequest request) {
-        Long id = notionFacade.buildNotion(request);
-        return ResponseEntity.created(URI.create("/notions" + id)).build();
+    public ResponseEntity<NotionIdResponse> buildNotion(@RequestBody BuildNotionRequest request) {
+        NotionIdResponse response = notionFacade.buildNotion(request);
+        return ResponseEntity.created(URI.create("/notions" + response.getId())).body(response);
     }
 
     @GetMapping("/notions/{id}")
