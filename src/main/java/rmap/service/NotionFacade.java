@@ -23,8 +23,8 @@ public class NotionFacade {
         }
 
         Notion relatedNotion = notionService.readNotion(request.getRelatedNotion().getId());
-        edgeService.connect(notion, relatedNotion, null);
-        edgeService.connect(relatedNotion, notion, null);
+        edgeService.connect(notion, relatedNotion, "");
+        edgeService.connect(relatedNotion, notion, "");
         return new NotionIdResponse(notion.getId());
     }
 

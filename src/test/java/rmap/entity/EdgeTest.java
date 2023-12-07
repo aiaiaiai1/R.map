@@ -20,7 +20,7 @@ class EdgeTest {
         ReflectionTestUtils.setField(notion1, "id", 1L);
 
         // when, then
-        assertThatThrownBy(() -> new Edge(notion, notion1, null))
+        assertThatThrownBy(() -> new Edge(notion, notion1))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -31,7 +31,7 @@ class EdgeTest {
         Notion notion1 = new Notion("개념", "내용");
 
         // when, then
-        assertThatThrownBy(() -> new Edge(notion, notion1, null))
+        assertThatThrownBy(() -> new Edge(notion, notion1))
                 .isInstanceOf(IllegalArgumentException.class);
 
     }
@@ -43,7 +43,7 @@ class EdgeTest {
         Notion notion1 = null;
 
         // when, then
-        assertThatThrownBy(() -> new Edge(notion, notion1, null))
+        assertThatThrownBy(() -> new Edge(notion, notion1))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

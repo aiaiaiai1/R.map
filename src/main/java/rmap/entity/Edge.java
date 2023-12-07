@@ -14,6 +14,7 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.util.Assert;
 
 @Entity
@@ -35,14 +36,20 @@ public class Edge {
     @JoinColumn(name = "target_notion_id", nullable = false)
     private Notion targetNotion;
 
-    @Column(length = 70)
+    @Column(length = 70, nullable = false)
+    @ColumnDefault("")
     private String description;
 
-     public Edge(Notion sourceNotion, Notion targetNotion, String description) {
+    public Edge(Notion sourceNotion, Notion targetNotion, String description) {
         validateNotions(sourceNotion, targetNotion);
+        Assert.notNull(description, "description is null");
         this.sourceNotion = sourceNotion;
         this.targetNotion = targetNotion;
         this.description = description;
+    }
+
+    public Edge(Notion sourceNotion, Notion targetNotion) {
+        this(sourceNotion, targetNotion, "");
     }
 
     private void validateNotions(Notion sourceNotion, Notion targetNotion) {

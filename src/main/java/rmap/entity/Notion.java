@@ -13,6 +13,8 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.springframework.util.Assert;
 
 @Entity
 @Getter
@@ -27,15 +29,22 @@ public class Notion {
     @Column(length = 30, nullable = false)
     private String name;
 
-    @Column(length = 200)
+    @Column(length = 200, nullable = false)
+    @ColumnDefault("")
     private String content;
 
     @OneToMany(mappedBy = "sourceNotion", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Edge> edges = new ArrayList<>();
 
     public Notion(String name, String content) {
+        validate(name, content);
         this.name = name;
         this.content = content;
+    }
+
+    private void validate(String name, String content) {
+        Assert.notNull(name, "name is null");
+        Assert.notNull(content, "content is not null");
     }
 
     public void connect(Edge edge) {

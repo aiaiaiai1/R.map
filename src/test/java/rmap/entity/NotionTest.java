@@ -20,7 +20,7 @@ class NotionTest {
             ReflectionTestUtils.setField(notion, "id", 1L);
             ReflectionTestUtils.setField(notion1, "id", 2L);
 
-            Edge edge = new Edge(notion, notion1, null);
+            Edge edge = new Edge(notion, notion1);
 
             // when
             notion.connect(edge);
@@ -37,7 +37,7 @@ class NotionTest {
             ReflectionTestUtils.setField(notion, "id", 1L);
             ReflectionTestUtils.setField(notion1, "id", 2L);
 
-            Edge edge = new Edge(notion, notion1, null);
+            Edge edge = new Edge(notion, notion1);
 
             // when, then
             assertThatThrownBy(() -> notion1.connect(edge))
@@ -52,7 +52,7 @@ class NotionTest {
             ReflectionTestUtils.setField(notion, "id", 1L);
             ReflectionTestUtils.setField(notion1, "id", 2L);
 
-            Edge edge = new Edge(notion, notion1, null);
+            Edge edge = new Edge(notion, notion1);
             notion.connect(edge);
 
             // when, then
