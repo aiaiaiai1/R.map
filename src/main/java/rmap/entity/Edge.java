@@ -53,12 +53,12 @@ public class Edge {
     }
 
     private void validateNotions(Notion sourceNotion, Notion targetNotion) {
-        Assert.notNull(sourceNotion, "1");
-        Assert.notNull(targetNotion, "2");
-        Assert.notNull(sourceNotion.getId(), "3");
-        Assert.notNull(targetNotion.getId(), "4");
+        Assert.notNull(sourceNotion, "sourceNotion is null");
+        Assert.notNull(targetNotion, "targetNotion is null");
+        Assert.notNull(sourceNotion.getId(), "sourceNotion.id is null");
+        Assert.notNull(targetNotion.getId(), "targetNotion.id is null");
         if (sourceNotion.equals(targetNotion)) {
-            throw new IllegalArgumentException("5");
+            throw new IllegalArgumentException("sourceNotion is equal to targetNotion");
         }
     }
 

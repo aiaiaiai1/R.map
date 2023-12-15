@@ -44,7 +44,7 @@ public class Notion {
 
     private void validate(String name, String content) {
         Assert.notNull(name, "name is null");
-        Assert.notNull(content, "content is not null");
+        Assert.notNull(content, "content is null");
     }
 
     public void connect(Edge edge) {
@@ -54,11 +54,11 @@ public class Notion {
 
     private void validate(Edge edge) {
         if (!this.equals(edge.getSourceNotion())) {
-            throw new IllegalArgumentException("1");
+            throw new IllegalArgumentException("출발 노선이 일치 하지 않습니다.");
         }
 
         if (edges.contains(edge)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("이미 추가되어있습니다");
         }
     }
 

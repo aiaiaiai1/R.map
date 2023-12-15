@@ -18,7 +18,7 @@ public class NotionService {
 
     public Notion readNotion(Long notionId) {
         Notion notion = notionRepository.findById(notionId)
-                .orElseThrow(() -> new IllegalArgumentException());
+                .orElseThrow(() -> new IllegalArgumentException("해당 노션이 존재하지 않습니다."));
         return notion;
     }
 
