@@ -2,6 +2,7 @@ package rmap.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import rmap.entity.Graph;
 import rmap.entity.Notion;
 import rmap.repository.NotionRepository;
 
@@ -11,8 +12,8 @@ public class NotionService {
 
     private final NotionRepository notionRepository;
 
-    public Notion createNotion(String name, String content) {
-        Notion notion = new Notion(name, content);
+    public Notion createNotion(String name, String content, Graph graph) {
+        Notion notion = new Notion(name, content, graph);
         return notionRepository.save(notion);
     }
 
