@@ -48,6 +48,7 @@ public class Notion {
         validateGraph(graph);
         this.name = name;
         this.content = content;
+        this.graph = graph;
     }
 
     private void validateInit(String name, String content) {
