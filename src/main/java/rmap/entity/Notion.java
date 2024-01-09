@@ -12,6 +12,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -33,11 +34,11 @@ public class Notion {
     @JoinColumn(name = "graph_id", nullable = false)
     private Graph graph;
 
-    @Column(length = 30, nullable = false)
+    @Column(length = 100, nullable = false)
     private String name;
 
-    @Column(length = 200, nullable = false)
-    @ColumnDefault("")
+    @Column(length = 2000, nullable = false)
+    @ColumnDefault("''")
     private String content;
 
     @OneToMany(mappedBy = "sourceNotion", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -79,5 +80,13 @@ public class Notion {
     private void validateGraph(Graph graph) {
         Assert.notNull(graph, "graph is null");
         Assert.notNull(graph.getId(), "graph.id is null");
+    }
+
+    public void editName(String name) {
+        this.name = Objects.requireNonNull(name, "name is null");
+    }
+
+    public void editContent(String content) {
+        this.content = Objects.requireNonNull(content, "content is null");
     }
 }

@@ -1,8 +1,10 @@
 package rmap.service;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import rmap.entity.Edge;
 import rmap.entity.Graph;
 import rmap.entity.Notion;
 import rmap.request.BuildNotionRequest;
@@ -35,6 +37,19 @@ public class NotionFacade {
     public NotionResponse readNotion(Long notionId) {
         Notion notion = notionService.readNotion(notionId);
         return NotionResponse.from(notion);
+    }
+
+    @Transactional
+    public void demolishNotion(Long notionId) {
+        Notion notion = notionService.readNotion(notionId);
+        List<Edge> edges = edgeService.findAllByNotionId(notion.getId());
+        edgeService.deleteEdges(edges);
+        notionService.deleteNotion(notion);
+    }
+
+    @Transactional
+    public void editNotion(Long notionId, String name, String content) {
+        notionService.editNotion(notionId, name, content);
     }
 
 }

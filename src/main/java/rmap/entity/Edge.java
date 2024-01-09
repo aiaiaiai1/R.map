@@ -36,8 +36,8 @@ public class Edge {
     @JoinColumn(name = "target_notion_id", nullable = false)
     private Notion targetNotion;
 
-    @Column(length = 70, nullable = false)
-    @ColumnDefault("")
+    @Column(length = 200, nullable = false)
+    @ColumnDefault("''")
     private String description;
 
     public Edge(Notion sourceNotion, Notion targetNotion, String description) {
