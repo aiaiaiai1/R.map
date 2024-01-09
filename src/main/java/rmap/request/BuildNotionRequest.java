@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public class BuildNotionRequest {
 
+    private Long notionFolderId;
     private String name;
     private String content;
     private RelatedNotionInfo relatedNotion;
@@ -15,7 +16,8 @@ public class BuildNotionRequest {
     public BuildNotionRequest() {
     }
 
-    public BuildNotionRequest(String name, String content, RelatedNotionInfo relatedNotion) {
+    public BuildNotionRequest(Long notionFolderId, String name, String content, RelatedNotionInfo relatedNotion) {
+        this.notionFolderId = notionFolderId;
         this.name = name;
         this.content = content;
         this.relatedNotion = relatedNotion;

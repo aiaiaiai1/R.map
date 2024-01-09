@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import rmap.entity.Graph;
 import rmap.entity.Notion;
+import rmap.entity.NotionFolder;
 import rmap.repository.GraphRepository;
 
 @Service
@@ -14,13 +15,9 @@ public class GraphService {
 
     private final GraphRepository graphRepository;
 
-    public Graph createGraph(String name) {
-        Graph graph = new Graph(name);
+    public Graph createGraph(NotionFolder notionFolder) {
+        Graph graph = new Graph(notionFolder);
         return graphRepository.save(graph);
-    }
-
-    public List<Graph> readAll() {
-        return graphRepository.findAll();
     }
 
     public List<Notion> readNotionsOfGraph(Long graphId) {

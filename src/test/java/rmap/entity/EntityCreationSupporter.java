@@ -14,7 +14,7 @@ public class EntityCreationSupporter {
     }
 
     public static Graph 그래프_생성(Long id, String name) {
-        Graph graph = new Graph(name);
+        Graph graph = new Graph();
         ReflectionTestUtils.setField(graph, "id", id);
         return graph;
     }

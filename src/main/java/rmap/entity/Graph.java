@@ -10,10 +10,16 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import java.util.List;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.springframework.util.Assert;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EqualsAndHashCode(of = {"id"})
 public class Graph {
 
     @Id
@@ -27,7 +33,10 @@ public class Graph {
     @OneToMany(mappedBy = "graph", cascade = CascadeType.REMOVE)
     private List<Notion> notions;
 
-    public Graph() {
+    public Graph(NotionFolder notionFolder) {
+        Assert.notNull(notionFolder, "notionFolder is null");
+        Assert.notNull(notionFolder.getId(), "notionFolder.id is null");
+        this.notionFolder = notionFolder;
     }
 
 }

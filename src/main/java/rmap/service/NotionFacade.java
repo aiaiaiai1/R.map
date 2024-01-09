@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import rmap.entity.Edge;
 import rmap.entity.Graph;
 import rmap.entity.Notion;
+import rmap.entity.NotionFolder;
 import rmap.request.BuildNotionRequest;
 import rmap.response.NotionIdResponse;
 import rmap.response.NotionResponse;
@@ -16,19 +17,27 @@ import rmap.response.NotionResponse;
 public class NotionFacade {
 
     private final NotionService notionService;
+    private final NotionFolderService notionFolderService;
     private final EdgeService edgeService;
     private final GraphService graphService;
 
     @Transactional
     public NotionIdResponse buildNotion(BuildNotionRequest request) {
+        NotionFolder notionFolder = notionFolderService.readNotionFolder(request.getNotionFolderId());
+
         if (request.getRelatedNotion().getId() == null) {
-            Graph graph = graphService.createGraph(request.getName());
+            Graph graph = graphService.createGraph(notionFolder);
             Notion notion = notionService.createNotion(request.getName(), request.getContent(), graph);
             return new NotionIdResponse(notion.getId());
         }
 
         Notion relatedNotion = notionService.readNotion(request.getRelatedNotion().getId());
-        Notion notion = notionService.createNotion(request.getName(), request.getContent(), relatedNotion.getGraph());
+        Graph graph = relatedNotion.getGraph();
+        if (!notionFolder.contains(graph)) {
+            throw new IllegalArgumentException("잘못된 접근 입니다.");
+        }
+
+        Notion notion = notionService.createNotion(request.getName(), request.getContent(), graph);
         edgeService.connect(notion, relatedNotion, "");
         edgeService.connect(relatedNotion, notion, "");
         return new NotionIdResponse(notion.getId());

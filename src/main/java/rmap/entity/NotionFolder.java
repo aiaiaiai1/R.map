@@ -31,5 +31,7 @@ public class NotionFolder {
     public NotionFolder(String name) {
         this.name = name;
     }
-
+    public boolean contains(Graph graph) {
+        return graphs.contains(graph);
+    }
 }

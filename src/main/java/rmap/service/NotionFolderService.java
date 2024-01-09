@@ -21,10 +21,15 @@ public class NotionFolderService {
         return notionFolderRepository.save(notionFolder);
     }
 
-    public NotionFolder deleteNotionFolder(Long notionFolderId) {
+    public void deleteNotionFolder(Long notionFolderId) {
         NotionFolder notionFolder = notionFolderRepository.findById(notionFolderId)
                 .orElseThrow(() -> new IllegalArgumentException("노션 폴더가 존재하지 않습니다."));
         notionFolderRepository.delete(notionFolder);
+    }
+
+    public NotionFolder readNotionFolder(Long notionFolderId) {
+        NotionFolder notionFolder = notionFolderRepository.findById(notionFolderId)
+                .orElseThrow(() -> new IllegalArgumentException("노션 폴더가 존재하지 않습니다."));
         return notionFolder;
     }
 
