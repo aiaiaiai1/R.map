@@ -7,7 +7,8 @@ import rmap.entity.Notion;
 
 public interface NotionRepository extends JpaRepository<Notion, Long> {
 
-    @Query(value = "select * from notion_folder as nf "
+    @Query(value = "select n.id, n.graph_id, n.name, n.content "
+            + "from notion_folder as nf "
             + "join graph as g on nf.id = g.notion_folder_id "
             + "join notion as n on g.id = n.graph_id "
             + "where nf.id = :notionFolderId", nativeQuery = true)

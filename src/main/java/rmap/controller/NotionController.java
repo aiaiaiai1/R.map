@@ -50,13 +50,13 @@ public class NotionController {
         return ResponseEntity.ok(responses);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/notions/{id}")
     public ResponseEntity<Void> demolishNotion(@PathVariable("id") Long notionId) {
         notionFacade.demolishNotion(notionId);
         return ResponseEntity.ok().build();
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/notions/{id}")
     public ResponseEntity<Void> editNotion(
             @PathVariable("id") Long notionId,
             @RequestBody EditNotionRequest request
