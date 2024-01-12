@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import rmap.entity.Graph;
 import rmap.entity.Notion;
 import rmap.entity.NotionFolder;
+import rmap.exception.type.GraphExceptionType;
+import rmap.exception.NotFoundException;
 import rmap.repository.GraphRepository;
 
 @Service
@@ -22,7 +24,7 @@ public class GraphService {
 
     public List<Notion> readNotionsOfGraph(Long graphId) {
         Graph graph = graphRepository.findById(graphId)
-                .orElseThrow(() -> new IllegalArgumentException("그래프가 존재하지 않습니다"));
+                .orElseThrow(() -> new NotFoundException(GraphExceptionType.NOT_FOUND));
         List<Notion> notions = graph.getNotions();
         return notions.stream()
                 .sorted(Comparator.comparing(Notion::getName))

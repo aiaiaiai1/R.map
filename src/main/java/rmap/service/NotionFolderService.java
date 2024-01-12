@@ -4,6 +4,8 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import rmap.entity.NotionFolder;
+import rmap.exception.NotFoundException;
+import rmap.exception.type.NotionFolderExceptionType;
 import rmap.repository.NotionFolderRepository;
 
 @Service
@@ -23,13 +25,13 @@ public class NotionFolderService {
 
     public void deleteNotionFolder(Long notionFolderId) {
         NotionFolder notionFolder = notionFolderRepository.findById(notionFolderId)
-                .orElseThrow(() -> new IllegalArgumentException("노션 폴더가 존재하지 않습니다."));
+                .orElseThrow(() -> new NotFoundException(NotionFolderExceptionType.NOT_FOUND));
         notionFolderRepository.delete(notionFolder);
     }
 
     public NotionFolder readNotionFolder(Long notionFolderId) {
         NotionFolder notionFolder = notionFolderRepository.findById(notionFolderId)
-                .orElseThrow(() -> new IllegalArgumentException("노션 폴더가 존재하지 않습니다."));
+                .orElseThrow(() -> new NotFoundException(NotionFolderExceptionType.NOT_FOUND));
         return notionFolder;
     }
 

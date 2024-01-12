@@ -8,6 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 import rmap.entity.Graph;
 import rmap.entity.Notion;
 import rmap.entity.NotionFolder;
+import rmap.exception.NotFoundException;
+import rmap.exception.type.NotionExceptionType;
+import rmap.exception.type.NotionFolderExceptionType;
 import rmap.repository.NotionFolderRepository;
 import rmap.repository.NotionRepository;
 
@@ -25,13 +28,13 @@ public class NotionService {
 
     public Notion readNotion(Long notionId) {
         Notion notion = notionRepository.findById(notionId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 노션이 존재하지 않습니다."));
+                .orElseThrow(() -> new NotFoundException(NotionExceptionType.NOT_FOUND));
         return notion;
     }
 
     public List<Notion> readAllInNotionFolder(Long notionFolderId) {
         NotionFolder notionFolder = notionFolderRepository.findById(notionFolderId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 노션 폴더가 존재하지 않습니다."));
+                .orElseThrow(() -> new NotFoundException(NotionFolderExceptionType.NOT_FOUND));
         List<Notion> notions = notionRepository.findAllInNotionFolder(notionFolder.getId());
         return notions.stream()
                 .sorted(Comparator.comparing(Notion::getName))
