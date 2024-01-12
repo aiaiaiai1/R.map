@@ -34,7 +34,7 @@ public class NotionFacade {
         Notion relatedNotion = notionService.readNotion(request.getRelatedNotion().getId());
         Graph graph = relatedNotion.getGraph();
         if (!notionFolder.contains(graph)) {
-            throw new IllegalArgumentException("잘못된 접근 입니다.");
+            throw new IllegalArgumentException("잘못된 접근 입니다.(해당 노션 폴더에 소스 노션이 존재 하지 않습니다.)");
         }
 
         Notion notion = notionService.createNotion(request.getName(), request.getContent(), graph);

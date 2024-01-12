@@ -57,20 +57,20 @@ public class Notion {
         Assert.notNull(content, "content is null");
     }
 
-    public void connect(Edge edge) {
-        validateConnection(edge);
-        edges.add(edge);
-    }
-
-    private void validateConnection(Edge edge) {
-        if (!this.equals(edge.getSourceNotion())) {
-            throw new IllegalArgumentException("출발 노선이 일치 하지 않습니다.");
-        }
-
-        if (edges.contains(edge)) {
-            throw new IllegalArgumentException("이미 추가되어있습니다");
-        }
-    }
+//    public void connect(Edge edge) {
+//        validateConnection(edge);
+//        edges.add(edge);
+//    }
+//
+//    private void validateConnection(Edge edge) {
+//        if (!this.equals(edge.getSourceNotion())) {
+//            throw new IllegalArgumentException("출발 노선이 일치 하지 않습니다.");
+//        }
+//
+//        if (edges.contains(edge)) {
+//            throw new IllegalArgumentException("이미 추가되어있습니다");
+//        }
+//    }
 
     public void changeGraph(Graph graph) {
         validateGraph(graph);
