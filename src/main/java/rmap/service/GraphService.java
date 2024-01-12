@@ -23,8 +23,7 @@ public class GraphService {
     }
 
     public List<Notion> readNotionsOfGraph(Long graphId) {
-        Graph graph = graphRepository.findById(graphId)
-                .orElseThrow(() -> new NotFoundException(GraphExceptionType.NOT_FOUND));
+        Graph graph = graphRepository.findByIdOrThrow(graphId);
         List<Notion> notions = graph.getNotions();
         return notions.stream()
                 .sorted(Comparator.comparing(Notion::getName))

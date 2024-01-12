@@ -24,15 +24,12 @@ public class NotionFolderService {
     }
 
     public void deleteNotionFolder(Long notionFolderId) {
-        NotionFolder notionFolder = notionFolderRepository.findById(notionFolderId)
-                .orElseThrow(() -> new NotFoundException(NotionFolderExceptionType.NOT_FOUND));
+        NotionFolder notionFolder = notionFolderRepository.findByIdOrThrow(notionFolderId);
         notionFolderRepository.delete(notionFolder);
     }
 
     public NotionFolder readNotionFolder(Long notionFolderId) {
-        NotionFolder notionFolder = notionFolderRepository.findById(notionFolderId)
-                .orElseThrow(() -> new NotFoundException(NotionFolderExceptionType.NOT_FOUND));
-        return notionFolder;
+        return notionFolderRepository.findByIdOrThrow(notionFolderId);
     }
 
 }

@@ -9,7 +9,6 @@ import rmap.entity.Graph;
 import rmap.entity.Notion;
 import rmap.entity.NotionFolder;
 import rmap.exception.NotFoundException;
-import rmap.exception.type.NotionExceptionType;
 import rmap.exception.type.NotionFolderExceptionType;
 import rmap.repository.NotionFolderRepository;
 import rmap.repository.NotionRepository;
@@ -27,14 +26,11 @@ public class NotionService {
     }
 
     public Notion readNotion(Long notionId) {
-        Notion notion = notionRepository.findById(notionId)
-                .orElseThrow(() -> new NotFoundException(NotionExceptionType.NOT_FOUND));
-        return notion;
+        return notionRepository.findByIdOrThrow(notionId);
     }
 
     public List<Notion> readAllInNotionFolder(Long notionFolderId) {
-        NotionFolder notionFolder = notionFolderRepository.findById(notionFolderId)
-                .orElseThrow(() -> new NotFoundException(NotionFolderExceptionType.NOT_FOUND));
+        NotionFolder notionFolder = notionFolderRepository.findByIdOrThrow(notionFolderId);
         List<Notion> notions = notionRepository.findAllInNotionFolder(notionFolder.getId());
         return notions.stream()
                 .sorted(Comparator.comparing(Notion::getName))
