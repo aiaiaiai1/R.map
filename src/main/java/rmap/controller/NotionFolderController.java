@@ -1,5 +1,6 @@
 package rmap.controller;
 
+import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import rmap.entity.NotionFolder;
 import rmap.request.NotionFolderRequest;
 import rmap.response.IdResponse;
+import rmap.response.NotionFolderCompactResponse;
 import rmap.response.NotionFolderResponse;
 import rmap.service.NotionFolderService;
 
@@ -25,19 +27,27 @@ public class NotionFolderController {
     private final NotionFolderService notionFolderService;
 
     @GetMapping
-    public ResponseEntity<List<NotionFolderResponse>> getNotionFolders() {
+    public ResponseEntity<List<NotionFolderCompactResponse>> readNotionFolders() {
         List<NotionFolder> notionFolders = notionFolderService.readAll();
-        List<NotionFolderResponse> responses = notionFolders.stream()
-                .map(NotionFolderResponse::new)
+        List<NotionFolderCompactResponse> responses = notionFolders.stream()
+                .map(NotionFolderCompactResponse::new)
                 .toList();
         return ResponseEntity.ok(responses);
     }
 
     @PostMapping
-    public ResponseEntity<IdResponse> createNotionFolder(@RequestBody NotionFolderRequest request) {
+    public ResponseEntity<IdResponse> createNotionFolder(@RequestBody @Valid NotionFolderRequest request) {
         NotionFolder notionFolder = notionFolderService.createNotionFolder(request.getName());
         return ResponseEntity.created(URI.create("/notionFolders/" + notionFolder.getId()))
                 .body(new IdResponse(notionFolder.getId()));
+    }
+
+    @GetMapping("/notion-folders/{id}")
+    public ResponseEntity<NotionFolderResponse> readNotionFolder(
+            @PathVariable("id") Long notionFolderId
+    ) {
+        NotionFolderResponse responses = notionFolderService.readNotionFolderInfo(notionFolderId);
+        return ResponseEntity.ok(responses);
     }
 
     @DeleteMapping("/{id}")

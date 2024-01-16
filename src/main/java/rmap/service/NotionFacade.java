@@ -8,6 +8,8 @@ import rmap.entity.Edge;
 import rmap.entity.Graph;
 import rmap.entity.Notion;
 import rmap.entity.NotionFolder;
+import rmap.exception.InvalidAcessException;
+import rmap.exception.type.InvalidAcessExceptionType;
 import rmap.request.BuildNotionRequest;
 import rmap.response.NotionIdResponse;
 import rmap.response.NotionResponse;
@@ -23,24 +25,37 @@ public class NotionFacade {
 
     @Transactional
     public NotionIdResponse buildNotion(BuildNotionRequest request) {
-        NotionFolder notionFolder = notionFolderService.readNotionFolder(request.getNotionFolderId());
-
-        if (request.getRelatedNotion().getId() == null) {
-            Graph graph = graphService.createGraph(notionFolder);
-            Notion notion = notionService.createNotion(request.getName(), request.getContent(), graph);
+        if (isInitial(request)) {
+            Notion notion = createInitialNotion(request);
             return new NotionIdResponse(notion.getId());
         }
 
+        Notion notion = createConnectedNotion(request);
+        return new NotionIdResponse(notion.getId());
+    }
+
+    private boolean isInitial(BuildNotionRequest request) {
+        return request.getRelatedNotion().getId() == null;
+    }
+
+
+    private Notion createInitialNotion(BuildNotionRequest request) {
+        NotionFolder notionFolder = notionFolderService.readNotionFolder(request.getNotionFolderId());
+        Graph graph = graphService.createGraph(notionFolder);
+        return notionService.createNotion(request.getName(), request.getContent(), graph);
+    }
+
+    private Notion createConnectedNotion(BuildNotionRequest request) {
+        NotionFolder notionFolder = notionFolderService.readNotionFolder(request.getNotionFolderId());
         Notion relatedNotion = notionService.readNotion(request.getRelatedNotion().getId());
         Graph graph = relatedNotion.getGraph();
         if (!notionFolder.contains(graph)) {
-            throw new IllegalArgumentException("잘못된 접근 입니다.");
+            throw new InvalidAcessException(InvalidAcessExceptionType.NOT_MATCH_NOTIONFOLDER_AND_NOTION);
         }
-
         Notion notion = notionService.createNotion(request.getName(), request.getContent(), graph);
         edgeService.connect(notion, relatedNotion, "");
         edgeService.connect(relatedNotion, notion, "");
-        return new NotionIdResponse(notion.getId());
+        return notion;
     }
 
     public NotionResponse readNotion(Long notionId) {
