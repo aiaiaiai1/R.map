@@ -44,6 +44,8 @@ public class Notion {
     @OneToMany(mappedBy = "sourceNotion", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Edge> edges = new ArrayList<>();
 
+    // 왜냐하면 타겟노션도 다 삭제해야함. 저장에는 케스케이드 사용이 불필요. 고아 객체는 사용할만한듯?-> 고아객체도 양쪽에다가 제거해줘야하네
+// 99% 양뱡향 매핑 없애기ㅣ...
     public Notion(String name, String content, Graph graph) {
         validateInit(name, content);
         validateGraph(graph);

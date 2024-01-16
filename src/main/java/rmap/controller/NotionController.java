@@ -2,7 +2,6 @@ package rmap.controller;
 
 import jakarta.validation.Valid;
 import java.net.URI;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,10 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import rmap.entity.Notion;
 import rmap.request.BuildNotionRequest;
 import rmap.request.EditNotionRequest;
-import rmap.response.NotionCompactResponse;
 import rmap.response.NotionIdResponse;
 import rmap.response.NotionResponse;
 import rmap.service.NotionFacade;
@@ -38,17 +35,6 @@ public class NotionController {
     public ResponseEntity<NotionResponse> readNotion(@PathVariable("id") Long notionId) {
         NotionResponse response = notionFacade.readNotion(notionId);
         return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/notion-folders/{id}/notions")
-    public ResponseEntity<List<NotionCompactResponse>> readNotionsInNotionFolder(
-            @PathVariable("id") Long notionFolderId
-    ) {
-        List<Notion> notions = notionService.readAllInNotionFolder(notionFolderId);
-        List<NotionCompactResponse> responses = notions.stream()
-                .map(NotionCompactResponse::new)
-                .toList();
-        return ResponseEntity.ok(responses);
     }
 
     @DeleteMapping("/notions/{id}")

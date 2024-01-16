@@ -12,6 +12,7 @@ public class NotionResponse {
     private final Long id;
     private final String name;
     private final String content;
+    private final NotionFolderCompactResponse notionFolder;
     private final List<RelatedNotionResponse> relatedNotions;
 
     public static NotionResponse from(Notion notion) {
@@ -21,7 +22,11 @@ public class NotionResponse {
                 .toList();
 
         return new NotionResponse(
-                notion.getId(), notion.getName(), notion.getContent(), responses
+                notion.getId(),
+                notion.getName(),
+                notion.getContent(),
+                new NotionFolderCompactResponse(notion.getGraph().getNotionFolder()),
+                responses
         );
     }
 
