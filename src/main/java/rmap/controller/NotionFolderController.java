@@ -1,5 +1,6 @@
 package rmap.controller;
 
+import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,7 @@ public class NotionFolderController {
     }
 
     @PostMapping
-    public ResponseEntity<IdResponse> createNotionFolder(@RequestBody NotionFolderRequest request) {
+    public ResponseEntity<IdResponse> createNotionFolder(@RequestBody @Valid NotionFolderRequest request) {
         NotionFolder notionFolder = notionFolderService.createNotionFolder(request.getName());
         return ResponseEntity.created(URI.create("/notionFolders/" + notionFolder.getId()))
                 .body(new IdResponse(notionFolder.getId()));

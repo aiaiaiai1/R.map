@@ -1,16 +1,22 @@
 package rmap.request;
 
-import lombok.AllArgsConstructor;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 @Getter
 public class BuildNotionRequest {
 
+    @NotNull(message = "notionFolderId is null")
     private Long notionFolderId;
+
+    @NotBlank(message = "notion.name is null")
     private String name;
+
+    @NotNull(message = "notion.content is null")
     private String content;
+
+    @NotNull(message = "relatedNotion is null")
     private RelatedNotionInfo relatedNotion;
 
     public BuildNotionRequest() {

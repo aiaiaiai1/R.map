@@ -1,5 +1,6 @@
 package rmap.controller;
 
+import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +29,7 @@ public class NotionController {
     private final NotionService notionService;
 
     @PostMapping("/notions")
-    public ResponseEntity<NotionIdResponse> buildNotion(@RequestBody BuildNotionRequest request) {
+    public ResponseEntity<NotionIdResponse> buildNotion(@RequestBody @Valid BuildNotionRequest request) {
         NotionIdResponse response = notionFacade.buildNotion(request);
         return ResponseEntity.created(URI.create("/notions" + response.getId())).body(response);
     }
@@ -59,7 +60,7 @@ public class NotionController {
     @PatchMapping("/notions/{id}")
     public ResponseEntity<Void> editNotion(
             @PathVariable("id") Long notionId,
-            @RequestBody EditNotionRequest request
+            @RequestBody @Valid EditNotionRequest request
     ) {
         notionFacade.editNotion(notionId, request.getName(), request.getContent());
         return ResponseEntity.ok().build();
