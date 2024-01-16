@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum EdgeExceptionType implements ExceptionType {
     SELF_LOOP(
-            0,
+            100,
             "동일한 연결 지점 입니다.",
             "소스 노션과 타겟 노션이 같은 경우"
     );

@@ -8,6 +8,8 @@ import rmap.entity.Edge;
 import rmap.entity.Graph;
 import rmap.entity.Notion;
 import rmap.entity.NotionFolder;
+import rmap.exception.InvalidAcessException;
+import rmap.exception.type.InvalidAcessExceptionType;
 import rmap.request.BuildNotionRequest;
 import rmap.response.NotionIdResponse;
 import rmap.response.NotionResponse;
@@ -34,7 +36,7 @@ public class NotionFacade {
         Notion relatedNotion = notionService.readNotion(request.getRelatedNotion().getId());
         Graph graph = relatedNotion.getGraph();
         if (!notionFolder.contains(graph)) {
-            throw new IllegalArgumentException("잘못된 접근 입니다.(해당 노션 폴더에 소스 노션이 존재 하지 않습니다.)");
+            throw new InvalidAcessException(InvalidAcessExceptionType.NOT_MATCH_NOTIONFOLDER_AND_NOTION);
         }
 
         Notion notion = notionService.createNotion(request.getName(), request.getContent(), graph);

@@ -16,7 +16,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.util.Assert;
-import rmap.exception.BadRequestException;
+import rmap.exception.BusinessRuleException;
 import rmap.exception.type.EdgeExceptionType;
 
 @Entity
@@ -60,7 +60,7 @@ public class Edge {
         Assert.notNull(sourceNotion.getId(), "sourceNotion.id is null");
         Assert.notNull(targetNotion.getId(), "targetNotion.id is null");
         if (sourceNotion.equals(targetNotion)) {
-            throw new BadRequestException(EdgeExceptionType.SELF_LOOP);
+            throw new BusinessRuleException(EdgeExceptionType.SELF_LOOP);
         }
     }
 

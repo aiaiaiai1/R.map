@@ -4,8 +4,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import rmap.entity.NotionFolder;
-import rmap.exception.NotFoundException;
-import rmap.exception.type.NotionFolderExceptionType;
 import rmap.repository.NotionFolderRepository;
 
 @Service

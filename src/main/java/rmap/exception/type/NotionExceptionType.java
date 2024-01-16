@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum NotionExceptionType implements ExceptionType {
     NOT_FOUND(
-            1,
+            300,
             "노션이 존재하지 않습니다.",
             "노션이 존재하지 않는 경우"
     );

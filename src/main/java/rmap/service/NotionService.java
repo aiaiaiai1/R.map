@@ -8,8 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import rmap.entity.Graph;
 import rmap.entity.Notion;
 import rmap.entity.NotionFolder;
-import rmap.exception.NotFoundException;
-import rmap.exception.type.NotionFolderExceptionType;
 import rmap.repository.NotionFolderRepository;
 import rmap.repository.NotionRepository;
 

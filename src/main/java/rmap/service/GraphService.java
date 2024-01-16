@@ -7,8 +7,6 @@ import org.springframework.stereotype.Service;
 import rmap.entity.Graph;
 import rmap.entity.Notion;
 import rmap.entity.NotionFolder;
-import rmap.exception.type.GraphExceptionType;
-import rmap.exception.NotFoundException;
 import rmap.repository.GraphRepository;
 
 @Service
