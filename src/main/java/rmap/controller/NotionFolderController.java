@@ -42,7 +42,7 @@ public class NotionFolderController {
                 .body(new IdResponse(notionFolder.getId()));
     }
 
-    @GetMapping("/notion-folders/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<NotionFolderResponse> readNotionFolder(
             @PathVariable("id") Long notionFolderId
     ) {
