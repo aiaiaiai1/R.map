@@ -1,6 +1,7 @@
 name: build & deploy to ec2
 
 on:
+  workflow_dispatch:
   push:
     branches: dev
 
@@ -22,6 +23,7 @@ jobs:
       - name: build with gradle
         run: ./gradlew build 
       - run: pwd
+      - run: ls -al
   
       - name: scp to ec2
         uses: appleboy/scp-action@v0.1.7
