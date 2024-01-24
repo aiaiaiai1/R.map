@@ -7,6 +7,7 @@ import static rmap.entity.EntityCreationSupporter.노션_생성;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import rmap.exception.BusinessRuleException;
 
 @SpringBootTest
 @Transactional
@@ -21,7 +22,7 @@ class EdgeTest {
 
         // when, then
         assertThatThrownBy(() -> new Edge(notion, notion1))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(BusinessRuleException.class);
     }
 
     @Test
