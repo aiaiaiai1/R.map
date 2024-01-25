@@ -30,4 +30,15 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_KEY }}
           source: "./build/libs/dev.jar"
-          target: "./rmap/archive"  
+          target: "./rmap/archive"
+          strip_components: 2
+
+      - name: exec deploy.sh
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+            cd ./rmap
+            sh deploy.sh
