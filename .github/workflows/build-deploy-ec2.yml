@@ -31,7 +31,7 @@ jobs:
           key: ${{ secrets.EC2_KEY }}
           source: "./build/libs/dev.jar"
           target: "./rmap/archive"
-          strip_components: 2
+          strip_components: 3
 
       - name: exec deploy.sh
         uses: appleboy/ssh-action@v1.0.3
