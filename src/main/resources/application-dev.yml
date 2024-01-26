@@ -1,0 +1,18 @@
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DEV_DATASOURCE_URL}
+    username: ${DEV_USERNAME}
+    password: ${DEV_PASSWORD}
+
+  sql:
+    init:
+      mode: never
