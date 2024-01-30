@@ -1,9 +1,10 @@
 package rmap.response;
 
-import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import rmap.entity.Notion;
+
+import java.util.List;
 
 @Getter
 @RequiredArgsConstructor
@@ -17,8 +18,14 @@ public class NotionResponse {
 
     public static NotionResponse from(Notion notion) {
         List<RelatedNotionResponse> responses = notion.getEdges().stream()
-                .map(edge -> edge.getTargetNotion())
-                .map(rn -> new RelatedNotionResponse(rn.getId(), rn.getName()))
+                .map(edge -> {
+                    Notion targetNotion = edge.getTargetNotion();
+                    return new RelatedNotionResponse(
+                            targetNotion.getId(),
+                            targetNotion.getName(),
+                            edge.getDescription()
+                    );
+                })
                 .toList();
 
         return new NotionResponse(
