@@ -1,6 +1,5 @@
 package rmap.service;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +12,8 @@ import rmap.exception.type.InvalidAcessExceptionType;
 import rmap.request.BuildNotionRequest;
 import rmap.response.NotionIdResponse;
 import rmap.response.NotionResponse;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -30,12 +31,12 @@ public class NotionFacade {
             return new NotionIdResponse(notion.getId());
         }
 
-        Notion notion = createConnectedNotion(request);
+        Notion notion = createNotionConnectedWithRelatedNotion(request);
         return new NotionIdResponse(notion.getId());
     }
 
     private boolean isInitial(BuildNotionRequest request) {
-        return request.getRelatedNotion().getId() == null;
+        return request.getRelatedNotion() == null;
     }
 
 
@@ -45,7 +46,7 @@ public class NotionFacade {
         return notionService.createNotion(request.getName(), request.getContent(), graph);
     }
 
-    private Notion createConnectedNotion(BuildNotionRequest request) {
+    private Notion createNotionConnectedWithRelatedNotion(BuildNotionRequest request) {
         NotionFolder notionFolder = notionFolderService.readNotionFolder(request.getNotionFolderId());
         Notion relatedNotion = notionService.readNotion(request.getRelatedNotion().getId());
         Graph graph = relatedNotion.getGraph();
@@ -53,7 +54,7 @@ public class NotionFacade {
             throw new InvalidAcessException(InvalidAcessExceptionType.NOT_MATCH_NOTIONFOLDER_AND_NOTION);
         }
         Notion notion = notionService.createNotion(request.getName(), request.getContent(), graph);
-        edgeService.connect(notion, relatedNotion, "");
+        edgeService.connect(notion, relatedNotion, request.getRelatedNotion().getRelevance());
         edgeService.connect(relatedNotion, notion, "");
         return notion;
     }
