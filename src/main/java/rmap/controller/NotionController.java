@@ -1,22 +1,19 @@
 package rmap.controller;
 
 import jakarta.validation.Valid;
-import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import rmap.request.BuildNotionRequest;
 import rmap.request.EditNotionRequest;
+import rmap.request.PatchRelatedNotionRequest;
 import rmap.response.NotionIdResponse;
 import rmap.response.NotionResponse;
 import rmap.service.NotionFacade;
 import rmap.service.NotionService;
+
+import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -49,6 +46,15 @@ public class NotionController {
             @RequestBody @Valid EditNotionRequest request
     ) {
         notionFacade.editNotion(notionId, request.getName(), request.getContent());
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/notion-relations/{id}")
+    public ResponseEntity<Void> editNotionRelations(
+            @PathVariable("id") Long notionId,
+            @RequestBody @Valid List<PatchRelatedNotionRequest> requests
+    ) {
+        notionFacade.editNotionRelations(notionId, requests);
         return ResponseEntity.ok().build();
     }
 
