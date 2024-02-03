@@ -56,7 +56,7 @@ public class NotionFacade {
         }
         Notion notion = notionService.createNotion(request.getName(), request.getContent(), graph);
         edgeService.connect(notion, relatedNotion, request.getRelatedNotion().getRelevance());
-        edgeService.connect(relatedNotion, notion, "");
+        edgeService.connect(relatedNotion, notion, request.getRelatedNotion().getReverseRelevance());
         return notion;
     }
 

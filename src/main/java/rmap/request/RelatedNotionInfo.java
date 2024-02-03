@@ -10,6 +10,7 @@ public class RelatedNotionInfo {
     private Long id;
 
     private String relevance;
+    private String reverseRelevance;
 
 
     public RelatedNotionInfo(Long id) {
