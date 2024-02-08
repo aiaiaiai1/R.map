@@ -1,6 +1,9 @@
-package rmap.entity;
+package rmap;
 
 import org.springframework.test.util.ReflectionTestUtils;
+import rmap.entity.Graph;
+import rmap.entity.Notion;
+import rmap.entity.NotionFolder;
 
 public class EntityCreationSupporter {
 
@@ -13,9 +16,15 @@ public class EntityCreationSupporter {
         return notion;
     }
 
-    public static Graph 그래프_생성(Long id, String name) {
-        Graph graph = new Graph();
+    public static Graph 그래프_생성(Long id, NotionFolder notionFolder) {
+        Graph graph = new Graph(notionFolder);
         ReflectionTestUtils.setField(graph, "id", id);
         return graph;
+    }
+
+    public static NotionFolder 노션_폴더_생성(Long id, String name) {
+        NotionFolder notionFolder = new NotionFolder(name);
+        ReflectionTestUtils.setField(notionFolder, "id", id);
+        return notionFolder;
     }
 }
