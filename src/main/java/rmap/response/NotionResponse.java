@@ -1,10 +1,9 @@
 package rmap.response;
 
+import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import rmap.entity.Notion;
-
-import java.util.List;
 
 @Getter
 @RequiredArgsConstructor

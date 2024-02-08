@@ -1,14 +1,13 @@
 package rmap.entity;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.test.util.ReflectionTestUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static rmap.EntityCreationSupporter.그래프_생성;
 import static rmap.EntityCreationSupporter.노션_폴더_생성;
+
+import java.util.ArrayList;
+import java.util.List;
+import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
 class NotionFolderTest {
 

@@ -1,9 +1,9 @@
 package rmap.entity;
 
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static rmap.EntityCreationSupporter.노션_폴더_생성;
+
+import org.junit.jupiter.api.Test;
 
 class GraphTest {
 

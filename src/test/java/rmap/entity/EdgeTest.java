@@ -1,10 +1,12 @@
 package rmap.entity;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static rmap.EntityCreationSupporter.그래프_생성;
+import static rmap.EntityCreationSupporter.노션_생성;
+import static rmap.EntityCreationSupporter.노션_폴더_생성;
+
 import org.junit.jupiter.api.Test;
 import rmap.exception.BusinessRuleException;
-
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static rmap.EntityCreationSupporter.*;
 
 class EdgeTest {
 
