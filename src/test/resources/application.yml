@@ -1,0 +1,9 @@
+spring:
+  profiles:
+    default: test
+
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
