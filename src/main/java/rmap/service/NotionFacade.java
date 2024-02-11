@@ -26,7 +26,7 @@ public class NotionFacade {
 
     @Transactional
     public NotionIdResponse buildNotion(BuildNotionRequest request) {
-        if (isInitial(request)) {
+        if (isInitialNotionRequest(request)) {
             Notion notion = createInitialNotion(request);
             return new NotionIdResponse(notion.getId());
         }
@@ -35,7 +35,7 @@ public class NotionFacade {
         return new NotionIdResponse(notion.getId());
     }
 
-    private boolean isInitial(BuildNotionRequest request) {
+    private boolean isInitialNotionRequest(BuildNotionRequest request) {
         return request.getRelatedNotion() == null;
     }
 
