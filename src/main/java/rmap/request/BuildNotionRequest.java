@@ -16,7 +16,6 @@ public class BuildNotionRequest {
     @NotNull(message = "notion.content is null")
     private String content;
 
-    @NotNull(message = "relatedNotion is null")
     private RelatedNotionInfo relatedNotion;
 
     public BuildNotionRequest() {
