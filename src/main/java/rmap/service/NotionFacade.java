@@ -1,5 +1,6 @@
 package rmap.service;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,8 +15,6 @@ import rmap.request.PatchRelatedNotionRequest;
 import rmap.response.NotionIdResponse;
 import rmap.response.NotionResponse;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class NotionFacade {
@@ -27,7 +26,7 @@ public class NotionFacade {
 
     @Transactional
     public NotionIdResponse buildNotion(BuildNotionRequest request) {
-        if (isInitial(request)) {
+        if (isInitialNotionRequest(request)) {
             Notion notion = createInitialNotion(request);
             return new NotionIdResponse(notion.getId());
         }
@@ -36,7 +35,7 @@ public class NotionFacade {
         return new NotionIdResponse(notion.getId());
     }
 
-    private boolean isInitial(BuildNotionRequest request) {
+    private boolean isInitialNotionRequest(BuildNotionRequest request) {
         return request.getRelatedNotion() == null;
     }
 
@@ -110,7 +109,7 @@ public class NotionFacade {
             // 7
             Graph targetGraph = notion.getGraph();
             Graph sourceGraph = relatedNotion.getGraph();
-            
+
             if (!targetGraph.equals(sourceGraph)) {
                 relatedNotion.changeGraph(targetGraph);
                 List<Notion> notions = graphService.readNotionsOfGraph(sourceGraph.getId());

@@ -50,10 +50,6 @@ public class Edge {
         this.description = description;
     }
 
-    public Edge(Notion sourceNotion, Notion targetNotion) {
-        this(sourceNotion, targetNotion, "");
-    }
-
     private void validateNotions(Notion sourceNotion, Notion targetNotion) {
         Assert.notNull(sourceNotion, "sourceNotion is null");
         Assert.notNull(targetNotion, "targetNotion is null");

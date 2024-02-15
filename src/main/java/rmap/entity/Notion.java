@@ -1,6 +1,5 @@
 package rmap.entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -41,11 +40,9 @@ public class Notion {
     @ColumnDefault("''")
     private String content;
 
-    @OneToMany(mappedBy = "sourceNotion", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "sourceNotion", orphanRemoval = true)
     private List<Edge> edges = new ArrayList<>();
 
-    // 왜냐하면 타겟노션도 다 삭제해야함. 저장에는 케스케이드 사용이 불필요. 고아 객체는 사용할만한듯?-> 고아객체도 양쪽에다가 제거해줘야하네
-// 99% 양뱡향 매핑 없애기ㅣ...
     public Notion(String name, String content, Graph graph) {
         validateInit(name, content);
         validateGraph(graph);
@@ -58,21 +55,6 @@ public class Notion {
         Assert.notNull(name, "name is null");
         Assert.notNull(content, "content is null");
     }
-
-//    public void connect(Edge edge) {
-//        validateConnection(edge);
-//        edges.add(edge);
-//    }
-//
-//    private void validateConnection(Edge edge) {
-//        if (!this.equals(edge.getSourceNotion())) {
-//            throw new IllegalArgumentException("출발 노선이 일치 하지 않습니다.");
-//        }
-//
-//        if (edges.contains(edge)) {
-//            throw new IllegalArgumentException("이미 추가되어있습니다");
-//        }
-//    }
 
     public void changeGraph(Graph graph) {
         validateGraph(graph);
