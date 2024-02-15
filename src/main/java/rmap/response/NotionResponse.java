@@ -1,6 +1,7 @@
 package rmap.response;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import rmap.entity.Notion;
@@ -22,10 +23,14 @@ public class NotionResponse {
                     return new RelatedNotionResponse(
                             targetNotion.getId(),
                             targetNotion.getName(),
-                            edge.getDescription()
-                    );
+                            edge.getDescription(),
+                            targetNotion.getEdges().stream()
+                                    .filter(e -> e.getTargetNotion().equals(notion))
+                                    .findAny().orElseThrow(()-> new NoSuchElementException("No value present - edge"))
+                                    .getDescription());
                 })
                 .toList();
+        // n+1 문제 해결해야할듯
 
         return new NotionResponse(
                 notion.getId(),
