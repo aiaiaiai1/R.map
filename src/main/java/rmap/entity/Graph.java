@@ -9,6 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -31,7 +32,7 @@ public class Graph {
     private NotionFolder notionFolder;
 
     @OneToMany(mappedBy = "graph", cascade = CascadeType.REMOVE)
-    private List<Notion> notions;
+    private List<Notion> notions = new ArrayList<>();
 
     public Graph(NotionFolder notionFolder) {
         Assert.notNull(notionFolder, "notionFolder is null");
@@ -39,4 +40,14 @@ public class Graph {
         this.notionFolder = notionFolder;
     }
 
+    public void add(Notion notion) {
+        if (!notions.contains(notion)) {
+            throw new IllegalArgumentException("이미 존재하는 Notion, 연관관계 편의 메서드");
+        }
+        notions.add(notion);
+    }
+
+    public void remove(Notion notion) {
+        notions.remove(notion);
+    }
 }

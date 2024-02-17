@@ -48,6 +48,7 @@ public class Edge {
         this.sourceNotion = sourceNotion;
         this.targetNotion = targetNotion;
         this.description = description;
+        sourceNotion.addEdge(this);
     }
 
     private void validateNotions(Notion sourceNotion, Notion targetNotion) {

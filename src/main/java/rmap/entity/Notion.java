@@ -58,12 +58,28 @@ public class Notion {
 
     public void changeGraph(Graph graph) {
         validateGraph(graph);
+        this.graph.remove(this);
         this.graph = graph;
+        graph.add(this);
     }
 
     private void validateGraph(Graph graph) {
         Assert.notNull(graph, "graph is null");
         Assert.notNull(graph.getId(), "graph.id is null");
+        if (!this.graph.getNotionFolder().equals(graph.getNotionFolder())) {
+            throw new IllegalArgumentException("같은 노션폴더에 있어야 함.");
+        }
+    }
+
+    public void addEdge(Edge edge) {
+        if (edges.contains(edge)) {
+            throw new IllegalArgumentException("이미 존재하는 Edge, 연관관계 편의 메서드");
+        }
+        edges.add(edge);
+    }
+
+    public void removeEdge(Edge edge) {
+        edges.remove(edge);
     }
 
     public void editName(String name) {
