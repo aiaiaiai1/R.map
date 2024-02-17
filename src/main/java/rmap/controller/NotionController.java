@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import rmap.request.BuildNotionRequest;
 import rmap.request.EditNotionRequest;
@@ -63,4 +64,13 @@ public class NotionController {
         return ResponseEntity.ok().build();
     }
 
+    @DeleteMapping("/notion-relations")
+    public ResponseEntity<Void> disconnectNotionRelation(@RequestParam List<Long> notionIds) {
+        if (notionIds.size() != 2) {
+            throw new IllegalArgumentException("notion id's count is not 2");
+        }
+        notionFacade.disconnectNotionRelation(notionIds.get(0),notionIds.get(1));
+
+        return ResponseEntity.ok().build();
+    }
 }

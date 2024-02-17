@@ -66,6 +66,9 @@ public class Notion {
     private void validateGraph(Graph graph) {
         Assert.notNull(graph, "graph is null");
         Assert.notNull(graph.getId(), "graph.id is null");
+        if (this.graph == null) {
+            return;
+        }
         if (!this.graph.getNotionFolder().equals(graph.getNotionFolder())) {
             throw new IllegalArgumentException("같은 노션폴더에 있어야 함.");
         }

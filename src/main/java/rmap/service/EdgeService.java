@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import rmap.entity.Edge;
 import rmap.entity.Notion;
+import rmap.exception.BusinessRuleException;
+import rmap.exception.type.EdgeExceptionType;
 import rmap.repository.EdgeRepository;
 
 @Service
@@ -16,6 +18,15 @@ public class EdgeService {
     public Edge connect(Notion sourceNotion, Notion targetNotion, String description) {
         Edge edge = new Edge(sourceNotion, targetNotion, description);
         return edgeRepository.save(edge);
+    }
+
+    public void disconnect(Notion sourceNotion, Notion targetNotion) {
+        if (sourceNotion.equals(targetNotion)) {
+            throw new BusinessRuleException(EdgeExceptionType.SELF_LOOP);
+        }
+        Edge edge = edgeRepository.findByNotionIds(sourceNotion.getId(), targetNotion.getId());
+        edgeRepository.delete(edge);
+        sourceNotion.removeEdge(edge);
     }
 
     public List<Edge> findAllByNotionId(Long notionId) {

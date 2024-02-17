@@ -120,4 +120,32 @@ public class NotionFacade {
 
     }
 
+    @Transactional
+    public void disconnectNotionRelation(Long notionAId, Long notionBId) {
+        Notion notionA = notionService.readNotion(notionAId);
+        Notion notionB = notionService.readNotion(notionBId);
+        edgeService.disconnect(notionA, notionB);
+        edgeService.disconnect(notionB, notionA);
+
+        List<Notion> notionsA = NotionSearcher.searchDepthFirst(notionA);
+
+        if (isEmpty(notionsA, notionB)) {
+            NotionFolder notionFolder = notionB.getGraph().getNotionFolder();
+            Graph newGraph = graphService.createGraph(notionFolder);
+
+            List<Notion> notionsB = NotionSearcher.searchDepthFirst(notionB);
+            migrateNotions(newGraph, notionsB);
+        }
+    }
+
+    private boolean isEmpty(List<Notion> notions, Notion notion) {
+        return !notions.contains(notion);
+    }
+
+    private void migrateNotions(Graph graph, List<Notion> notions) {
+        for (Notion notion : notions) {
+            notion.changeGraph(graph);
+        }
+    }
+
 }
