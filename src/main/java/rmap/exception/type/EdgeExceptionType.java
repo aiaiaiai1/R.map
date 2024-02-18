@@ -14,10 +14,10 @@ public enum EdgeExceptionType implements ExceptionType {
             "잘못된 끊기 요청입니다.",
             "소스 노션과 타겟 노션이 같은 경우"
     ),
-    TEMP(
+    NOT_IN_SAME_NOTION_FOLDER(
             102,
-            "잘못된 끊기 요청입니다.",
-            "소스 노션과 타겟 노션이 같은 경우"
+            "연결할 수 없는 위치에 속해 있습니다.",
+            "서로 다른 노션 폴더에 있는 경우"
     ),
     ;
 

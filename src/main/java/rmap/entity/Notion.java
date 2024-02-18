@@ -65,6 +65,9 @@ public class Notion {
         if (edges.contains(edge)) {
             throw new IllegalArgumentException("이미 존재하는 Edge, 연관관계 편의 메서드");
         }
+        if (edge.getId() == null) {
+            throw new IllegalArgumentException("edge.id is null");
+        }
         edges.add(edge);
     }
 

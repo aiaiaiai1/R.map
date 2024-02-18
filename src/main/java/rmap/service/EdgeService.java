@@ -17,7 +17,10 @@ public class EdgeService {
 
     public Edge connect(Notion sourceNotion, Notion targetNotion, String description) {
         Edge edge = new Edge(sourceNotion, targetNotion, description);
-        return edgeRepository.save(edge);
+        Edge savedEdge = edgeRepository.save(edge);
+        sourceNotion.addEdge(savedEdge);
+        return savedEdge;
+
     }
 
     public void disconnect(Notion sourceNotion, Notion targetNotion) {

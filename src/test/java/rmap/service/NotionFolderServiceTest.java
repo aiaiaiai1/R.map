@@ -17,8 +17,7 @@ import rmap.repository.NotionRepository;
 import rmap.response.NotionCompactResponse;
 import rmap.response.NotionFolderResponse;
 
-@ExtendWith(MockitoExtension.class)
-class NotionFolderServiceTest {
+class NotionFolderServiceTest extends ServiceTest{
     @Mock
     NotionFolderRepository notionFolderRepository;
 

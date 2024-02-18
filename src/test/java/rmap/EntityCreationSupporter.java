@@ -1,6 +1,7 @@
 package rmap;
 
 import org.springframework.test.util.ReflectionTestUtils;
+import rmap.entity.Edge;
 import rmap.entity.Notion;
 import rmap.entity.NotionFolder;
 
@@ -19,5 +20,12 @@ public class EntityCreationSupporter {
         NotionFolder notionFolder = new NotionFolder(name);
         ReflectionTestUtils.setField(notionFolder, "id", id);
         return notionFolder;
+    }
+
+    public static Edge 엣지_생성(Long id, Notion sourceNotion, Notion targetNotion, String description) {
+        Edge edge = new Edge(sourceNotion, targetNotion, description);
+        ReflectionTestUtils.setField(edge, "id", id);
+        sourceNotion.addEdge(edge);
+        return edge;
     }
 }
