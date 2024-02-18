@@ -56,6 +56,9 @@ public class Edge {
         Assert.notNull(targetNotion, "targetNotion is null");
         Assert.notNull(sourceNotion.getId(), "sourceNotion.id is null");
         Assert.notNull(targetNotion.getId(), "targetNotion.id is null");
+        if (!targetNotion.isInSameNotionFolder(sourceNotion)) {
+            throw new BusinessRuleException(EdgeExceptionType.TEMP);
+        }
         if (sourceNotion.equals(targetNotion)) {
             throw new BusinessRuleException(EdgeExceptionType.SELF_LOOP);
         }

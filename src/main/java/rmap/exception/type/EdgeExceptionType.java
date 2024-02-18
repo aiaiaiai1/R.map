@@ -14,6 +14,11 @@ public enum EdgeExceptionType implements ExceptionType {
             "잘못된 끊기 요청입니다.",
             "소스 노션과 타겟 노션이 같은 경우"
     ),
+    TEMP(
+            102,
+            "잘못된 끊기 요청입니다.",
+            "소스 노션과 타겟 노션이 같은 경우"
+    ),
     ;
 
     private final int errorCode;

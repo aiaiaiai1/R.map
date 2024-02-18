@@ -26,13 +26,9 @@ public class NotionFolder {
     private String name;
 
     @OneToMany(mappedBy = "notionFolder", cascade = CascadeType.REMOVE)
-    private List<Graph> graphs = new ArrayList<>();
+    private List<Notion> notions = new ArrayList<>();
 
     public NotionFolder(String name) {
         this.name = name;
-    }
-
-    public boolean contains(Graph graph) {
-        return graphs.contains(graph);
     }
 }

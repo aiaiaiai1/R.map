@@ -26,7 +26,7 @@ public class NotionResponse {
                             edge.getDescription(),
                             targetNotion.getEdges().stream()
                                     .filter(e -> e.getTargetNotion().equals(notion))
-                                    .findAny().orElseThrow(()-> new NoSuchElementException("No value present - edge"))
+                                    .findAny().orElseThrow(() -> new NoSuchElementException("No value present - edge"))
                                     .getDescription());
                 })
                 .toList();
@@ -36,7 +36,7 @@ public class NotionResponse {
                 notion.getId(),
                 notion.getName(),
                 notion.getContent(),
-                new NotionFolderCompactResponse(notion.getGraph().getNotionFolder()),
+                new NotionFolderCompactResponse(notion.getNotionFolder()),
                 responses
         );
     }
