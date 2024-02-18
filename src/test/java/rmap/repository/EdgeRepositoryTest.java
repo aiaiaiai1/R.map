@@ -1,19 +1,62 @@
 package rmap.repository;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest
-class EdgeRepositoryTest {
+import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import rmap.entity.Edge;
+import rmap.entity.Graph;
+import rmap.entity.Notion;
+import rmap.entity.NotionFolder;
+
+class EdgeRepositoryTest extends RepositoryTest {
+
+    @Autowired
+    EdgeRepository edgeRepository;
+
+    private NotionFolder notionFolder;
+    private Graph graph;
+
+    @BeforeEach
+    void initData() {
+        notionFolder = supporter.노션_폴더_저장("알파벳");
+        graph = supporter.그래프_저장(notionFolder);
+    }
 
     @Test
-    void 노션이_가지고있는_모든_엣지를_조회한다() {
+    void 노션이_가지고있는_모든_출발과_도착_엣지를_조회한다() {
         // given
+        Notion notionA = supporter.노션_저장("A", "", graph);
+        Notion notionB = supporter.노션_저장("B", "", graph);
+        Notion notionC = supporter.노션_저장("C", "", graph);
+
+        supporter.엣지_저장(notionA, notionB, "");
+        supporter.엣지_저장(notionB, notionA, "");
+        supporter.엣지_저장(notionA, notionC, "");
 
         // when
+        List<Edge> results = edgeRepository.findAllByNotionId(notionA.getId());
 
         // then
+        assertThat(results).hasSize(3);
+    }
 
+    @Test
+    void 노션에_연결되어_있는_엣지를_가져온다() {
+        // given
+        Notion notionA = supporter.노션_저장("A", "", graph);
+        Notion notionB = supporter.노션_저장("B", "", graph);
+
+        supporter.엣지_저장(notionA, notionB, "");
+
+        // when
+        Edge result = edgeRepository.findByNotionIds(notionA.getId(), notionB.getId());
+
+        // then
+        assertThat(result.getSourceNotion()).isEqualTo(notionA);
+        assertThat(result.getTargetNotion()).isEqualTo(notionB);
     }
 
 }
