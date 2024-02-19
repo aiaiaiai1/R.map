@@ -3,8 +3,10 @@ package rmap.request;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class BuildNotionRequest {
 
     @NotNull(message = "notionFolderId is null")
@@ -17,9 +19,6 @@ public class BuildNotionRequest {
     private String content;
 
     private RelatedNotionInfo relatedNotion;
-
-    public BuildNotionRequest() {
-    }
 
     public BuildNotionRequest(Long notionFolderId, String name, String content, RelatedNotionInfo relatedNotion) {
         this.notionFolderId = notionFolderId;
