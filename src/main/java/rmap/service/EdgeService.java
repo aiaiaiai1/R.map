@@ -32,6 +32,11 @@ public class EdgeService {
         sourceNotion.removeEdge(edge);
     }
 
+    public void editDescription(Notion sourceNotion, Notion targetNotion, String description) {
+        Edge edge = sourceNotion.findEdge(targetNotion);
+        edge.changeDescription(description);
+    }
+
     public List<Edge> findAllByNotionId(Long notionId) {
         return edgeRepository.findAllByNotionId(notionId);
     }

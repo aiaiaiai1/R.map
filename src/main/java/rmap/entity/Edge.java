@@ -63,4 +63,8 @@ public class Edge {
         }
     }
 
+    public void changeDescription(String description) {
+        this.description = description;
+    }
+
 }

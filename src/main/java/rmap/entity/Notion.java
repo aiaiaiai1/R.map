@@ -75,6 +75,13 @@ public class Notion {
         return this.notionFolder.equals(notion.getNotionFolder());
     }
 
+    public Edge findEdge(Notion targetNotion) {
+        return edges.stream()
+                .filter(e -> e.getTargetNotion().equals(targetNotion))
+                .findAny()
+                .orElseThrow();
+    }
+
     public void removeEdge(Edge edge) {
         edges.remove(edge);
     }

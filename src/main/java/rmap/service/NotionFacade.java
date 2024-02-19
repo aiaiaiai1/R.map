@@ -1,5 +1,6 @@
 package rmap.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -7,7 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 import rmap.entity.Edge;
 import rmap.entity.Notion;
 import rmap.entity.NotionFolder;
+import rmap.exception.InvalidAcessException;
+import rmap.exception.type.InvalidAcessExceptionType;
 import rmap.request.BuildNotionRequest;
+import rmap.request.PatchRelatedNotionRequest;
 import rmap.response.NotionIdResponse;
 import rmap.response.NotionResponse;
 
@@ -68,75 +72,89 @@ public class NotionFacade {
         notionService.editNotion(notionId, name, content);
     }
 
-//    @Transactional
-//    public void editNotionRelations(Long notionId, List<PatchRelatedNotionRequest> requests) {
-//        Notion notion = notionService.readNotion(notionId);
-//        NotionFolder notionFolder = notion.getGraph().getNotionFolder();
-//
-//        // 2
-//        List<Long> ids = requests.stream()
-//                .map(request -> request.getId())
-//                .toList();
-//        if (ids.stream().distinct().count() != ids.size()) {
-//            throw new InvalidAcessException(InvalidAcessExceptionType.DUPLICATE_IDS);
-//        }
-//
-//        // 3
-//        List<Edge> edges = edgeService.findAllByNotionId(notion.getId());
-//        edgeService.deleteEdges(edges);
-//
-//        // 4
-//        for (PatchRelatedNotionRequest request : requests) {
-//            Notion relatedNotion = notionService.readNotion(request.getId());
-//            // 5
-//            if (!notionFolder.contains(relatedNotion.getGraph())) {
-//                throw new InvalidAcessException(InvalidAcessExceptionType.NOT_MATCH_NOTIONFOLDER_AND_NOTION);
-//            }
-//
-//            // 6
-//            edgeService.connect(notion, relatedNotion, request.getRelevance());
-//            edgeService.connect(relatedNotion, notion, request.getReverseRelevance());
-//
-//            // 7
-//            Graph targetGraph = notion.getGraph();
-//            Graph sourceGraph = relatedNotion.getGraph();
-//
-//            if (!targetGraph.equals(sourceGraph)) {
-//                relatedNotion.changeGraph(targetGraph);
-//                List<Notion> notions = graphService.readNotionsOfGraph(sourceGraph.getId());
-//                notions.stream()
-//                        .forEach(n -> n.changeGraph(targetGraph));
-//            }
-//        }
-//
-//    }
+    @Transactional
+    public void editNotionRelations(Long notionId, List<PatchRelatedNotionRequest> requests) {
+        Notion notion = notionService.readNotion(notionId);
 
-//    @Transactional
-//    public void disconnectNotionRelation(Long notionAId, Long notionBId) {
-//        Notion notionA = notionService.readNotion(notionAId);
-//        Notion notionB = notionService.readNotion(notionBId);
-//        edgeService.disconnect(notionA, notionB);
-//        edgeService.disconnect(notionB, notionA);
-//
-//        List<Notion> notionsA = NotionSearcher.searchDepthFirst(notionA);
-//
-//        if (isEmpty(notionsA, notionB)) {
-//            NotionFolder notionFolder = notionB.getGraph().getNotionFolder();
-//            Graph newGraph = graphService.createGraph(notionFolder);
-//
-//            List<Notion> notionsB = NotionSearcher.searchDepthFirst(notionB);
-//            migrateNotions(newGraph, notionsB);
-//        }
-//    }
-//
-//    private boolean isEmpty(List<Notion> notions, Notion notion) {
-//        return !notions.contains(notion);
-//    }
-//
-//    private void migrateNotions(Graph graph, List<Notion> notions) {
-//        for (Notion notion : notions) {
-//            notion.changeGraph(graph);
-//        }
-//    }
+        List<Long> relatedNotionIds = getRelatedNotionIds(notion);
+        List<Long> requestIds = getRequestIds(requests);
 
+        validateDuplicateIds(requestIds);
+
+        List<Long> connectionRequestIds = subtractIds(requestIds, relatedNotionIds);
+        List<Long> editingRequestIds = filterCommonIds(relatedNotionIds, requestIds);
+        List<Long> disconnectionRequestIds = subtractIds(relatedNotionIds, requestIds);
+
+        connectAndEditAll(notion, requests, connectionRequestIds, editingRequestIds);
+        disconnectAll(notion, disconnectionRequestIds);
+    }
+
+    private List<Long> getRequestIds(List<PatchRelatedNotionRequest> requests) {
+        return requests.stream()
+                .map(PatchRelatedNotionRequest::getId)
+                .toList();
+    }
+
+    private List<Long> getRelatedNotionIds(Notion notion) {
+        return notion.getEdges().stream()
+                .map(Edge::getTargetNotion)
+                .map(Notion::getId)
+                .toList();
+    }
+
+    private void connectAndEditAll(
+            Notion notion,
+            List<PatchRelatedNotionRequest> requests,
+            List<Long> connectionRequestIds,
+            List<Long> editingRequestIds
+    ) {
+        for (PatchRelatedNotionRequest request : requests) {
+            Notion relatedNotion = notionService.readNotion(request.getId());
+            if (editingRequestIds.contains(request.getId())) {
+                edgeService.editDescription(notion, relatedNotion, request.getRelevance());
+                edgeService.editDescription(relatedNotion, notion, request.getReverseRelevance());
+            }
+
+            if (connectionRequestIds.contains(request.getId())) {
+                edgeService.connect(notion, relatedNotion, request.getRelevance());
+                edgeService.connect(relatedNotion, notion, request.getReverseRelevance());
+            }
+        }
+    }
+
+    private void disconnectAll(Notion notion, List<Long> disconnectionRequestIds) {
+        for (Long notionId : disconnectionRequestIds) {
+            Notion relatedNotion = notionService.readNotion(notionId);
+            edgeService.disconnect(notion, relatedNotion);
+            edgeService.disconnect(relatedNotion, notion);
+        }
+    }
+
+    private List<Long> filterCommonIds(List<Long> ids, List<Long> filterIds) {
+        List<Long> commonIds = new ArrayList<>(ids);
+        commonIds.retainAll(filterIds);
+        return commonIds;
+    }
+
+    private List<Long> subtractIds(List<Long> originalIds, List<Long> subtrahendIds) {
+        List<Long> subtractedIds = new ArrayList<>(originalIds);
+        subtractedIds.removeAll(subtrahendIds);
+        return subtractedIds;
+    }
+
+    private void validateDuplicateIds(List<Long> ids) {
+        if (ids.stream().distinct().count() != ids.size()) {
+            throw new InvalidAcessException(InvalidAcessExceptionType.DUPLICATE_IDS);
+        }
+    }
+
+    @Transactional
+    public void disconnectNotionRelation(Long notionAId, Long notionBId) {
+        Notion notionA = notionService.readNotion(notionAId);
+        Notion notionB = notionService.readNotion(notionBId);
+
+        edgeService.disconnect(notionA, notionB);
+        edgeService.disconnect(notionB, notionA);
+    }
 }
+
