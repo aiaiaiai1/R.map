@@ -25,9 +25,6 @@ public class NotionFolder {
     @Column(length = 100, nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "notionFolder", cascade = CascadeType.REMOVE)
-    private List<Notion> notions = new ArrayList<>();
-
     public NotionFolder(String name) {
         this.name = name;
     }
