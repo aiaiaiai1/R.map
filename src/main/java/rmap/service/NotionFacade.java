@@ -34,26 +34,6 @@ public class NotionFacade {
         return new NotionIdResponse(notion.getId());
     }
 
-    private boolean isInitialNotionRequest(BuildNotionRequest request) {
-        return request.getRelatedNotion() == null;
-    }
-
-
-    private Notion createInitialNotion(BuildNotionRequest request) {
-        NotionFolder notionFolder = notionFolderService.readNotionFolder(request.getNotionFolderId());
-        return notionService.createNotion(request.getName(), request.getContent(), notionFolder);
-    }
-
-    private Notion createNotionConnectedWithRelatedNotion(BuildNotionRequest request) {
-        NotionFolder notionFolder = notionFolderService.readNotionFolder(request.getNotionFolderId());
-        Notion relatedNotion = notionService.readNotion(request.getRelatedNotion().getId());
-        Notion notion = notionService.createNotion(request.getName(), request.getContent(), notionFolder);
-
-        edgeService.connect(notion, relatedNotion, request.getRelatedNotion().getRelevance());
-        edgeService.connect(relatedNotion, notion, request.getRelatedNotion().getReverseRelevance());
-        return notion;
-    }
-
     public NotionResponse readNotion(Long notionId) {
         Notion notion = notionService.readNotion(notionId);
         return NotionResponse.from(notion);
@@ -87,6 +67,35 @@ public class NotionFacade {
 
         connectAndEditAll(notion, requests, connectionRequestIds, editingRequestIds);
         disconnectAll(notion, disconnectionRequestIds);
+    }
+
+    @Transactional
+    public void disconnectNotionRelation(Long notionAId, Long notionBId) {
+        Notion notionA = notionService.readNotion(notionAId);
+        Notion notionB = notionService.readNotion(notionBId);
+
+        edgeService.disconnect(notionA, notionB);
+        edgeService.disconnect(notionB, notionA);
+    }
+
+    private boolean isInitialNotionRequest(BuildNotionRequest request) {
+        return request.getRelatedNotion() == null;
+    }
+
+
+    private Notion createInitialNotion(BuildNotionRequest request) {
+        NotionFolder notionFolder = notionFolderService.readNotionFolder(request.getNotionFolderId());
+        return notionService.createNotion(request.getName(), request.getContent(), notionFolder);
+    }
+
+    private Notion createNotionConnectedWithRelatedNotion(BuildNotionRequest request) {
+        NotionFolder notionFolder = notionFolderService.readNotionFolder(request.getNotionFolderId());
+        Notion relatedNotion = notionService.readNotion(request.getRelatedNotion().getId());
+        Notion notion = notionService.createNotion(request.getName(), request.getContent(), notionFolder);
+
+        edgeService.connect(notion, relatedNotion, request.getRelatedNotion().getRelevance());
+        edgeService.connect(relatedNotion, notion, request.getRelatedNotion().getReverseRelevance());
+        return notion;
     }
 
     private List<Long> getRequestIds(List<PatchRelatedNotionRequest> requests) {
@@ -146,15 +155,6 @@ public class NotionFacade {
         if (ids.stream().distinct().count() != ids.size()) {
             throw new InvalidAcessException(InvalidAcessExceptionType.DUPLICATE_IDS);
         }
-    }
-
-    @Transactional
-    public void disconnectNotionRelation(Long notionAId, Long notionBId) {
-        Notion notionA = notionService.readNotion(notionAId);
-        Notion notionB = notionService.readNotion(notionBId);
-
-        edgeService.disconnect(notionA, notionB);
-        edgeService.disconnect(notionB, notionA);
     }
 }
 
