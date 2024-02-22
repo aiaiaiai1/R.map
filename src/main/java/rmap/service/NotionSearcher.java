@@ -1,7 +1,9 @@
 package rmap.service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 import rmap.entity.Edge;
 import rmap.entity.Notion;
@@ -33,6 +35,19 @@ public class NotionSearcher {
         }
 
         return visitedNotion;
+    }
+
+    public static List<List<Notion>> getGraphs(List<Notion> notions) {
+        List<List<Notion>> graphs = new ArrayList<>();
+        Set<Notion> sets = new HashSet<>();
+        for (Notion notion : notions) {
+            if (sets.contains(notion)) {
+                List<Notion> graph = searchDepthFirst(notion);
+                graphs.add(new ArrayList<>(graph));
+                sets.addAll(graph);
+            }
+        }
+        return graphs;
     }
 
 }
