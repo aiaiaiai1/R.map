@@ -2,8 +2,10 @@ package rmap.request;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class RelatedNotionInfo {
 
     @NotNull(message = "RelatedNotionInfo.id = null")
@@ -17,6 +19,4 @@ public class RelatedNotionInfo {
         this.id = id;
     }
 
-    public RelatedNotionInfo() {
-    }
 }

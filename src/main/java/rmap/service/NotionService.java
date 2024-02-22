@@ -3,8 +3,8 @@ package rmap.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import rmap.entity.Graph;
 import rmap.entity.Notion;
+import rmap.entity.NotionFolder;
 import rmap.repository.NotionRepository;
 
 @Service
@@ -13,8 +13,8 @@ public class NotionService {
 
     private final NotionRepository notionRepository;
 
-    public Notion createNotion(String name, String content, Graph graph) {
-        Notion notion = new Notion(name, content, graph);
+    public Notion createNotion(String name, String content, NotionFolder notionFolder) {
+        Notion notion = new Notion(name, content, notionFolder);
         return notionRepository.save(notion);
     }
 

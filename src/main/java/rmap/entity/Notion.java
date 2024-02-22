@@ -30,8 +30,8 @@ public class Notion {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "graph_id", nullable = false)
-    private Graph graph;
+    @JoinColumn(name = "notion_folder_id", nullable = false)
+    private NotionFolder notionFolder;
 
     @Column(length = 100, nullable = false)
     private String name;
@@ -43,12 +43,12 @@ public class Notion {
     @OneToMany(mappedBy = "sourceNotion", orphanRemoval = true)
     private List<Edge> edges = new ArrayList<>();
 
-    public Notion(String name, String content, Graph graph) {
+    public Notion(String name, String content, NotionFolder notionFolder) {
         validateInit(name, content);
-        validateGraph(graph);
+        validateNotionFolder(notionFolder);
         this.name = name;
         this.content = content;
-        this.graph = graph;
+        this.notionFolder = notionFolder;
     }
 
     private void validateInit(String name, String content) {
@@ -56,14 +56,37 @@ public class Notion {
         Assert.notNull(content, "content is null");
     }
 
-    public void changeGraph(Graph graph) {
-        validateGraph(graph);
-        this.graph = graph;
+    private void validateNotionFolder(NotionFolder notionFolder) {
+        Assert.notNull(notionFolder, "notionFolder is null");
+        Assert.notNull(notionFolder.getId(), "notionFolder.id is null");
     }
 
-    private void validateGraph(Graph graph) {
-        Assert.notNull(graph, "graph is null");
-        Assert.notNull(graph.getId(), "graph.id is null");
+    public void addEdge(Edge edge) {
+        if (edges.contains(edge)) {
+            throw new IllegalArgumentException("이미 존재하는 Edge, 연관관계 편의 메서드");
+        }
+        if (edge.getId() == null) {
+            throw new IllegalArgumentException("edge.id is null");
+        }
+        if (!edge.getSourceNotion().equals(this)) {
+            throw new IllegalArgumentException("시작엣지만 넣을 수 있습니다.");
+        }
+        edges.add(edge);
+    }
+
+    public boolean isInSameNotionFolder(Notion notion) {
+        return this.notionFolder.equals(notion.getNotionFolder());
+    }
+
+    public Edge findEdge(Notion targetNotion) {
+        return edges.stream()
+                .filter(e -> e.getTargetNotion().equals(targetNotion))
+                .findAny()
+                .orElseThrow();
+    }
+
+    public void removeEdge(Edge edge) {
+        edges.remove(edge);
     }
 
     public void editName(String name) {
@@ -72,5 +95,10 @@ public class Notion {
 
     public void editContent(String content) {
         this.content = Objects.requireNonNull(content, "content is null");
+    }
+
+    public void changeNotionFolder(NotionFolder notionFolder) {
+        validateNotionFolder(notionFolder);
+        this.notionFolder = notionFolder;
     }
 }

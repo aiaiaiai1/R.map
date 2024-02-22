@@ -14,6 +14,11 @@ public interface EdgeRepository extends JpaRepository<Edge, Long> {
             + "where n.id = :notionId", nativeQuery = true)
     List<Edge> findAllByNotionId(Long notionId);
 
+    @Query(value = "select * from edge "
+            + "where source_notion_id = :sourceNotionId "
+            + "and target_notion_id = :targetNotionId", nativeQuery = true)
+    Edge findByNotionIds(Long sourceNotionId, Long targetNotionId);
+
 //    @Query(value = "delete from edge where id in :edgeIds", nativeQuery = true)
 //    void delete(List<Long> edgeIds);
 

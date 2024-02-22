@@ -2,7 +2,6 @@ package rmap.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
-import static rmap.EntityCreationSupporter.그래프_생성;
 import static rmap.EntityCreationSupporter.노션_생성;
 import static rmap.Fixtures.노션_폴더_음식;
 
@@ -12,15 +11,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import rmap.entity.Graph;
 import rmap.entity.Notion;
 import rmap.repository.NotionFolderRepository;
 import rmap.repository.NotionRepository;
 import rmap.response.NotionCompactResponse;
 import rmap.response.NotionFolderResponse;
 
-@ExtendWith(MockitoExtension.class)
-class NotionFolderServiceTest {
+class NotionFolderServiceTest extends ServiceTest{
     @Mock
     NotionFolderRepository notionFolderRepository;
 
@@ -33,9 +30,8 @@ class NotionFolderServiceTest {
     @Test
     void 노션_폴더_정보_조회시_노션은_사전순으로_조회한다() {
         // given
-        Graph graph = 그래프_생성(1L, 노션_폴더_음식);
-        Notion 노션_사과 = 노션_생성(1L, "사과", "", graph);
-        Notion 노션_배 = 노션_생성(2L, "배", "", graph);
+        Notion 노션_사과 = 노션_생성(1L, "사과", "", 노션_폴더_음식);
+        Notion 노션_배 = 노션_생성(2L, "배", "", 노션_폴더_음식);
 
         given(notionFolderRepository.findByIdOrThrow(노션_폴더_음식.getId())).willReturn(노션_폴더_음식);
         given(notionRepository.findAllInNotionFolder(노션_폴더_음식.getId())).willReturn(List.of(노션_사과, 노션_배));
