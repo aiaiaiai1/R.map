@@ -68,6 +68,9 @@ public class Notion {
         if (edge.getId() == null) {
             throw new IllegalArgumentException("edge.id is null");
         }
+        if (!edge.getSourceNotion().equals(this)) {
+            throw new IllegalArgumentException("시작엣지만 넣을 수 있습니다.");
+        }
         edges.add(edge);
     }
 
@@ -92,5 +95,10 @@ public class Notion {
 
     public void editContent(String content) {
         this.content = Objects.requireNonNull(content, "content is null");
+    }
+
+    public void changeNotionFolder(NotionFolder notionFolder) {
+        validateNotionFolder(notionFolder);
+        this.notionFolder = notionFolder;
     }
 }

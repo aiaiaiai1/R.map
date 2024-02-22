@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import rmap.entity.NotionFolder;
 import rmap.request.NotionFolderRequest;
 import rmap.response.IdResponse;
+import rmap.response.MergingNotinFolderRequest;
 import rmap.response.NotionFolderCompactResponse;
 import rmap.response.NotionFolderResponse;
 import rmap.service.NotionFolderService;
@@ -55,4 +56,11 @@ public class NotionFolderController {
         notionFolderService.deleteNotionFolder(notionFolderId);
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/merge")
+    public ResponseEntity<Void> mergeNotionFolder(@RequestBody MergingNotinFolderRequest request) {
+        notionFolderService.mergeNotionFolderWithNew(request.getName(), request.getNotionFolderIds());
+        return ResponseEntity.ok().build();
+    }
+
 }

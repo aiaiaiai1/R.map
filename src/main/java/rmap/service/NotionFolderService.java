@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import rmap.entity.Notion;
 import rmap.entity.NotionFolder;
 import rmap.repository.NotionFolderRepository;
@@ -42,6 +43,29 @@ public class NotionFolderService {
                 .sorted(Comparator.comparing(Notion::getName))
                 .toList();
         return NotionFolderResponse.of(notionFolder, sortedNotions);
+    }
+
+    @Transactional
+    public void mergeNotionFolder(Long notionFolderId, List<Long> notionFolderIds) {
+        NotionFolder notionFolder = notionFolderRepository.findByIdOrThrow(notionFolderId);
+        for (Long id : notionFolderIds) {
+            List<Notion> notions = notionRepository.findAllInNotionFolder(id);
+            notions.stream()
+                    .forEach(n -> n.changeNotionFolder(notionFolder));
+            notionFolderRepository.deleteById(id);
+        }
+    }
+
+    @Transactional
+    public void mergeNotionFolderWithNew(String notionFolderName, List<Long> notionFolderIds) {
+        NotionFolder notionFolder = createNotionFolder(notionFolderName);
+        mergeNotionFolder(notionFolder.getId(), notionFolderIds);
+    }
+
+    public List<List<Notion>> findAllGraph(Long notionFolderId) {
+        NotionFolder notionFolder = notionFolderRepository.findByIdOrThrow(notionFolderId);
+        List<Notion> notions = notionRepository.findAllInNotionFolder(notionFolder.getId());
+        return NotionSearcher.getGraphs(notions);
     }
 
 }
