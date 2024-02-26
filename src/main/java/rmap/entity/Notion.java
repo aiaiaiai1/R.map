@@ -62,14 +62,14 @@ public class Notion {
     }
 
     public void addEdge(Edge edge) {
-        if (edges.contains(edge)) {
-            throw new IllegalArgumentException("이미 존재하는 Edge, 연관관계 편의 메서드");
-        }
         if (edge.getId() == null) {
             throw new IllegalArgumentException("edge.id is null");
         }
         if (!edge.getSourceNotion().equals(this)) {
             throw new IllegalArgumentException("시작엣지만 넣을 수 있습니다.");
+        }
+        if (edges.contains(edge)) {
+            return;
         }
         edges.add(edge);
     }

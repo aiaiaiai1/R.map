@@ -20,7 +20,6 @@ public class EdgeService {
         Edge savedEdge = edgeRepository.save(edge);
         sourceNotion.addEdge(savedEdge);
         return savedEdge;
-
     }
 
     public void disconnect(Notion sourceNotion, Notion targetNotion) {

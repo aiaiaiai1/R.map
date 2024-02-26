@@ -2,11 +2,7 @@ insert into notion_folder (id, name)
 values (1, '개발'),
        (2, '운동');
 
-insert into graph (id, notion_folder_id)
-values (1, 1),
-       (2, 1);
-
-insert into notion (id, graph_id, name)
+insert into notion (id, notion_folder_id, name)
 values (1, 1, '스프링'),
        (2, 1, 'JPA'),
        (3, 1, 'MVC'),
