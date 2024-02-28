@@ -67,16 +67,6 @@ public class NotionRelationService {
         disconnectAll(notion, disconnectionRequestIds);
     }
 
-    private boolean isInitialNotionRequest(BuildNotionRequest request) {
-        return request.getRelatedNotion() == null;
-    }
-
-    private Notion createInitialNotion(BuildNotionRequest request) {
-        NotionFolder notionFolder = notionFolderRepository.findByIdOrThrow(request.getNotionFolderId());
-        Notion notion = new Notion(request.getName(), request.getContent(), notionFolder);
-        return notionRepository.save(notion);
-    }
-
     private List<Long> getRequestIds(List<PatchRelatedNotionRequest> requests) {
         return requests.stream()
                 .map(PatchRelatedNotionRequest::getId)

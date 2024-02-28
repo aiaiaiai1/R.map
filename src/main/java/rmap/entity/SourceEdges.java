@@ -17,6 +17,10 @@ public class SourceEdges {
     protected SourceEdges() {
     }
 
+    protected SourceEdges(List<Edge> edges) {
+        this.edges = new ArrayList<>(edges);
+    }
+
     public Edge addNewEdge(Notion sourceNotion, Notion targetNotion, String description) {
         Edge edge = new Edge(sourceNotion, targetNotion, description);
         if (edges.contains(edge)) {
@@ -27,11 +31,8 @@ public class SourceEdges {
     }
 
     public void removeEdge(Notion targetNotion) {
-        Optional<Edge> edge = findEdge(targetNotion);
-        if (edge.isEmpty()) {
-            throw new IllegalArgumentException("삭제하려고 하는 엣지가 없습니다.");
-        }
-        edges.remove(edge.get());
+        findEdge(targetNotion)
+                .ifPresent(edge -> edges.remove(edge));
     }
 
     private Optional<Edge> findEdge(Notion targetNotion) {
@@ -48,4 +49,7 @@ public class SourceEdges {
         edge.get().changeDescription(description);
     }
 
+    public List<Edge> getEdges() {
+        return List.copyOf(edges);
+    }
 }
