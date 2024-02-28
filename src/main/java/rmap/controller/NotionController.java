@@ -18,31 +18,42 @@ import rmap.request.EditNotionRequest;
 import rmap.request.PatchRelatedNotionRequest;
 import rmap.response.NotionIdResponse;
 import rmap.response.NotionResponse;
-import rmap.service.NotionFacade;
+import rmap.service.NotionRelationService;
 import rmap.service.NotionService;
 
 @RestController
 @RequiredArgsConstructor
 public class NotionController {
 
-    private final NotionFacade notionFacade;
+    private final NotionRelationService notionRelationService;
     private final NotionService notionService;
 
     @PostMapping("/notions")
     public ResponseEntity<NotionIdResponse> buildNotion(@RequestBody @Valid BuildNotionRequest request) {
-        NotionIdResponse response = notionFacade.buildNotion(request);
+        NotionIdResponse response = getCreatedNotionIdResponse(request);
         return ResponseEntity.created(URI.create("/notions" + response.getId())).body(response);
+    }
+
+    private NotionIdResponse getCreatedNotionIdResponse(BuildNotionRequest request) {
+        if (isInitialNotionRequest(request)) {
+            return notionService.createInitialNotion(request);
+        }
+        return notionRelationService.createNotionConnectedWithRelatedNotion(request);
+    }
+
+    private boolean isInitialNotionRequest(BuildNotionRequest request) {
+        return request.getRelatedNotion() == null;
     }
 
     @GetMapping("/notions/{id}")
     public ResponseEntity<NotionResponse> readNotion(@PathVariable("id") Long notionId) {
-        NotionResponse response = notionFacade.readNotion(notionId);
+        NotionResponse response = notionService.readNotion(notionId);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/notions/{id}")
     public ResponseEntity<Void> demolishNotion(@PathVariable("id") Long notionId) {
-        notionFacade.demolishNotion(notionId);
+        notionService.demolishNotion(notionId);
         return ResponseEntity.ok().build();
     }
 
@@ -51,7 +62,7 @@ public class NotionController {
             @PathVariable("id") Long notionId,
             @RequestBody @Valid EditNotionRequest request
     ) {
-        notionFacade.editNotion(notionId, request.getName(), request.getContent());
+        notionService.editNotion(notionId, request.getName(), request.getContent());
         return ResponseEntity.ok().build();
     }
 
@@ -60,7 +71,7 @@ public class NotionController {
             @PathVariable("id") Long notionId,
             @RequestBody @Valid List<PatchRelatedNotionRequest> requests
     ) {
-        notionFacade.editNotionRelations(notionId, requests);
+        notionRelationService.editNotionRelations(notionId, requests);
         return ResponseEntity.ok().build();
     }
 
@@ -69,7 +80,7 @@ public class NotionController {
         if (notionIds.size() != 2) {
             throw new IllegalArgumentException("notion id's count is not 2");
         }
-        notionFacade.disconnectNotionRelation(notionIds.get(0),notionIds.get(1));
+        notionRelationService.disconnectNotionRelation(notionIds.get(0), notionIds.get(1));
 
         return ResponseEntity.ok().build();
     }

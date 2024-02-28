@@ -7,17 +7,15 @@ import static rmap.Fixtures.노션_폴더_음식;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import rmap.entity.Notion;
 import rmap.repository.NotionFolderRepository;
 import rmap.repository.NotionRepository;
 import rmap.response.NotionCompactResponse;
 import rmap.response.NotionFolderResponse;
 
-class NotionFolderServiceTest extends ServiceTest{
+class NotionFolderServiceTest extends ServiceTest {
     @Mock
     NotionFolderRepository notionFolderRepository;
 
