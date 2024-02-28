@@ -25,7 +25,7 @@ public class EntityCreationSupporter {
     public static Edge 엣지_생성(Long id, Notion sourceNotion, Notion targetNotion, String description) {
         Edge edge = new Edge(sourceNotion, targetNotion, description);
         ReflectionTestUtils.setField(edge, "id", id);
-        sourceNotion.addEdge(edge);
+//        sourceNotion.addEdge(edge);
         return edge;
     }
 }

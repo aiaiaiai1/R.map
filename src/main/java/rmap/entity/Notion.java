@@ -1,6 +1,7 @@
 package rmap.entity;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -8,11 +9,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -41,8 +39,8 @@ public class Notion {
     @ColumnDefault("''")
     private String content;
 
-    @OneToMany(mappedBy = "sourceNotion", orphanRemoval = true)
-    private List<Edge> edges = new ArrayList<>();
+    @Embedded
+    private SourceEdges edges;
 
     public Notion(String name, String content, NotionFolder notionFolder) {
         validateInit(name, content);
@@ -50,6 +48,7 @@ public class Notion {
         this.name = name;
         this.content = content;
         this.notionFolder = notionFolder;
+        this.edges = new SourceEdges();
     }
 
     private void validateInit(String name, String content) {
@@ -62,56 +61,20 @@ public class Notion {
         Assert.notNull(notionFolder.getId(), "notionFolder.id is null");
     }
 
-    public void addEdge(Edge edge) {
-        if (edge.getId() == null) {
-            throw new IllegalArgumentException("edge.id is null");
-        }
-        if (!edge.getSourceNotion().equals(this)) {
-            throw new IllegalArgumentException("시작엣지만 넣을 수 있습니다.");
-        }
-        if (edges.contains(edge)) {
-            return;
-        }
-        edges.add(edge);
-    }
-
     public Edge connect(Notion targetNotion, String description) {
-        Edge edge = new Edge(this, targetNotion, description);
-        if (edges.contains(edge)) {
-            throw new IllegalArgumentException("이미 존재하는 엣지 입니다.");
-        }
-        edges.add(edge);
-        return edge;
+        return edges.addNewEdge(this, targetNotion, description);
     }
 
     public void disconnect(Notion targetNotion) {
-        Optional<Edge> edge = findEdge(targetNotion);
-        if (edge.isEmpty()) {
-            throw new IllegalArgumentException("삭제하려고 하는 엣지가 없는 엣지 입니다.");
-        }
-        edges.remove(edge.get());
+        edges.removeEdge(targetNotion);
     }
 
     public void editDescription(Notion targetNotion, String description) {
-        Optional<Edge> edge = findEdge(targetNotion);
-        if (edge.isEmpty()) {
-            throw new IllegalArgumentException("존재하지 않는 엣지 입니다.");
-        }
-        edge.get().changeDescription(description);
+        edges.editDescription(targetNotion, description);
     }
 
     public boolean isInSameNotionFolder(Notion notion) {
         return this.notionFolder.equals(notion.getNotionFolder());
-    }
-
-    public Optional<Edge> findEdge(Notion targetNotion) {
-        return edges.stream()
-                .filter(e -> e.getTargetNotion().equals(targetNotion))
-                .findAny();
-    }
-
-    public void removeEdge(Edge edge) {
-        edges.remove(edge);
     }
 
     public void editName(String name) {
@@ -125,5 +88,9 @@ public class Notion {
     public void changeNotionFolder(NotionFolder notionFolder) {
         validateNotionFolder(notionFolder);
         this.notionFolder = notionFolder;
+    }
+
+    public List<Edge> getEdges() {
+        return edges.getEdges();
     }
 }
