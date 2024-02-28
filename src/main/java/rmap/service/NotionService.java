@@ -6,6 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import rmap.entity.Notion;
 import rmap.entity.NotionFolder;
 import rmap.repository.NotionRepository;
+import rmap.request.BuildNotionRequest;
+import rmap.response.NotionIdResponse;
 
 @Service
 @RequiredArgsConstructor
