@@ -57,11 +57,11 @@ public class NotionFolderService {
 
     @Transactional
     public void mergeNotionFolderWithNew(String notionFolderName, List<Long> notionFolderIds) {
-        NotionFolder notionFolder = createNotionFolder(notionFolderName);
-        changeNotionFolderTo(notionFolder, notionFolderIds);
+        NotionFolder newNotionFolder = createNotionFolder(notionFolderName);
+        changeNotionFoldersTo(newNotionFolder, notionFolderIds);
     }
 
-    private void changeNotionFolderTo(NotionFolder notionFolder, List<Long> notionFolderIds) {
+    private void changeNotionFoldersTo(NotionFolder notionFolder, List<Long> notionFolderIds) {
         for (Long id : notionFolderIds) {
             List<Notion> notions = notionRepository.findAllInNotionFolder(id);
             notions.stream()

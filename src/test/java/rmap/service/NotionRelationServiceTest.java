@@ -21,7 +21,10 @@ import rmap.exception.InvalidAcessException;
 import rmap.repository.EdgeRepository;
 import rmap.repository.NotionFolderRepository;
 import rmap.repository.NotionRepository;
+import rmap.request.BuildNotionRequest;
 import rmap.request.PatchRelatedNotionRequest;
+import rmap.request.RelatedNotionInfo;
+import rmap.response.NotionIdResponse;
 
 class NotionRelationServiceTest extends ServiceTest {
 
@@ -108,5 +111,35 @@ class NotionRelationServiceTest extends ServiceTest {
             notion1.connect(notion2, "");
             notion2.connect(notion1, "");
         }
+    }
+
+    @Test
+    void 관계를_맺는_새로운_노션을_생셩한다() {
+        // given
+
+        Notion relatedNotion = 노션_생성(1L, "B", "b", 노션_폴더_알파벳);
+        BuildNotionRequest request = new BuildNotionRequest(
+                노션_폴더_알파벳.getId(),
+                "A",
+                "a",
+                new RelatedNotionInfo(relatedNotion.getId(), "", "")
+        );
+
+        Notion newNotion = 노션_생성(2L, "A", "a", 노션_폴더_알파벳);
+
+        given(notionFolderRepository.findByIdOrThrow(노션_폴더_알파벳.getId())).willReturn(노션_폴더_알파벳);
+        given(notionRepository.findByIdOrThrow(relatedNotion.getId())).willReturn(relatedNotion);
+        given(notionRepository.save(any(Notion.class))).willReturn(newNotion);
+        given(edgeRepository.save(any(Edge.class))).willReturn(null);
+
+        // when
+        NotionIdResponse response = notionRelationService
+                .createNotionConnectedWithRelatedNotion(request);
+
+        // then
+        assertThat(response.getId()).isEqualTo(newNotion.getId());
+        then(edgeRepository).should(times(2)).save(any(Edge.class));
+        assertThat(relatedNotion.getEdges()).hasSize(1);
+        assertThat(newNotion.getEdges()).hasSize(1);
     }
 }

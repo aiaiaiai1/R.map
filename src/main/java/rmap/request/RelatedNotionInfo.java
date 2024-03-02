@@ -15,8 +15,9 @@ public class RelatedNotionInfo {
     private String reverseRelevance;
 
 
-    public RelatedNotionInfo(Long id) {
+    public RelatedNotionInfo(Long id, String relevance, String reverseRelevance) {
         this.id = id;
+        this.relevance = relevance;
+        this.reverseRelevance = reverseRelevance;
     }
-
 }
