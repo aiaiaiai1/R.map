@@ -9,10 +9,13 @@ import rmap.entity.Notion;
 @RequiredArgsConstructor
 public class GraphResponse {
 
-    private final Long id;
     private final List<Long> notionIds;
 
-    public static GraphResponse of(Long id, List<Notion> graph) {
-        return new GraphResponse(id, graph.stream().map(Notion::getId).toList());
+    public static GraphResponse of(List<Notion> graph) {
+        return new GraphResponse(
+                graph.stream()
+                        .map(Notion::getId)
+                        .toList()
+        );
     }
 }

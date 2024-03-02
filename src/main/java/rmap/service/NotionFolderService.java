@@ -9,6 +9,7 @@ import rmap.entity.Notion;
 import rmap.entity.NotionFolder;
 import rmap.repository.NotionFolderRepository;
 import rmap.repository.NotionRepository;
+import rmap.response.GraphResponse;
 import rmap.response.NotionFolderResponse;
 
 @Service
@@ -18,7 +19,7 @@ public class NotionFolderService {
     private final NotionFolderRepository notionFolderRepository;
     private final NotionRepository notionRepository;
 
-    public List<NotionFolder> readAll() {
+    public List<NotionFolder> readAllNotionFolders() {
         return notionFolderRepository.findAll();
     }
 
@@ -45,27 +46,28 @@ public class NotionFolderService {
         return NotionFolderResponse.of(notionFolder, sortedNotions);
     }
 
-    @Transactional
-    public void mergeNotionFolder(Long notionFolderId, List<Long> notionFolderIds) {
+    public List<GraphResponse> readAllGraphs(Long notionFolderId) {
         NotionFolder notionFolder = notionFolderRepository.findByIdOrThrow(notionFolderId);
+        List<Notion> notions = notionRepository.findAllInNotionFolder(notionFolder.getId());
+        List<List<Notion>> graphs = NotionSearcher.getGraphs(notions);
+        return graphs.stream()
+                .map(graph -> GraphResponse.of(graph))
+                .toList();
+    }
+
+    @Transactional
+    public void mergeNotionFolderWithNew(String notionFolderName, List<Long> notionFolderIds) {
+        NotionFolder notionFolder = createNotionFolder(notionFolderName);
+        changeNotionFolderTo(notionFolder, notionFolderIds);
+    }
+
+    private void changeNotionFolderTo(NotionFolder notionFolder, List<Long> notionFolderIds) {
         for (Long id : notionFolderIds) {
             List<Notion> notions = notionRepository.findAllInNotionFolder(id);
             notions.stream()
                     .forEach(n -> n.changeNotionFolder(notionFolder));
             notionFolderRepository.deleteById(id);
         }
-    }
-
-    @Transactional
-    public void mergeNotionFolderWithNew(String notionFolderName, List<Long> notionFolderIds) {
-        NotionFolder notionFolder = createNotionFolder(notionFolderName);
-        mergeNotionFolder(notionFolder.getId(), notionFolderIds);
-    }
-
-    public List<List<Notion>> findAllGraph(Long notionFolderId) {
-        NotionFolder notionFolder = notionFolderRepository.findByIdOrThrow(notionFolderId);
-        List<Notion> notions = notionRepository.findAllInNotionFolder(notionFolder.getId());
-        return NotionSearcher.getGraphs(notions);
     }
 
 }
