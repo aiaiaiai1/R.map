@@ -2,7 +2,6 @@ package rmap.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static rmap.EntityCreationSupporter.노션_생성;
-import static rmap.EntityCreationSupporter.엣지_생성;
 import static rmap.Fixtures.노션_폴더_음식;
 
 import java.util.List;
@@ -10,8 +9,6 @@ import org.junit.jupiter.api.Test;
 import rmap.entity.Notion;
 
 class NotionSearcherTest {
-
-    private static long autoIncrementId = 1;
 
     @Test
     void 깊이_우선_탐색으로_탐색한_노션_리스트를_확인한다() {
@@ -40,8 +37,8 @@ class NotionSearcherTest {
     }
 
     private void connect(Notion notion1, Notion notion2) {
-        엣지_생성(autoIncrementId++, notion1, notion2, "");
-        엣지_생성(autoIncrementId++, notion2, notion1, "");
+        notion1.connect(notion2, "");
+        notion2.connect(notion1, "");
     }
 
 }

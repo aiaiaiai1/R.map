@@ -3,7 +3,6 @@ package rmap.controller;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
-import java.util.stream.LongStream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import rmap.entity.Notion;
 import rmap.entity.NotionFolder;
 import rmap.request.NotionFolderRequest;
 import rmap.response.GraphResponse;
@@ -32,7 +30,7 @@ public class NotionFolderController {
 
     @GetMapping
     public ResponseEntity<List<NotionFolderCompactResponse>> readNotionFolders() {
-        List<NotionFolder> notionFolders = notionFolderService.readAll();
+        List<NotionFolder> notionFolders = notionFolderService.readAllNotionFolders();
         List<NotionFolderCompactResponse> responses = notionFolders.stream()
                 .map(NotionFolderCompactResponse::new)
                 .toList();
@@ -68,16 +66,8 @@ public class NotionFolderController {
 
     @GetMapping("/notion-folders/{id}/graphs")
     public ResponseEntity<List<GraphResponse>> readGraphsInNotionFolder(@PathVariable("id") Long notionFolderId) {
-        List<List<Notion>> graphs = notionFolderService.findAllGraph(notionFolderId);
-        List<GraphResponse> responses =
-                LongStream.range(1, graphs.size() + 1)
-                        .mapToObj(i -> GraphResponse.of(i, graphs.get((int) (i - 1))))
-                        .toList();
-//        graphs.stream()
-//                .map(graph -> GraphResponse.of(1L, graph))
-//                .toList();
+        List<GraphResponse> responses = notionFolderService.readAllGraphs(notionFolderId);
         return ResponseEntity.ok().body(responses);
-        // refactor 요망
     }
 
 }
