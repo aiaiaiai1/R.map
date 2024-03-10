@@ -64,7 +64,7 @@ public class NotionFolderController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/notion-folders/{id}/graphs")
+    @GetMapping("/{id}/graphs")
     public ResponseEntity<List<GraphResponse>> readGraphsInNotionFolder(@PathVariable("id") Long notionFolderId) {
         List<GraphResponse> responses = notionFolderService.readAllGraphs(notionFolderId);
         return ResponseEntity.ok().body(responses);

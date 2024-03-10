@@ -60,7 +60,7 @@ public class NotionFolderService {
     public List<GraphResponse> readAllGraphs(Long notionFolderId) {
         NotionFolder notionFolder = notionFolderRepository.findByIdOrThrow(notionFolderId);
         List<Notion> notions = notionRepository.findAllInNotionFolder(notionFolder.getId());
-        List<List<Notion>> graphs = NotionSearcher.getGraphs(notions);
+        List<List<Notion>> graphs = NotionSearcher.convertToGraphs(notions);
         return graphs.stream()
                 .map(graph -> GraphResponse.of(graph))
                 .toList();
