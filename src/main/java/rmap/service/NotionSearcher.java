@@ -37,14 +37,14 @@ public class NotionSearcher {
         return visitedNotion;
     }
 
-    public static List<List<Notion>> getGraphs(List<Notion> notions) {
+    public static List<List<Notion>> convertToGraphs(List<Notion> notions) {
         List<List<Notion>> graphs = new ArrayList<>();
-        Set<Notion> sets = new HashSet<>();
+        Set<Notion> visitedNotion = new HashSet<>();
         for (Notion notion : notions) {
-            if (sets.contains(notion)) {
+            if (!visitedNotion.contains(notion)) {
                 List<Notion> graph = searchDepthFirst(notion);
                 graphs.add(new ArrayList<>(graph));
-                sets.addAll(graph);
+                visitedNotion.addAll(graph);
             }
         }
         return graphs;

@@ -15,7 +15,6 @@ public class BuildNotionRequest {
     @NotBlank(message = "notion.name is null")
     private String name;
 
-    @NotNull(message = "notion.content is null")
     private String content;
 
     private RelatedNotionInfo relatedNotion;
