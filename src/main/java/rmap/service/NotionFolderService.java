@@ -67,8 +67,8 @@ public class NotionFolderService {
     }
 
     @Transactional
-    public void mergeNotionFolderWithNew(String notionFolderName, List<Long> notionFolderIds) {
-        NotionFolder newNotionFolder = createNotionFolder(notionFolderName);
+    public void mergeNotionFolderWithNew(String newNotionFolderName, List<Long> notionFolderIds) {
+        NotionFolder newNotionFolder = createNotionFolder(newNotionFolderName);
         changeNotionFoldersTo(newNotionFolder, notionFolderIds);
     }
 
@@ -78,6 +78,21 @@ public class NotionFolderService {
             notions.stream()
                     .forEach(n -> n.changeNotionFolder(notionFolder));
             notionFolderRepository.deleteById(id);
+        }
+    }
+
+    @Transactional
+    public void splitNotionFolderWithNew(String newNotionFolderName, Long notionFolderId, Long notionId) {
+        NotionFolder notionFolder = notionFolderRepository.findByIdOrThrow(notionFolderId);
+        Notion notion = notionRepository.findByIdOrThrow(notionId);
+        if (!notion.getNotionFolder().equals(notionFolder)) {
+            throw new IllegalArgumentException("정보 불일치 오류");
+        }
+
+        NotionFolder newNotionFolder = createNotionFolder(newNotionFolderName);
+        List<Notion> graph = NotionSearcher.searchDepthFirst(notion);
+        for (Notion n : graph) {
+            n.changeNotionFolder(newNotionFolder);
         }
     }
 
