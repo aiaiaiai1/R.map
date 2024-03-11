@@ -1,13 +1,12 @@
 package rmap.service;
 
-import org.junit.jupiter.api.Test;
-import rmap.entity.Notion;
-
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static rmap.EntityCreationSupporter.노션_생성;
 import static rmap.Fixtures.노션_폴더_음식;
+
+import java.util.List;
+import org.junit.jupiter.api.Test;
+import rmap.entity.Notion;
 
 class NotionSearcherTest {
 
@@ -60,7 +59,8 @@ class NotionSearcherTest {
         connect(notionE, notionD);
 
         // when
-        List<List<Notion>> graphs = NotionSearcher.convertToGraphs(List.of(notionA, notionB, notionC, notionD, notionE));
+        List<List<Notion>> graphs = NotionSearcher.convertToGraphs(
+                List.of(notionA, notionB, notionC, notionD, notionE));
 
         // then
         assertThat(graphs).hasSize(2);

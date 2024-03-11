@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import rmap.entity.NotionFolder;
 import rmap.request.NotionFolderRequest;
+import rmap.request.SplitNotionFolderRequest;
 import rmap.response.GraphResponse;
 import rmap.response.IdResponse;
 import rmap.response.MergingNotinFolderRequest;
@@ -68,6 +70,16 @@ public class NotionFolderController {
     public ResponseEntity<List<GraphResponse>> readGraphsInNotionFolder(@PathVariable("id") Long notionFolderId) {
         List<GraphResponse> responses = notionFolderService.readAllGraphs(notionFolderId);
         return ResponseEntity.ok().body(responses);
+    }
+
+    @PostMapping("/{id}")
+    public ResponseEntity<Void> s(
+            @PathVariable("id") Long notionFolderId,
+            @RequestParam Long notionId,
+            @RequestBody SplitNotionFolderRequest request
+    ) {
+        notionFolderService.splitNotionFolderWithNew(request.getName(), notionFolderId, notionId);
+        return ResponseEntity.ok().build();
     }
 
 }

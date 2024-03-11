@@ -32,28 +32,13 @@ class EdgeRepositoryTest extends RepositoryTest {
         supporter.엣지_저장(notionA, notionB, "");
         supporter.엣지_저장(notionB, notionA, "");
         supporter.엣지_저장(notionA, notionC, "");
+        supporter.엣지_저장(notionB, notionC, "");
 
         // when
         List<Edge> results = edgeRepository.findAllByNotionId(notionA.getId());
 
         // then
         assertThat(results).hasSize(3);
-    }
-
-    @Test
-    void 노션에_연결되어_있는_엣지를_가져온다() {
-        // given
-        Notion notionA = supporter.노션_저장("A", "", notionFolder);
-        Notion notionB = supporter.노션_저장("B", "", notionFolder);
-
-        supporter.엣지_저장(notionA, notionB, "");
-
-        // when
-        Edge result = edgeRepository.findByNotionIds(notionA.getId(), notionB.getId());
-
-        // then
-        assertThat(result.getSourceNotion()).isEqualTo(notionA);
-        assertThat(result.getTargetNotion()).isEqualTo(notionB);
     }
 
 }

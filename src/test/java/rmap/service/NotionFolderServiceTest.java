@@ -1,6 +1,7 @@
 package rmap.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -12,6 +13,7 @@ import static rmap.Fixtures.노션_폴더_알파벳;
 import static rmap.Fixtures.노션_폴더_음식;
 
 import java.util.List;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -73,6 +75,57 @@ class NotionFolderServiceTest extends ServiceTest {
         assertThat(notion1.getNotionFolder()).isEqualTo(newNotionFolder);
         assertThat(notion2.getNotionFolder()).isEqualTo(newNotionFolder);
         then(notionFolderRepository).should(times(2)).deleteById(any(Long.class));
+    }
+
+    @Nested
+    class 노션_폴더_분리 {
+
+        @Test
+        void 하나의_그래프를_새로운_노션_폴더로_분리한다() {
+            // given
+            Notion notionA = 노션_생성(1L, "A", "a", 노션_폴더_알파벳);
+            Notion notionB = 노션_생성(2L, "B", "과일", 노션_폴더_알파벳);
+            Notion notionC = 노션_생성(3L, "C", "과일", 노션_폴더_알파벳);
+
+            NotionFolder newNotionFolder = 노션_폴더_생성(1L, "new");
+
+            notionB.connect(notionC, "");
+            notionC.connect(notionB, "");
+
+            given(notionFolderRepository.save(any(NotionFolder.class))).willReturn(newNotionFolder);
+            given(notionFolderRepository.findByIdOrThrow(노션_폴더_알파벳.getId())).willReturn(노션_폴더_알파벳);
+            given(notionRepository.findByIdOrThrow(notionB.getId())).willReturn(notionB);
+
+            // when
+            notionFolderService.splitNotionFolderWithNew(newNotionFolder.getName(), 노션_폴더_알파벳.getId(), notionB.getId());
+
+            // then
+            assertThat(notionA.getNotionFolder()).isEqualTo(노션_폴더_알파벳);
+            assertThat(notionB.getNotionFolder()).isEqualTo(newNotionFolder);
+            assertThat(notionC.getNotionFolder()).isEqualTo(newNotionFolder);
+        }
+
+        @Test
+        void 노션폴더에_속하지_않는_그래프인_경우_예외가_발생한다() {
+            // given
+            Notion notionA = 노션_생성(1L, "A", "a", 노션_폴더_알파벳);
+            Notion notionB = 노션_생성(2L, "B", "과일", 노션_폴더_알파벳);
+            Notion notionC = 노션_생성(3L, "C", "과일", 노션_폴더_알파벳);
+
+            NotionFolder newNotionFolder = 노션_폴더_생성(1L, "new");
+
+            notionB.connect(notionC, "");
+            notionC.connect(notionB, "");
+
+            given(notionFolderRepository.findByIdOrThrow(노션_폴더_음식.getId())).willReturn(노션_폴더_음식);
+            given(notionRepository.findByIdOrThrow(notionB.getId())).willReturn(notionB);
+
+            // when, then
+            assertThatThrownBy(
+                    () -> notionFolderService.splitNotionFolderWithNew(newNotionFolder.getName(), 노션_폴더_음식.getId(),
+                            notionB.getId())
+            ).isInstanceOf(IllegalArgumentException.class);
+        }
     }
 
 
