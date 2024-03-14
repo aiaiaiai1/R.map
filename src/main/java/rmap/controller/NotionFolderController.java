@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import rmap.entity.NotionFolder;
+import rmap.request.EditNotionFolderNameRequest;
 import rmap.request.NotionFolderRequest;
 import rmap.request.SplitNotionFolderRequest;
 import rmap.response.GraphResponse;
@@ -73,12 +74,21 @@ public class NotionFolderController {
     }
 
     @PostMapping("/{id}")
-    public ResponseEntity<Void> s(
+    public ResponseEntity<Void> splitNotionFolder(
             @PathVariable("id") Long notionFolderId,
             @RequestParam Long notionId,
             @RequestBody SplitNotionFolderRequest request
     ) {
         notionFolderService.splitNotionFolderWithNew(request.getName(), notionFolderId, notionId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{id}")
+    public ResponseEntity<Void> editNotionFolderName(
+            @PathVariable("id") Long notionFolderId,
+            @RequestBody EditNotionFolderNameRequest request
+    ) {
+        notionFolderService.editNotionFolderName(notionFolderId, request.getName());
         return ResponseEntity.ok().build();
     }
 

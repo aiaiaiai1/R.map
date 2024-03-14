@@ -96,4 +96,8 @@ public class NotionFolderService {
         }
     }
 
+    public void editNotionFolderName(Long notionFolderId, String name) {
+        NotionFolder notionFolder = notionFolderRepository.findByIdOrThrow(notionFolderId);
+        notionFolder.changeName(name);
+    }
 }
