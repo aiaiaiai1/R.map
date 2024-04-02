@@ -8,6 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import rmap.entity.Edge;
 import rmap.entity.Notion;
 import rmap.entity.NotionFolder;
+import rmap.exception.BusinessRuleException;
+import rmap.exception.type.NotionFolderExceptionType;
 import rmap.repository.EdgeRepository;
 import rmap.repository.NotionFolderRepository;
 import rmap.repository.NotionRepository;
@@ -89,11 +91,20 @@ public class NotionFolderService {
             throw new IllegalArgumentException("정보 불일치 오류");
         }
 
-        NotionFolder newNotionFolder = createNotionFolder(newNotionFolderName);
         List<Notion> graph = NotionSearcher.searchDepthFirst(notion);
+        // 사이즈 ? 검사 대상으로 어떤걸 사용할까
+        if (graph.size() == notionRepository.findAllInNotionFolder(notionFolderId).size()) {
+            throw new BusinessRuleException(NotionFolderExceptionType.CAN_NOT_SPLIT);
+        }
+
+        NotionFolder newNotionFolder = createNotionFolder(newNotionFolderName);
         for (Notion n : graph) {
             n.changeNotionFolder(newNotionFolder);
         }
     }
 
+    public void editNotionFolderName(Long notionFolderId, String name) {
+        NotionFolder notionFolder = notionFolderRepository.findByIdOrThrow(notionFolderId);
+        notionFolder.changeName(name);
+    }
 }
