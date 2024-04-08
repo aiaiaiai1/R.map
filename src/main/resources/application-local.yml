@@ -19,3 +19,17 @@ spring:
     url: jdbc:h2:mem:db;MODE=MYSQL
     username: sa
     password:
+
+  mail:
+    host: smtp.gmail.com
+    port: 465
+    username: rmaprmap@gmail.com
+    password: kyam tiuu dkrm mcqp
+    auth: true
+    default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
