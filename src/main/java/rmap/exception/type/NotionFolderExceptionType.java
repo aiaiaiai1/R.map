@@ -11,8 +11,8 @@ public enum NotionFolderExceptionType implements ExceptionType {
     ),
     CAN_NOT_SPLIT(
             401,
-                    "노션 폴더를 분리 할 수 없습니다.",
-                    "노션폴더내애 그래프가 하나인 경우"
+            "노션 폴더를 분리 할 수 없습니다.",
+            "노션폴더내애 그래프가 하나인 경우"
     ),
     ;
 

@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import rmap.entity.User;
 import rmap.entity.UserAccount;
 import rmap.repository.UserAccountRepository;
@@ -54,6 +55,7 @@ public class SignUpService {
         verifiedEmailCash.put(email, email);
     }
 
+    @Transactional
     public void signUp(String email, String password) {
         validateAlreadyRegistered(email);
         if (!verifiedEmailCash.containsKey(email)) {
@@ -71,5 +73,6 @@ public class SignUpService {
             throw new IllegalArgumentException("이미 가입된 이메일 입니다.");
         }
     }
+
 
 }

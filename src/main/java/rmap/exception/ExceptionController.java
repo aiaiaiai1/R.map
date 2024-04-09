@@ -1,4 +1,4 @@
-package rmap;
+package rmap.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -6,8 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import rmap.exception.EntityNotFoundException;
-import rmap.exception.RmapException;
 import rmap.response.ErrorResponse;
 
 @RestControllerAdvice
