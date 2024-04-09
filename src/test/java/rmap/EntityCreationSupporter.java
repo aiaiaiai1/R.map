@@ -1,6 +1,5 @@
 package rmap;
 
-import java.time.LocalDateTime;
 import org.springframework.test.util.ReflectionTestUtils;
 import rmap.entity.Edge;
 import rmap.entity.Notion;
@@ -31,8 +30,8 @@ public class EntityCreationSupporter {
         return edge;
     }
 
-    public static UserAccount 유저_계정_생성(Long id, User user, String email, String password, LocalDateTime localDateTime) {
-        UserAccount userAccount = new UserAccount(user, email, password, localDateTime);
+    public static UserAccount 유저_계정_생성(Long id, User user, String email, String password) {
+        UserAccount userAccount = new UserAccount(user, email, password);
         ReflectionTestUtils.setField(userAccount, "id", id);
         return userAccount;
     }

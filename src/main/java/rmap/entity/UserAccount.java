@@ -39,6 +39,10 @@ public class UserAccount {
     @Column(columnDefinition = "datetime(3)", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
+    public UserAccount(User user, String email, String password) {
+        this(user, email, password, null);
+    }
+
     public UserAccount(User user, String email, String password, LocalDateTime createdAt) {
         this.user = user;
         this.email = email;

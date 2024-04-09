@@ -5,8 +5,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
+import static rmap.EntityCreationSupporter.유저_계정_생성;
+import static rmap.EntityCreationSupporter.유저_생성;
 
-import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.Nested;
@@ -16,10 +17,10 @@ import org.mockito.Mock;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.util.ReflectionTestUtils;
-import rmap.EntityCreationSupporter;
 import rmap.entity.User;
 import rmap.entity.UserAccount;
 import rmap.repository.UserAccountRepository;
+import rmap.repository.UserRepository;
 
 class SignUpServiceTest extends ServiceTest {
 
@@ -31,6 +32,9 @@ class SignUpServiceTest extends ServiceTest {
 
     @Mock
     UserAccountRepository userAccountRepository;
+
+    @Mock
+    UserRepository userRepository;
 
 
     @Nested
@@ -53,8 +57,8 @@ class SignUpServiceTest extends ServiceTest {
             String email = "test@test.com";
             String password = "test";
 
-            User user = EntityCreationSupporter.유저_생성(1L);
-            UserAccount userAccount = EntityCreationSupporter.유저_계정_생성(1L, user, email, password, LocalDateTime.now());
+            User user = 유저_생성(1L);
+            UserAccount userAccount = 유저_계정_생성(1L, user, email, password);
             given(userAccountRepository.findByEmail(email)).willReturn(Optional.of(userAccount));
 
             // when, then
@@ -119,45 +123,47 @@ class SignUpServiceTest extends ServiceTest {
             }
         }
 
-//        @Nested
-//        class 회원가입 {
-//
-//            @Test
-//            void 이메일_인증이_안된_경우_예외가_발생한다() {
-//                // given
-//                String email = "test@test.com";
-//
-//                // when, then
-//                assertThatThrownBy(() -> signUpService.signUp(email, "password"))
-//                        .isInstanceOf(IllegalArgumentException.class)
-//                        .hasMessage("인증되지 않았습니다");
-//            }
-//
-//            @Test
-//            void 이메일_인증이_잘된_경우() {
-//                // given
-//                String email = "test@test.com";
-//
-//                willDoNothing().given(javaMailSender).send(any(SimpleMailMessage.class));
-//                signUpService.sendAuthenticationTo(email);
-//
-//                Cache emailAuthenticationCodeCache = (Cache) ReflectionTestUtils.getField(signUpService,
-//                        "emailAuthenticationCodeCache");
-//                Map<String, String> cache = (Map) ReflectionTestUtils.getField(emailAuthenticationCodeCache, "cache");
-//                String code = cache.get(email);
-//
-//                assertThatThrownBy(() -> signUpService.signUp(email, "password"))
-//                        .isInstanceOf(IllegalArgumentException.class)
-//                        .hasMessage("인증되지 않았습니다");
-//
-//                signUpService.verifyAuthentication(email, code);
-//
-//                // when
-//                signUpService.signUp(email, "password");
-//
-//                // then
-//
-//            }
-//        }
+        @Nested
+        class 회원_가입 {
+
+            @Test
+            void 이메일_인증이_안된_경우_예외가_발생한다() {
+                // given
+                String email = "test@test.com";
+
+                // when, then
+                assertThatThrownBy(() -> signUpService.signUp(email, "password"))
+                        .isInstanceOf(IllegalArgumentException.class)
+                        .hasMessage("인증되지 않았습니다");
+            }
+
+            @Test
+            void 이메일_인증이_된_경우_회원_가입을_성공_한다() {
+                // given
+                String email = "test@test.com";
+                String password = "test";
+
+                User user = 유저_생성(1L);
+                UserAccount userAccount = 유저_계정_생성(1L, user, email, password);
+                willDoNothing().given(javaMailSender).send(any(SimpleMailMessage.class));
+                given(userAccountRepository.save(any(UserAccount.class))).willReturn(userAccount);
+                given(userRepository.save(any(User.class))).willReturn(user);
+                signUpService.sendAuthenticationTo(email);
+
+                Cache emailAuthenticationCodeCache = (Cache) ReflectionTestUtils.getField(signUpService,
+                        "emailAuthenticationCodeCache");
+                Map<String, String> cache = (Map) ReflectionTestUtils.getField(emailAuthenticationCodeCache, "cache");
+                String code = cache.get(email);
+
+                assertThatThrownBy(() -> signUpService.signUp(email, "password"))
+                        .isInstanceOf(IllegalArgumentException.class)
+                        .hasMessage("인증되지 않았습니다");
+
+                signUpService.verifyAuthentication(email, code);
+
+                // when, then
+                signUpService.signUp(email, "password");
+            }
+        }
     }
 }

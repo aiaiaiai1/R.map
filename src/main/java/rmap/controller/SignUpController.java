@@ -26,4 +26,11 @@ public class SignUpController {
         signUpService.verifyAuthentication(request.getEmail(), request.getCode());
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/user/welcome")
+    public ResponseEntity<Void> signUp(@Valid VerificationRequest request) {
+        signUpService.signUp(request.getEmail(), request.getCode());
+        return ResponseEntity.ok().build();
+    }
+
 }
