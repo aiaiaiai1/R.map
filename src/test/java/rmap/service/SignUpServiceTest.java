@@ -9,7 +9,6 @@ import static rmap.EntityCreationSupporter.유저_계정_생성;
 import static rmap.EntityCreationSupporter.유저_생성;
 
 import java.util.Map;
-import java.util.Optional;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -55,11 +54,7 @@ class SignUpServiceTest extends ServiceTest {
         void 이미_가입된_이메일이면_예외가_발생한다() {
             // given
             String email = "test@test.com";
-            String password = "test";
-
-            User user = 유저_생성(1L);
-            UserAccount userAccount = 유저_계정_생성(1L, user, email, password);
-            given(userAccountRepository.findByEmail(email)).willReturn(Optional.of(userAccount));
+            given(userAccountRepository.findByEmail(email)).willReturn(true);
 
             // when, then
             assertThatThrownBy(() -> signUpService.sendAuthenticationTo(email))
