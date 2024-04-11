@@ -17,7 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import rmap.entity.Edge;
 import rmap.entity.Notion;
-import rmap.exception.InvalidAcessException;
+import rmap.exception.EtcException;
 import rmap.repository.EdgeRepository;
 import rmap.repository.NotionFolderRepository;
 import rmap.repository.NotionRepository;
@@ -53,7 +53,7 @@ class NotionRelationServiceTest extends ServiceTest {
 
             // when, then
             assertThatThrownBy(() -> notionRelationService.editNotionRelations(1L, requests))
-                    .isInstanceOf(InvalidAcessException.class);
+                    .isInstanceOf(EtcException.class);
         }
 
         @Test

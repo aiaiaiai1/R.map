@@ -9,6 +9,8 @@ import rmap.entity.Edge;
 import rmap.entity.Notion;
 import rmap.entity.NotionFolder;
 import rmap.exception.BusinessRuleException;
+import rmap.exception.DataConsistencyException;
+import rmap.exception.type.DataConsistencyExceptionType;
 import rmap.exception.type.NotionFolderExceptionType;
 import rmap.repository.EdgeRepository;
 import rmap.repository.NotionFolderRepository;
@@ -88,7 +90,7 @@ public class NotionFolderService {
         NotionFolder notionFolder = notionFolderRepository.findByIdOrThrow(notionFolderId);
         Notion notion = notionRepository.findByIdOrThrow(notionId);
         if (!notion.getNotionFolder().equals(notionFolder)) {
-            throw new IllegalArgumentException("정보 불일치 오류");
+            throw new DataConsistencyException(DataConsistencyExceptionType.NOT_MATCH_NOTION_FOLDER_AND_NOTION);
         }
 
         List<Notion> graph = NotionSearcher.searchDepthFirst(notion);

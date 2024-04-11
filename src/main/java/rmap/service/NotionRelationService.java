@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import rmap.entity.Edge;
 import rmap.entity.Notion;
 import rmap.entity.NotionFolder;
-import rmap.exception.InvalidAcessException;
-import rmap.exception.type.InvalidAcessExceptionType;
+import rmap.exception.EtcException;
+import rmap.exception.type.EtcExceptionType;
 import rmap.repository.EdgeRepository;
 import rmap.repository.NotionFolderRepository;
 import rmap.repository.NotionRepository;
@@ -124,7 +124,7 @@ public class NotionRelationService {
 
     private void validateDuplicateIds(List<Long> ids) {
         if (ids.stream().distinct().count() != ids.size()) {
-            throw new InvalidAcessException(InvalidAcessExceptionType.DUPLICATE_IDS);
+            throw new EtcException(EtcExceptionType.DUPLICATE_SIZE);
         }
     }
 
