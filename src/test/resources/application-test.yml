@@ -28,7 +28,7 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: rmaprmap2024@gmail.com
-    password: thqa cgnw vdlu zifr
+    password: ${SMTP_PASSWORD}
     auth: true
     default-encoding: UTF-8
     properties:
