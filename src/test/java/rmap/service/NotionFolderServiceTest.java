@@ -19,6 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import rmap.entity.Notion;
 import rmap.entity.NotionFolder;
+import rmap.exception.DataConsistencyException;
 import rmap.repository.NotionFolderRepository;
 import rmap.repository.NotionRepository;
 import rmap.response.NotionCompactResponse;
@@ -124,7 +125,7 @@ class NotionFolderServiceTest extends ServiceTest {
             assertThatThrownBy(
                     () -> notionFolderService.splitNotionFolderWithNew(newNotionFolder.getName(), 노션_폴더_음식.getId(),
                             notionB.getId())
-            ).isInstanceOf(IllegalArgumentException.class);
+            ).isInstanceOf(DataConsistencyException.class);
         }
     }
 

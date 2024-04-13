@@ -1,10 +1,13 @@
 package rmap;
 
 import jakarta.persistence.EntityManager;
+import java.time.LocalDateTime;
 import org.springframework.stereotype.Component;
 import rmap.entity.Edge;
 import rmap.entity.Notion;
 import rmap.entity.NotionFolder;
+import rmap.entity.User;
+import rmap.entity.UserAccount;
 
 @Component
 public class EntityPersistenceSupporter {
@@ -31,6 +34,14 @@ public class EntityPersistenceSupporter {
         Edge edge = new Edge(soucreNotion, targetNotion, description);
         entityManager.persist(edge);
         return edge;
+    }
+
+    public UserAccount 유저_계정_저장(String email, String password) {
+        User user = new User();
+        entityManager.persist(user);
+        UserAccount userAccount = new UserAccount(user, email, password, LocalDateTime.now());
+        entityManager.persist(userAccount);
+        return userAccount;
     }
 
 }

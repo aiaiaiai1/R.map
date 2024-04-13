@@ -23,3 +23,17 @@ spring:
   sql:
     init:
       mode: never
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: rmaprmap2024@gmail.com
+    password: thqa cgnw vdlu zifr
+    auth: true
+    default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true

@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import rmap.exception.EtcException;
+import rmap.exception.type.EtcExceptionType;
 import rmap.request.BuildNotionRequest;
 import rmap.request.EditNotionRequest;
 import rmap.request.PatchRelatedNotionRequest;
@@ -78,7 +80,7 @@ public class NotionController {
     @DeleteMapping("/notion-relations")
     public ResponseEntity<Void> disconnectNotionRelation(@RequestParam List<Long> notionIds) {
         if (notionIds.size() != 2) {
-            throw new IllegalArgumentException("notion id's count is not 2");
+            throw new EtcException(EtcExceptionType.ILLEGAL_SIZE);
         }
         notionRelationService.disconnectNotionRelation(notionIds.get(0), notionIds.get(1));
 
