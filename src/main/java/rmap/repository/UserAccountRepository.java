@@ -16,7 +16,10 @@ public interface UserAccountRepository extends JpaRepository<UserAccount, Long> 
     @Query("select ua from UserAccount as ua where ua.email = :email and ua.password = :password")
     Optional<UserAccount> findByEmailAndPassword(String email, String password);
 
-    @Query(value = "select exists (select * from user_account as ua where ua.email = :email)",
-            nativeQuery = true)
-    boolean findByEmail(String email);
+//    @Query(value = "select exists (select * from user_account as ua where ua.email = :email)",
+//            nativeQuery = true)
+//    boolean findByEmail(String email);
+
+    @Query("select ua from UserAccount as ua where ua.email = :email")
+    Optional<UserAccount> findByEmail(String email);
 }

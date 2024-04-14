@@ -3,8 +3,10 @@ package rmap.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import jakarta.persistence.EntityManager;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import rmap.entity.UserAccount;
 
 class UserAccountRepositoryTest extends RepositoryTest {
 
@@ -22,10 +24,10 @@ class UserAccountRepositoryTest extends RepositoryTest {
         supporter.유저_계정_저장(email, password);
 
         // when
-        boolean result = userAccountRepository.findByEmail(email);
+        Optional<UserAccount> result = userAccountRepository.findByEmail(email);
 
         // then
-        assertThat(result).isTrue();
+        assertThat(result.isPresent()).isTrue();
     }
 
 }

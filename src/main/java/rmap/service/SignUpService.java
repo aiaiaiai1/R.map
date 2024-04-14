@@ -69,7 +69,7 @@ public class SignUpService {
     }
 
     private void validateAlreadyRegistered(String email) {
-        if (userAccountRepository.findByEmail(email)) {
+        if (userAccountRepository.findByEmail(email).isPresent()) {
             throw new IllegalArgumentException("이미 가입된 이메일 입니다.");
         }
     }
