@@ -22,6 +22,9 @@ public class Cache {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
+                if (createdAt.get(key) == null) {
+                    return;
+                }
                 if (System.currentTimeMillis() - createdAt.get(key) >= cachingTime) {
                     clearKey(key);
                 }
