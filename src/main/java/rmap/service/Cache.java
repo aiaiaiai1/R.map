@@ -7,8 +7,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Cache {
 
-    private final Map<String, String> cache = new ConcurrentHashMap();
-    private final Map<String, Long> createdAt = new ConcurrentHashMap();
+    private final Map<String, String> cache = new ConcurrentHashMap(10);
+    private final Map<String, Long> createdAt = new ConcurrentHashMap(10);
     private final Timer timer = new Timer();
     private final Long cachingTime;
 
