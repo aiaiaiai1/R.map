@@ -3,8 +3,9 @@ name: build & deploy to ec2
 on:
   workflow_dispatch:
   push:
-    branches: dev
-    branches: dev-fix
+    branches:
+        - dev
+        - dev-fix
 
 jobs:
   build:
