@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 import rmap.entity.UserAccount;
 import rmap.request.LoginRequest;
 import rmap.request.SendAuthenticationRequest;
+import rmap.request.SignUpRequest;
 import rmap.request.VerificationRequest;
 import rmap.service.SignUpService;
 
@@ -30,12 +31,12 @@ public class SignUpController {
 
     @PostMapping("/user/email/auth-check")
     public ResponseEntity<Void> verifyAuthentication(@Valid @RequestBody VerificationRequest request) {
-        signUpService.verifyAuthentication(request.getEmail(), request.getPassword());
+        signUpService.verifyAuthentication(request.getEmail(), request.getCode());
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/user/welcome")
-    public ResponseEntity<Void> signUp(@Valid @RequestBody VerificationRequest request) {
+    public ResponseEntity<Void> signUp(@Valid @RequestBody SignUpRequest request) {
         signUpService.signUp(request.getEmail(), request.getPassword());
         return ResponseEntity.ok().build();
     }
