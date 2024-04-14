@@ -30,13 +30,13 @@ public class SignUpController {
 
     @PostMapping("/user/email/auth-check")
     public ResponseEntity<Void> verifyAuthentication(@Valid @RequestBody VerificationRequest request) {
-        signUpService.verifyAuthentication(request.getEmail(), request.getCode());
+        signUpService.verifyAuthentication(request.getEmail(), request.getPassword());
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/user/welcome")
     public ResponseEntity<Void> signUp(@Valid @RequestBody VerificationRequest request) {
-        signUpService.signUp(request.getEmail(), request.getCode());
+        signUpService.signUp(request.getEmail(), request.getPassword());
         return ResponseEntity.ok().build();
     }
 

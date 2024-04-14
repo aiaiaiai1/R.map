@@ -11,11 +11,11 @@ public class VerificationRequest {
     @NotBlank(message = "email is blank")
     private String email;
 
-    @NotBlank(message = "code is blank")
-    private String code;
+    @NotBlank(message = "password is blank")
+    private String password;
 
-    public VerificationRequest(String email, String code) {
+    public VerificationRequest(String email, String password) {
         this.email = email;
-        this.code = code;
+        this.password = password;
     }
 }
