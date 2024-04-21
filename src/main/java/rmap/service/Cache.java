@@ -7,8 +7,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class Cache {
 
-    private final Map<String, String> cache = new ConcurrentHashMap();
-    private final Map<String, Long> createdAt = new ConcurrentHashMap();
+    private final Map<String, String> cache = new ConcurrentHashMap(10);
+    private final Map<String, Long> createdAt = new ConcurrentHashMap(10);
     private final Timer timer = new Timer();
     private final Long cachingTime;
 
@@ -22,6 +22,9 @@ public class Cache {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
+                if (createdAt.get(key) == null) {
+                    return;
+                }
                 if (System.currentTimeMillis() - createdAt.get(key) >= cachingTime) {
                     clearKey(key);
                 }
