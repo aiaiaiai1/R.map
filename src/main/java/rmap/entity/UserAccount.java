@@ -38,4 +38,8 @@ public class UserAccount {
         this.password = password;
         this.createdAt = createdAt;
     }
+
+    public Long getId() {
+        return id;
+    }
 }
