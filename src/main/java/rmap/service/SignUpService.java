@@ -1,15 +1,14 @@
 package rmap.service;
 
-import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import rmap.entity.User;
 import rmap.entity.UserAccount;
 import rmap.repository.UserAccountRepository;
-import rmap.repository.UserRepository;
+
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +18,6 @@ public class SignUpService {
     private final Cache emailAuthenticationCodeCache = new Cache(3 * 60 * 1000);
     private final Cache verifiedEmailCash = new Cache(1 * 60 * 1000);
     private final UserAccountRepository userAccountRepository;
-    private final UserRepository userRepository;
 
 
     public void sendAuthenticationTo(String email) {
@@ -61,10 +59,7 @@ public class SignUpService {
         if (!verifiedEmailCash.containsKey(email)) {
             throw new IllegalArgumentException("인증되지 않았습니다");
         }
-
-        User user = new User();
-        User savedUser = userRepository.save(user);
-        UserAccount userAccount = new UserAccount(savedUser, email, password);
+        UserAccount userAccount = new UserAccount(email, password);
         userAccountRepository.save(userAccount);
     }
 

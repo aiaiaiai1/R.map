@@ -4,8 +4,9 @@ import org.springframework.test.util.ReflectionTestUtils;
 import rmap.entity.Edge;
 import rmap.entity.Notion;
 import rmap.entity.NotionFolder;
-import rmap.entity.User;
 import rmap.entity.UserAccount;
+
+import java.time.LocalDateTime;
 
 public class EntityCreationSupporter {
 
@@ -30,16 +31,16 @@ public class EntityCreationSupporter {
         return edge;
     }
 
-    public static UserAccount 유저_계정_생성(Long id, User user, String email, String password) {
-        UserAccount userAccount = new UserAccount(user, email, password);
+    public static UserAccount 유저_계정_생성(Long id, String email, String password, LocalDateTime createdAt) {
+        UserAccount userAccount = new UserAccount(email, password, createdAt);
         ReflectionTestUtils.setField(userAccount, "id", id);
         return userAccount;
     }
 
-    public static User 유저_생성(Long id) {
-        User user = new User();
-        ReflectionTestUtils.setField(user, "id", id);
-        return user;
+    public static UserAccount 유저_계정_생성(Long id, String email, String password) {
+        UserAccount userAccount = new UserAccount(email, password);
+        ReflectionTestUtils.setField(userAccount, "id", id);
+        return userAccount;
     }
 
 }

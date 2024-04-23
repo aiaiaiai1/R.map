@@ -1,20 +1,13 @@
 package rmap.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import java.time.LocalDateTime;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -26,10 +19,6 @@ public class UserAccount {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", unique = true, nullable = false, updatable = false)
-    private User user;
-
     @Column(length = 150, nullable = false)
     private String email;
 
@@ -40,12 +29,11 @@ public class UserAccount {
     @Column(columnDefinition = "datetime(3)", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    public UserAccount(User user, String email, String password) {
-        this(user, email, password, null);
+    public UserAccount(String email, String password) {
+        this(email, password, null);
     }
 
-    public UserAccount(User user, String email, String password, LocalDateTime createdAt) {
-        this.user = user;
+    public UserAccount(String email, String password, LocalDateTime createdAt) {
         this.email = email;
         this.password = password;
         this.createdAt = createdAt;

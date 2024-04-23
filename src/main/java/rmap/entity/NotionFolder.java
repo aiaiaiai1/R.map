@@ -1,10 +1,6 @@
 package rmap.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +16,10 @@ public class NotionFolder {
 
     @Column(length = 100, nullable = false)
     private String name;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_account_id", nullable = false, updatable = false)
+    private UserAccount userAccount;
 
     public NotionFolder(String name) {
         this.name = name;
