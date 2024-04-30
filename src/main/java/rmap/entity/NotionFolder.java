@@ -23,17 +23,18 @@ public class NotionFolder {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false, updatable = false)
-    private User user;
+    private User owner;
 
     @Column(length = 100, nullable = false)
     private String name;
 
     public NotionFolder(User user, String name) {
-        this.user = user;
+        this.owner = user;
         this.name = name;
     }
 
     public void changeName(String name) {
         this.name = name;
     }
+
 }
