@@ -1,15 +1,14 @@
 package rmap.entity;
 
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static rmap.EntityCreationSupporter.노션_생성;
 import static rmap.EntityCreationSupporter.노션_폴더_생성;
 import static rmap.Fixtures.유저;
+
+import java.util.List;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 class SourceEdgesTest {
 

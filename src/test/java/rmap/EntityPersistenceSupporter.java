@@ -1,13 +1,12 @@
 package rmap;
 
 import jakarta.persistence.EntityManager;
+import java.time.LocalDateTime;
 import org.springframework.stereotype.Component;
 import rmap.entity.Edge;
 import rmap.entity.Notion;
 import rmap.entity.NotionFolder;
 import rmap.entity.User;
-
-import java.time.LocalDateTime;
 
 @Component
 public class EntityPersistenceSupporter {

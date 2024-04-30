@@ -1,5 +1,6 @@
 package rmap.service;
 
+import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -7,8 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import rmap.entity.User;
 import rmap.repository.UserRepository;
-
-import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor

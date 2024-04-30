@@ -9,7 +9,9 @@ import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.times;
 import static rmap.EntityCreationSupporter.노션_생성;
 import static rmap.EntityCreationSupporter.노션_폴더_생성;
-import static rmap.Fixtures.*;
+import static rmap.Fixtures.노션_폴더_알파벳;
+import static rmap.Fixtures.노션_폴더_음식;
+import static rmap.Fixtures.유저;
 
 import java.util.List;
 import org.junit.jupiter.api.Nested;
@@ -58,7 +60,7 @@ class NotionFolderServiceTest extends ServiceTest {
         Notion notion1 = 노션_생성(1L, "A", "a", 노션_폴더_알파벳);
         Notion notion2 = 노션_생성(2L, "사과", "과일", 노션_폴더_음식);
 
-        NotionFolder newNotionFolder = 노션_폴더_생성(1L, 유저,"짬뽕");
+        NotionFolder newNotionFolder = 노션_폴더_생성(1L, 유저, "짬뽕");
 
         given(notionFolderRepository.save(any(NotionFolder.class))).willReturn(newNotionFolder);
         given(notionRepository.findAllInNotionFolder(노션_폴더_알파벳.getId())).willReturn(List.of(notion1));
@@ -87,7 +89,7 @@ class NotionFolderServiceTest extends ServiceTest {
             Notion notionB = 노션_생성(2L, "B", "과일", 노션_폴더_알파벳);
             Notion notionC = 노션_생성(3L, "C", "과일", 노션_폴더_알파벳);
 
-            NotionFolder newNotionFolder = 노션_폴더_생성(1L, 유저,"new");
+            NotionFolder newNotionFolder = 노션_폴더_생성(1L, 유저, "new");
 
             notionB.connect(notionC, "");
             notionC.connect(notionB, "");
@@ -112,7 +114,7 @@ class NotionFolderServiceTest extends ServiceTest {
             Notion notionB = 노션_생성(2L, "B", "과일", 노션_폴더_알파벳);
             Notion notionC = 노션_생성(3L, "C", "과일", 노션_폴더_알파벳);
 
-            NotionFolder newNotionFolder = 노션_폴더_생성(1L, 유저,"new");
+            NotionFolder newNotionFolder = 노션_폴더_생성(1L, 유저, "new");
 
             notionB.connect(notionC, "");
             notionC.connect(notionB, "");

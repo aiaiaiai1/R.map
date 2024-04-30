@@ -1,10 +1,10 @@
 package rmap;
 
-import rmap.entity.NotionFolder;
-import rmap.entity.User;
-
 import static rmap.EntityCreationSupporter.노션_폴더_생성;
 import static rmap.EntityCreationSupporter.유저_생성;
+
+import rmap.entity.NotionFolder;
+import rmap.entity.User;
 
 public class Fixtures {
 

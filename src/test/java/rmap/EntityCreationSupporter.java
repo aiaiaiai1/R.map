@@ -1,12 +1,11 @@
 package rmap;
 
+import java.time.LocalDateTime;
 import org.springframework.test.util.ReflectionTestUtils;
 import rmap.entity.Edge;
 import rmap.entity.Notion;
 import rmap.entity.NotionFolder;
 import rmap.entity.User;
-
-import java.time.LocalDateTime;
 
 public class EntityCreationSupporter {
 
