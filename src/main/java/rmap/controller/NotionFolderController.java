@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import rmap.entity.NotionFolder;
+import rmap.entity.User;
+import rmap.global.Logined;
 import rmap.request.EditNotionFolderNameRequest;
 import rmap.request.NotionFolderRequest;
 import rmap.request.SplitNotionFolderRequest;
@@ -33,8 +35,10 @@ public class NotionFolderController {
     private final NotionFolderService notionFolderService;
 
     @GetMapping
-    public ResponseEntity<List<NotionFolderCompactResponse>> readNotionFolders() {
-        List<NotionFolder> notionFolders = notionFolderService.readAllNotionFolders();
+    public ResponseEntity<List<NotionFolderCompactResponse>> readNotionFolders(
+            @Logined User user
+    ) {
+        List<NotionFolder> notionFolders = notionFolderService.readAllNotionFoldersOf(user);
         List<NotionFolderCompactResponse> responses = notionFolders.stream()
                 .map(NotionFolderCompactResponse::new)
                 .toList();
@@ -42,8 +46,11 @@ public class NotionFolderController {
     }
 
     @PostMapping
-    public ResponseEntity<IdResponse> createNotionFolder(@RequestBody @Valid NotionFolderRequest request) {
-        NotionFolder notionFolder = notionFolderService.createNotionFolder(request.getName());
+    public ResponseEntity<IdResponse> createNotionFolder(
+            @Logined User user,
+            @RequestBody @Valid NotionFolderRequest request
+    ) {
+        NotionFolder notionFolder = notionFolderService.createNotionFolder(user, request.getName());
         return ResponseEntity.created(URI.create("/notionFolders/" + notionFolder.getId()))
                 .body(new IdResponse(notionFolder.getId()));
     }
@@ -76,11 +83,12 @@ public class NotionFolderController {
 
     @PostMapping("/{id}")
     public ResponseEntity<Void> splitNotionFolder(
+            @Logined User user,
             @PathVariable("id") Long notionFolderId,
             @RequestParam Long notionId,
             @RequestBody SplitNotionFolderRequest request
     ) {
-        notionFolderService.splitNotionFolderWithNew(request.getName(), notionFolderId, notionId);
+        notionFolderService.splitNotionFolderWithNew(user, request.getName(), notionFolderId, notionId);
         return ResponseEntity.ok().build();
     }
 

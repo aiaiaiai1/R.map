@@ -37,4 +37,8 @@ public class NotionFolder {
         this.name = name;
     }
 
+    public boolean isOwner(User user) {
+        return this.owner.equals(user);
+    }
+
 }
