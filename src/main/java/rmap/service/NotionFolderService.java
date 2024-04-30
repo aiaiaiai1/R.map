@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import rmap.entity.Edge;
 import rmap.entity.Notion;
 import rmap.entity.NotionFolder;
+import rmap.entity.User;
 import rmap.exception.BusinessRuleException;
 import rmap.exception.DataConsistencyException;
 import rmap.exception.type.DataConsistencyExceptionType;
@@ -26,13 +27,54 @@ public class NotionFolderService {
     private final NotionRepository notionRepository;
     private final EdgeRepository edgeRepository;
 
-    public List<NotionFolder> readAllNotionFolders() {
-        return notionFolderRepository.findAll();
+    public List<NotionFolder> readAllNotionFoldersOf(User loginedUser) {
+        return notionFolderRepository.findAllOf(loginedUser.getId());
     }
 
-    public NotionFolder createNotionFolder(String name) {
-        NotionFolder notionFolder = new NotionFolder(null, name);
+    public NotionFolder createNotionFolder(User loginedUser, String notionFolderName) {
+        NotionFolder notionFolder = new NotionFolder(loginedUser, notionFolderName);
         return notionFolderRepository.save(notionFolder);
+    }
+
+    @Transactional
+    public void splitNotionFolderWithNew(
+            User loginedUser, String newNotionFolderName, Long notionFolderId, Long targetNotionId
+    ) {
+        NotionFolder notionFolder = notionFolderRepository.findByIdOrThrow(notionFolderId);
+        validateNotionFolderOwner(notionFolder, loginedUser);
+
+        Notion notion = notionRepository.findByIdOrThrow(targetNotionId);
+        if (!notion.getNotionFolder().equals(notionFolder)) {
+            throw new DataConsistencyException(DataConsistencyExceptionType.NOT_MATCH_NOTION_FOLDER_AND_NOTION);
+        }
+
+        List<Notion> graph = NotionSearcher.searchDepthFirst(notion);
+        // 사이즈 ? 검사 대상으로 어떤걸 사용할까
+        if (graph.size() == notionRepository.findAllInNotionFolder(notionFolderId).size()) {
+            throw new BusinessRuleException(NotionFolderExceptionType.CAN_NOT_SPLIT);
+        }
+
+        NotionFolder newNotionFolder = createNotionFolder(loginedUser, newNotionFolderName);
+        for (Notion n : graph) {
+            n.changeNotionFolder(newNotionFolder);
+        }
+    }
+
+    @Transactional
+    public void mergeNotionFolderWithNew(User loginedUser, String newNotionFolderName, List<Long> targetNotionFolderIds) {
+        NotionFolder newNotionFolder = createNotionFolder(loginedUser, newNotionFolderName);
+        changeNotionFoldersToNew(loginedUser, newNotionFolder, targetNotionFolderIds);
+    }
+
+    private void changeNotionFoldersToNew(User loginedUser, NotionFolder newNotionFolder, List<Long> targetNotionFolderIds) {
+        for (Long id : targetNotionFolderIds) {
+            NotionFolder notionFolder = notionFolderRepository.findByIdOrThrow(id);
+            validateNotionFolderOwner(notionFolder, loginedUser);
+            List<Notion> notions = notionRepository.findAllInNotionFolder(id);
+            notions.stream()
+                    .forEach(n -> n.changeNotionFolder(newNotionFolder));
+            notionFolderRepository.deleteById(id);
+        }
     }
 
     @Transactional
@@ -70,38 +112,9 @@ public class NotionFolderService {
                 .toList();
     }
 
-    @Transactional
-    public void mergeNotionFolderWithNew(String newNotionFolderName, List<Long> notionFolderIds) {
-        NotionFolder newNotionFolder = createNotionFolder(newNotionFolderName);
-        changeNotionFoldersTo(newNotionFolder, notionFolderIds);
-    }
-
-    private void changeNotionFoldersTo(NotionFolder notionFolder, List<Long> notionFolderIds) {
-        for (Long id : notionFolderIds) {
-            List<Notion> notions = notionRepository.findAllInNotionFolder(id);
-            notions.stream()
-                    .forEach(n -> n.changeNotionFolder(notionFolder));
-            notionFolderRepository.deleteById(id);
-        }
-    }
-
-    @Transactional
-    public void splitNotionFolderWithNew(String newNotionFolderName, Long notionFolderId, Long notionId) {
-        NotionFolder notionFolder = notionFolderRepository.findByIdOrThrow(notionFolderId);
-        Notion notion = notionRepository.findByIdOrThrow(notionId);
-        if (!notion.getNotionFolder().equals(notionFolder)) {
-            throw new DataConsistencyException(DataConsistencyExceptionType.NOT_MATCH_NOTION_FOLDER_AND_NOTION);
-        }
-
-        List<Notion> graph = NotionSearcher.searchDepthFirst(notion);
-        // 사이즈 ? 검사 대상으로 어떤걸 사용할까
-        if (graph.size() == notionRepository.findAllInNotionFolder(notionFolderId).size()) {
-            throw new BusinessRuleException(NotionFolderExceptionType.CAN_NOT_SPLIT);
-        }
-
-        NotionFolder newNotionFolder = createNotionFolder(newNotionFolderName);
-        for (Notion n : graph) {
-            n.changeNotionFolder(newNotionFolder);
+    private void validateNotionFolderOwner(NotionFolder notionFolder, User loginedUser) {
+        if (!notionFolder.isOwner(loginedUser)) {
+            throw new IllegalArgumentException("권한이 없습니다.");
         }
     }
 

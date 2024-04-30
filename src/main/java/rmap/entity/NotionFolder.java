@@ -28,9 +28,9 @@ public class NotionFolder {
     @Column(length = 100, nullable = false)
     private String name;
 
-    public NotionFolder(User user, String name) {
-        this.owner = user;
-        this.name = name;
+    public NotionFolder(User creator, String notionFolderName) {
+        this.owner = creator;
+        this.name = notionFolderName;
     }
 
     public void changeName(String name) {

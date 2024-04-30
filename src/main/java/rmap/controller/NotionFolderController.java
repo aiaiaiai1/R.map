@@ -70,8 +70,11 @@ public class NotionFolderController {
     }
 
     @PostMapping("/merge")
-    public ResponseEntity<Void> mergeNotionFolder(@RequestBody MergingNotinFolderRequest request) {
-        notionFolderService.mergeNotionFolderWithNew(request.getName(), request.getNotionFolderIds());
+    public ResponseEntity<Void> mergeNotionFolder(
+            @Logined User user,
+            @RequestBody MergingNotinFolderRequest request
+    ) {
+        notionFolderService.mergeNotionFolderWithNew(user, request.getName(), request.getNotionFolderIds());
         return ResponseEntity.ok().build();
     }
 

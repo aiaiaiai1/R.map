@@ -7,7 +7,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 import static rmap.EntityCreationSupporter.노션_생성;
-import static rmap.Fixtures.노션_폴더_알파벳;
+import static rmap.Fixtures.알맵이의_노션_폴더_알파벳;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +43,7 @@ class NotionRelationServiceTest extends ServiceTest {
         @Test
         void request에서_여러개의_노션_중_id_중복이_존재하는_경우_예외가_발생한다() {
             // given
-            Notion notionA = 노션_생성(1L, "A", "", 노션_폴더_알파벳);
+            Notion notionA = 노션_생성(1L, "A", "", 알맵이의_노션_폴더_알파벳);
 
             List<PatchRelatedNotionRequest> requests = new ArrayList<>();
             requests.add(new PatchRelatedNotionRequest(1L, "", ""));
@@ -59,11 +59,11 @@ class NotionRelationServiceTest extends ServiceTest {
         @Test
         void 하나의_노션에서_여러개의_연결관계를_수정한다() {
             // given
-            Notion notionA = 노션_생성(1L, "A", "", 노션_폴더_알파벳);
-            Notion notionB = 노션_생성(2L, "B", "", 노션_폴더_알파벳);
-            Notion notionC = 노션_생성(3L, "C", "", 노션_폴더_알파벳);
-            Notion notionD = 노션_생성(4L, "D", "", 노션_폴더_알파벳);
-            Notion notionE = 노션_생성(5L, "E", "", 노션_폴더_알파벳);
+            Notion notionA = 노션_생성(1L, "A", "", 알맵이의_노션_폴더_알파벳);
+            Notion notionB = 노션_생성(2L, "B", "", 알맵이의_노션_폴더_알파벳);
+            Notion notionC = 노션_생성(3L, "C", "", 알맵이의_노션_폴더_알파벳);
+            Notion notionD = 노션_생성(4L, "D", "", 알맵이의_노션_폴더_알파벳);
+            Notion notionE = 노션_생성(5L, "E", "", 알맵이의_노션_폴더_알파벳);
              /*
                 A - <B> - E
                     |    |
@@ -117,17 +117,17 @@ class NotionRelationServiceTest extends ServiceTest {
     void 관계를_맺는_새로운_노션을_생셩한다() {
         // given
 
-        Notion relatedNotion = 노션_생성(1L, "B", "b", 노션_폴더_알파벳);
+        Notion relatedNotion = 노션_생성(1L, "B", "b", 알맵이의_노션_폴더_알파벳);
         BuildNotionRequest request = new BuildNotionRequest(
-                노션_폴더_알파벳.getId(),
+                알맵이의_노션_폴더_알파벳.getId(),
                 "A",
                 "a",
                 new RelatedNotionInfo(relatedNotion.getId(), "", "")
         );
 
-        Notion newNotion = 노션_생성(2L, "A", "a", 노션_폴더_알파벳);
+        Notion newNotion = 노션_생성(2L, "A", "a", 알맵이의_노션_폴더_알파벳);
 
-        given(notionFolderRepository.findByIdOrThrow(노션_폴더_알파벳.getId())).willReturn(노션_폴더_알파벳);
+        given(notionFolderRepository.findByIdOrThrow(알맵이의_노션_폴더_알파벳.getId())).willReturn(알맵이의_노션_폴더_알파벳);
         given(notionRepository.findByIdOrThrow(relatedNotion.getId())).willReturn(relatedNotion);
         given(notionRepository.save(any(Notion.class))).willReturn(newNotion);
         given(edgeRepository.save(any(Edge.class))).willReturn(null);

@@ -9,9 +9,9 @@ import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.times;
 import static rmap.EntityCreationSupporter.노션_생성;
 import static rmap.EntityCreationSupporter.노션_폴더_생성;
-import static rmap.Fixtures.노션_폴더_알파벳;
-import static rmap.Fixtures.노션_폴더_음식;
-import static rmap.Fixtures.유저;
+import static rmap.Fixtures.알맵이;
+import static rmap.Fixtures.알맵이의_노션_폴더_알파벳;
+import static rmap.Fixtures.알맵이의_노션_폴더_음식;
 
 import java.util.List;
 import org.junit.jupiter.api.Nested;
@@ -20,6 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import rmap.entity.Notion;
 import rmap.entity.NotionFolder;
+import rmap.entity.User;
 import rmap.exception.DataConsistencyException;
 import rmap.repository.NotionFolderRepository;
 import rmap.repository.NotionRepository;
@@ -39,14 +40,14 @@ class NotionFolderServiceTest extends ServiceTest {
     @Test
     void 노션_폴더_정보_조회시_노션은_사전순으로_조회한다() {
         // given
-        Notion 노션_사과 = 노션_생성(1L, "사과", "", 노션_폴더_음식);
-        Notion 노션_배 = 노션_생성(2L, "배", "", 노션_폴더_음식);
+        Notion 노션_사과 = 노션_생성(1L, "사과", "", 알맵이의_노션_폴더_음식);
+        Notion 노션_배 = 노션_생성(2L, "배", "", 알맵이의_노션_폴더_음식);
 
-        given(notionFolderRepository.findByIdOrThrow(노션_폴더_음식.getId())).willReturn(노션_폴더_음식);
-        given(notionRepository.findAllInNotionFolder(노션_폴더_음식.getId())).willReturn(List.of(노션_사과, 노션_배));
+        given(notionFolderRepository.findByIdOrThrow(알맵이의_노션_폴더_음식.getId())).willReturn(알맵이의_노션_폴더_음식);
+        given(notionRepository.findAllInNotionFolder(알맵이의_노션_폴더_음식.getId())).willReturn(List.of(노션_사과, 노션_배));
 
         // when
-        NotionFolderResponse response = notionFolderService.readNotionFolderInfo(노션_폴더_음식.getId());
+        NotionFolderResponse response = notionFolderService.readNotionFolderInfo(알맵이의_노션_폴더_음식.getId());
 
         // then
         List<NotionCompactResponse> results = response.getNotions();
@@ -57,20 +58,23 @@ class NotionFolderServiceTest extends ServiceTest {
     @Test
     void 기존의_노션_폴더_여러개를_새로운_노션_폴더_한개로_합친다() {
         // given
-        Notion notion1 = 노션_생성(1L, "A", "a", 노션_폴더_알파벳);
-        Notion notion2 = 노션_생성(2L, "사과", "과일", 노션_폴더_음식);
+        Notion notion1 = 노션_생성(1L, "A", "a", 알맵이의_노션_폴더_알파벳);
+        Notion notion2 = 노션_생성(2L, "사과", "과일", 알맵이의_노션_폴더_음식);
 
-        NotionFolder newNotionFolder = 노션_폴더_생성(1L, 유저, "짬뽕");
+        NotionFolder newNotionFolder = 노션_폴더_생성(1L, 알맵이, "짬뽕");
 
         given(notionFolderRepository.save(any(NotionFolder.class))).willReturn(newNotionFolder);
-        given(notionRepository.findAllInNotionFolder(노션_폴더_알파벳.getId())).willReturn(List.of(notion1));
-        given(notionRepository.findAllInNotionFolder(노션_폴더_음식.getId())).willReturn(List.of(notion2));
+        given(notionFolderRepository.findByIdOrThrow(알맵이의_노션_폴더_알파벳.getId())).willReturn(알맵이의_노션_폴더_알파벳);
+        given(notionFolderRepository.findByIdOrThrow(알맵이의_노션_폴더_음식.getId())).willReturn(알맵이의_노션_폴더_음식);
+        given(notionRepository.findAllInNotionFolder(알맵이의_노션_폴더_알파벳.getId())).willReturn(List.of(notion1));
+        given(notionRepository.findAllInNotionFolder(알맵이의_노션_폴더_음식.getId())).willReturn(List.of(notion2));
         willDoNothing().given(notionFolderRepository).deleteById(any(Long.class));
 
         // when
         notionFolderService.mergeNotionFolderWithNew(
+                알맵이,
                 "new",
-                List.of(노션_폴더_음식.getId(), 노션_폴더_알파벳.getId())
+                List.of(알맵이의_노션_폴더_음식.getId(), 알맵이의_노션_폴더_알파벳.getId())
         );
 
         // then
@@ -85,49 +89,56 @@ class NotionFolderServiceTest extends ServiceTest {
         @Test
         void 하나의_그래프를_새로운_노션_폴더로_분리한다() {
             // given
-            Notion notionA = 노션_생성(1L, "A", "a", 노션_폴더_알파벳);
-            Notion notionB = 노션_생성(2L, "B", "과일", 노션_폴더_알파벳);
-            Notion notionC = 노션_생성(3L, "C", "과일", 노션_폴더_알파벳);
+            Notion notionA = 노션_생성(1L, "A", "a", 알맵이의_노션_폴더_알파벳);
+            Notion notionB = 노션_생성(2L, "B", "과일", 알맵이의_노션_폴더_알파벳);
+            Notion notionC = 노션_생성(3L, "C", "과일", 알맵이의_노션_폴더_알파벳);
 
-            NotionFolder newNotionFolder = 노션_폴더_생성(1L, 유저, "new");
+            User user = 알맵이의_노션_폴더_알파벳.getOwner();
+
+            NotionFolder newNotionFolder = 노션_폴더_생성(1L, user, "new");
 
             notionB.connect(notionC, "");
             notionC.connect(notionB, "");
 
             given(notionFolderRepository.save(any(NotionFolder.class))).willReturn(newNotionFolder);
-            given(notionFolderRepository.findByIdOrThrow(노션_폴더_알파벳.getId())).willReturn(노션_폴더_알파벳);
+            given(notionFolderRepository.findByIdOrThrow(알맵이의_노션_폴더_알파벳.getId())).willReturn(알맵이의_노션_폴더_알파벳);
             given(notionRepository.findByIdOrThrow(notionB.getId())).willReturn(notionB);
 
             // when
-            notionFolderService.splitNotionFolderWithNew(newNotionFolder.getName(), 노션_폴더_알파벳.getId(), notionB.getId());
+            notionFolderService.splitNotionFolderWithNew(user, newNotionFolder.getName(), 알맵이의_노션_폴더_알파벳.getId(),
+                    notionB.getId());
 
             // then
-            assertThat(notionA.getNotionFolder()).isEqualTo(노션_폴더_알파벳);
+            assertThat(notionA.getNotionFolder()).isEqualTo(알맵이의_노션_폴더_알파벳);
             assertThat(notionB.getNotionFolder()).isEqualTo(newNotionFolder);
             assertThat(notionC.getNotionFolder()).isEqualTo(newNotionFolder);
         }
 
         @Test
-        void 노션폴더에_속하지_않는_그래프인_경우_예외가_발생한다() {
+        void 노션_폴더에_속하지_않는_그래프인_경우_예외가_발생한다() {
             // given
-            Notion notionA = 노션_생성(1L, "A", "a", 노션_폴더_알파벳);
-            Notion notionB = 노션_생성(2L, "B", "과일", 노션_폴더_알파벳);
-            Notion notionC = 노션_생성(3L, "C", "과일", 노션_폴더_알파벳);
+            Notion notionA = 노션_생성(1L, "A", "a", 알맵이의_노션_폴더_알파벳);
+            Notion notionB = 노션_생성(2L, "B", "과일", 알맵이의_노션_폴더_알파벳);
+            Notion notionC = 노션_생성(3L, "C", "과일", 알맵이의_노션_폴더_알파벳);
 
-            NotionFolder newNotionFolder = 노션_폴더_생성(1L, 유저, "new");
+            User user = 알맵이의_노션_폴더_알파벳.getOwner();
+
+            NotionFolder newNotionFolder = 노션_폴더_생성(1L, user, "new");
 
             notionB.connect(notionC, "");
             notionC.connect(notionB, "");
 
-            given(notionFolderRepository.findByIdOrThrow(노션_폴더_음식.getId())).willReturn(노션_폴더_음식);
+            given(notionFolderRepository.findByIdOrThrow(알맵이의_노션_폴더_음식.getId())).willReturn(알맵이의_노션_폴더_음식);
             given(notionRepository.findByIdOrThrow(notionB.getId())).willReturn(notionB);
 
             // when, then
             assertThatThrownBy(
-                    () -> notionFolderService.splitNotionFolderWithNew(newNotionFolder.getName(), 노션_폴더_음식.getId(),
-                            notionB.getId())
+                    () -> notionFolderService.splitNotionFolderWithNew(
+                            user, newNotionFolder.getName(), 알맵이의_노션_폴더_음식.getId(), notionB.getId()
+                    )
             ).isInstanceOf(DataConsistencyException.class);
         }
+
     }
 
 

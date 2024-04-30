@@ -2,7 +2,7 @@ package rmap.entity;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static rmap.EntityCreationSupporter.노션_폴더_생성;
-import static rmap.Fixtures.유저;
+import static rmap.Fixtures.알맵이;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,7 @@ class NotionTest {
         @Test
         void 노션을_생성한다() {
             // given
-            NotionFolder notionFolder = 노션_폴더_생성(1L, 유저, "폴더");
+            NotionFolder notionFolder = 노션_폴더_생성(1L, 알맵이, "폴더");
 
             // when, then
             Notion notion = new Notion("개념", "내용", notionFolder);
@@ -34,7 +34,7 @@ class NotionTest {
         @Test
         void 노션_폴더의_id가_null_인_경우_예외가_발생한다() {
             // given
-            NotionFolder notionFolder = 노션_폴더_생성(null, 유저, "폴더");
+            NotionFolder notionFolder = 노션_폴더_생성(null, 알맵이, "폴더");
 
             // when, then
             assertThatThrownBy(() -> new Notion("개념", "내용", notionFolder))
