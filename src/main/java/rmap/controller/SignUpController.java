@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttribute;
+import rmap.entity.User;
 import rmap.request.LoginRequest;
 import rmap.request.SendAuthenticationRequest;
 import rmap.request.SignUpRequest;
@@ -42,9 +43,9 @@ public class SignUpController {
 
     @PostMapping("/user/hello")
     public ResponseEntity<Void> logIn(@Valid @RequestBody LoginRequest loginRequest, HttpServletRequest request) {
-        Long userAccountId = signUpService.logIn(loginRequest.getEmail(), loginRequest.getPassword());
+        User user = signUpService.logIn(loginRequest.getEmail(), loginRequest.getPassword());
         HttpSession session = request.getSession();
-        session.setAttribute("logined", userAccountId);
+        session.setAttribute("logined", user);
         return ResponseEntity.ok().build();
     }
 

@@ -68,9 +68,9 @@ public class SignUpService {
         }
     }
 
-    public Long logIn(String email, String password) {
-        User userAccount = userAccountRepository.findByEmailAndPasswordOrThrow(email, password);
-        return userAccount.getId();
+    public User logIn(String email, String password) {
+        User user = userAccountRepository.findByEmailAndPasswordOrThrow(email, password);
+        return user;
     }
 
 

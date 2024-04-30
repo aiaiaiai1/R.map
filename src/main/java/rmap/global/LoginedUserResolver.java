@@ -29,7 +29,7 @@ public class LoginedUserResolver implements HandlerMethodArgumentResolver {
         if (session == null) {
             throw new IllegalStateException("세션이 만료되었습니다.");
         }
-        Long userId = (Long) session.getAttribute("logined");
-        return userId;
+        User user = (User) session.getAttribute("logined");
+        return user;
     }
 }
