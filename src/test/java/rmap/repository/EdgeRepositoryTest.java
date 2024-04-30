@@ -1,14 +1,16 @@
 package rmap.repository;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import rmap.entity.Edge;
 import rmap.entity.Notion;
 import rmap.entity.NotionFolder;
+import rmap.entity.User;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class EdgeRepositoryTest extends RepositoryTest {
 
@@ -19,7 +21,8 @@ class EdgeRepositoryTest extends RepositoryTest {
 
     @BeforeEach
     void initData() {
-        notionFolder = supporter.노션_폴더_저장("알파벳");
+        User user = supporter.유저_저장("test@gmail.com", "test");
+        notionFolder = supporter.노션_폴더_저장(user, "알파벳");
     }
 
     @Test

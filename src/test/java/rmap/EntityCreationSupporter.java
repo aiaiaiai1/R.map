@@ -4,7 +4,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import rmap.entity.Edge;
 import rmap.entity.Notion;
 import rmap.entity.NotionFolder;
-import rmap.entity.UserAccount;
+import rmap.entity.User;
 
 import java.time.LocalDateTime;
 
@@ -19,8 +19,8 @@ public class EntityCreationSupporter {
         return notion;
     }
 
-    public static NotionFolder 노션_폴더_생성(Long id, String name) {
-        NotionFolder notionFolder = new NotionFolder(name);
+    public static NotionFolder 노션_폴더_생성(Long id, User user, String name) {
+        NotionFolder notionFolder = new NotionFolder(user, name);
         ReflectionTestUtils.setField(notionFolder, "id", id);
         return notionFolder;
     }
@@ -31,16 +31,16 @@ public class EntityCreationSupporter {
         return edge;
     }
 
-    public static UserAccount 유저_계정_생성(Long id, String email, String password, LocalDateTime createdAt) {
-        UserAccount userAccount = new UserAccount(email, password, createdAt);
-        ReflectionTestUtils.setField(userAccount, "id", id);
-        return userAccount;
+    public static User 유저_생성(Long id, String email, String password, LocalDateTime createdAt) {
+        User user = new User(email, password, createdAt);
+        ReflectionTestUtils.setField(user, "id", id);
+        return user;
     }
 
-    public static UserAccount 유저_계정_생성(Long id, String email, String password) {
-        UserAccount userAccount = new UserAccount(email, password);
-        ReflectionTestUtils.setField(userAccount, "id", id);
-        return userAccount;
+    public static User 유저_생성(Long id, String email, String password) {
+        User user = new User(email, password);
+        ReflectionTestUtils.setField(user, "id", id);
+        return user;
     }
 
 }

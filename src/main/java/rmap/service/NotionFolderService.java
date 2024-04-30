@@ -1,7 +1,5 @@
 package rmap.service;
 
-import java.util.Comparator;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +16,9 @@ import rmap.repository.NotionRepository;
 import rmap.response.GraphResponse;
 import rmap.response.NotionFolderResponse;
 
+import java.util.Comparator;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class NotionFolderService {
@@ -31,7 +32,7 @@ public class NotionFolderService {
     }
 
     public NotionFolder createNotionFolder(String name) {
-        NotionFolder notionFolder = new NotionFolder(name);
+        NotionFolder notionFolder = new NotionFolder(null, name);
         return notionFolderRepository.save(notionFolder);
     }
 

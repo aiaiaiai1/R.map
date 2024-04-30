@@ -7,8 +7,8 @@ import org.mockito.Mock;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.util.ReflectionTestUtils;
-import rmap.entity.UserAccount;
-import rmap.repository.UserAccountRepository;
+import rmap.entity.User;
+import rmap.repository.UserRepository;
 
 import java.util.Map;
 import java.util.Optional;
@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
-import static rmap.EntityCreationSupporter.유저_계정_생성;
+import static rmap.EntityCreationSupporter.유저_생성;
 
 class SignUpServiceTest extends ServiceTest {
 
@@ -29,7 +29,7 @@ class SignUpServiceTest extends ServiceTest {
     JavaMailSender javaMailSender;
 
     @Mock
-    UserAccountRepository userAccountRepository;
+    UserRepository userAccountRepository;
 
     @Nested
     class 인증_코드_보내기 {
@@ -50,7 +50,7 @@ class SignUpServiceTest extends ServiceTest {
             // given
             String email = "test@test.com";
             String password = "password";
-            UserAccount userAccount = 유저_계정_생성(1L, email, password);
+            User userAccount = 유저_생성(1L, email, password);
             given(userAccountRepository.findByEmail(email)).willReturn(Optional.of(userAccount));
 
             // when, then
@@ -135,9 +135,9 @@ class SignUpServiceTest extends ServiceTest {
                 String email = "test@test.com";
                 String password = "test";
 
-                UserAccount userAccount = 유저_계정_생성(1L, email, password);
+                User userAccount = 유저_생성(1L, email, password);
                 willDoNothing().given(javaMailSender).send(any(SimpleMailMessage.class));
-                given(userAccountRepository.save(any(UserAccount.class))).willReturn(userAccount);
+                given(userAccountRepository.save(any(User.class))).willReturn(userAccount);
                 signUpService.sendAuthenticationTo(email);
 
                 Cache emailAuthenticationCodeCache = (Cache) ReflectionTestUtils.getField(signUpService,
