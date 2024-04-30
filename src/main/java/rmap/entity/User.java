@@ -13,7 +13,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EqualsAndHashCode(of = {"id"})
 @EntityListeners(AuditingEntityListener.class)
-public class UserAccount {
+@Table(name = "uuser")
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,11 +30,11 @@ public class UserAccount {
     @Column(columnDefinition = "datetime(3)", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    public UserAccount(String email, String password) {
+    public User(String email, String password) {
         this(email, password, null);
     }
 
-    public UserAccount(String email, String password, LocalDateTime createdAt) {
+    public User(String email, String password, LocalDateTime createdAt) {
         this.email = email;
         this.password = password;
         this.createdAt = createdAt;

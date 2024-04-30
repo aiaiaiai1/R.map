@@ -6,12 +6,12 @@ import jakarta.persistence.EntityManager;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import rmap.entity.UserAccount;
+import rmap.entity.User;
 
 class UserAccountRepositoryTest extends RepositoryTest {
 
     @Autowired
-    UserAccountRepository userAccountRepository;
+    UserRepository userAccountRepository;
 
     @Autowired
     EntityManager entityManager;
@@ -21,10 +21,10 @@ class UserAccountRepositoryTest extends RepositoryTest {
         // given
         String email = "test@test.com";
         String password = "test";
-        supporter.유저_계정_저장(email, password);
+        supporter.유저_저장(email, password);
 
         // when
-        Optional<UserAccount> result = userAccountRepository.findByEmail(email);
+        Optional<User> result = userAccountRepository.findByEmail(email);
 
         // then
         assertThat(result.isPresent()).isTrue();

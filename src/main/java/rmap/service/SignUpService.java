@@ -5,8 +5,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import rmap.entity.UserAccount;
-import rmap.repository.UserAccountRepository;
+import rmap.entity.User;
+import rmap.repository.UserRepository;
 
 import java.util.regex.Pattern;
 
@@ -17,7 +17,7 @@ public class SignUpService {
     private final JavaMailSender mailSender;
     private final Cache emailAuthenticationCodeCache = new Cache(3 * 60 * 1000);
     private final Cache verifiedEmailCash = new Cache(1 * 60 * 1000);
-    private final UserAccountRepository userAccountRepository;
+    private final UserRepository userAccountRepository;
 
 
     public void sendAuthenticationTo(String email) {
@@ -59,7 +59,7 @@ public class SignUpService {
         if (!verifiedEmailCash.containsKey(email)) {
             throw new IllegalArgumentException("인증되지 않았습니다");
         }
-        UserAccount userAccount = new UserAccount(email, password);
+        User userAccount = new User(email, password);
         userAccountRepository.save(userAccount);
     }
 
@@ -70,7 +70,7 @@ public class SignUpService {
     }
 
     public Long logIn(String email, String password) {
-        UserAccount userAccount = userAccountRepository.findByEmailAndPasswordOrThrow(email, password);
+        User userAccount = userAccountRepository.findByEmailAndPasswordOrThrow(email, password);
         return userAccount.getId();
     }
 

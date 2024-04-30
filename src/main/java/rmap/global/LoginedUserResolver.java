@@ -7,13 +7,13 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
-import rmap.entity.UserAccount;
+import rmap.entity.User;
 
 public class LoginedUserResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.withContainingClass(UserAccount.class)
+        return parameter.withContainingClass(User.class)
                 .hasParameterAnnotation(Logined.class);
     }
 
@@ -29,7 +29,7 @@ public class LoginedUserResolver implements HandlerMethodArgumentResolver {
         if (session == null) {
             throw new IllegalStateException("세션이 만료되었습니다.");
         }
-        Long userAccountId = (Long) session.getAttribute("logined");
-        return userAccountId;
+        Long userId = (Long) session.getAttribute("logined");
+        return userId;
     }
 }

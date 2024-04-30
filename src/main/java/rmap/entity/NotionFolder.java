@@ -14,14 +14,15 @@ public class NotionFolder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false, updatable = false)
+    private User user;
+
     @Column(length = 100, nullable = false)
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_account_id", nullable = false, updatable = false)
-    private UserAccount userAccount;
-
-    public NotionFolder(String name) {
+    public NotionFolder(User user, String name) {
+        this.user = user;
         this.name = name;
     }
 
