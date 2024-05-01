@@ -24,7 +24,7 @@ import rmap.response.GraphResponse;
 import rmap.response.IdResponse;
 import rmap.response.MergingNotinFolderRequest;
 import rmap.response.NotionFolderCompactResponse;
-import rmap.response.NotionFolderResponse;
+import rmap.response.OpenNotionFolderResponse;
 import rmap.service.NotionFolderService;
 
 @RestController
@@ -56,16 +56,20 @@ public class NotionFolderController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<NotionFolderResponse> readNotionFolder(
+    public ResponseEntity<OpenNotionFolderResponse> openNotionFolder(
+            @Logined User user,
             @PathVariable("id") Long notionFolderId
     ) {
-        NotionFolderResponse responses = notionFolderService.readNotionFolderInfo(notionFolderId);
+        OpenNotionFolderResponse responses = notionFolderService.openNotionFolder(user, notionFolderId);
         return ResponseEntity.ok(responses);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteNotionFolder(@PathVariable("id") Long notionFolderId) {
-        notionFolderService.deleteNotionFolder(notionFolderId);
+    public ResponseEntity<Void> deleteNotionFolder(
+            @Logined User user,
+            @PathVariable("id") Long notionFolderId
+    ) {
+        notionFolderService.deleteNotionFolder(user, notionFolderId);
         return ResponseEntity.ok().build();
     }
 

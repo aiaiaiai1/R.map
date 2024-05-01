@@ -29,7 +29,7 @@ import rmap.exception.DataConsistencyException;
 import rmap.repository.NotionFolderRepository;
 import rmap.repository.NotionRepository;
 import rmap.response.NotionCompactResponse;
-import rmap.response.NotionFolderResponse;
+import rmap.response.OpenNotionFolderResponse;
 
 class NotionFolderServiceTest extends ServiceTest {
     @Mock
@@ -41,24 +41,60 @@ class NotionFolderServiceTest extends ServiceTest {
     @InjectMocks
     NotionFolderService notionFolderService;
 
-    @Test
-    void 노션_폴더_정보_조회시_노션은_사전순으로_조회한다() {
-        // given
-        Notion 노션_사과 = 노션_생성(1L, "사과", "", 알맵이의_노션_폴더_음식);
-        Notion 노션_배 = 노션_생성(2L, "배", "", 알맵이의_노션_폴더_음식);
 
-        given(notionFolderRepository.findByIdOrThrow(알맵이의_노션_폴더_음식.getId())).willReturn(알맵이의_노션_폴더_음식);
-        given(notionRepository.findAllInNotionFolder(알맵이의_노션_폴더_음식.getId())).willReturn(of(노션_사과, 노션_배));
+    @Nested
+    class 노션_폴더_열람 {
+        @Test
+        void 노션_폴더_열람시_노션은_사전순으로_조회한다() {
+            // given
+            NotionFolder notionFolder = 알맵이의_노션_폴더_음식;
+            User user = notionFolder.getOwner();
 
-        // when
-        NotionFolderResponse response = notionFolderService.readNotionFolderInfo(알맵이의_노션_폴더_음식.getId());
+            Notion 노션_사과 = 노션_생성(1L, "사과", "", notionFolder);
+            Notion 노션_배 = 노션_생성(2L, "배", "", notionFolder);
 
-        // then
-        List<NotionCompactResponse> results = response.getNotions();
-        assertThat(results.get(0).getId()).isEqualTo(노션_배.getId());
-        assertThat(results.get(1).getId()).isEqualTo(노션_사과.getId());
+            given(notionFolderRepository.findByIdOrThrow(notionFolder.getId())).willReturn(notionFolder);
+            given(notionRepository.findAllInNotionFolder(notionFolder.getId())).willReturn(of(노션_사과, 노션_배));
+
+            // when
+            OpenNotionFolderResponse response = notionFolderService.openNotionFolder(user, notionFolder.getId());
+
+            // then
+            List<NotionCompactResponse> results = response.getNotions();
+            assertThat(results.get(0).getId()).isEqualTo(노션_배.getId());
+            assertThat(results.get(1).getId()).isEqualTo(노션_사과.getId());
+        }
+
+        @Test
+        void 노션_폴더_소유자가_아닌_경우_예외가_발생_한다() {
+            NotionFolder notionFolder = 알맵이의_노션_폴더_음식;
+            User user = 유저_생성(1L, TEST_EMAIL, TEST_PASSWORD);
+
+            Notion 노션_사과 = 노션_생성(1L, "사과", "", notionFolder);
+            Notion 노션_배 = 노션_생성(2L, "배", "", notionFolder);
+
+            given(notionFolderRepository.findByIdOrThrow(notionFolder.getId())).willReturn(notionFolder);
+
+            // when, then
+            assertThatThrownBy(() -> notionFolderService.openNotionFolder(user, notionFolder.getId()))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("권한이 없습니다.");
+        }
+
     }
 
+    @Test
+    void 노션_폴더_삭제시_소유자가_아닌_경우_예외가_발생한다() {
+        // given
+        User user = 유저_생성(1L, TEST_EMAIL, TEST_PASSWORD);
+        NotionFolder notionfolder = 알맵이의_노션_폴더_음식;
+        given(notionFolderRepository.findByIdOrThrow(notionfolder.getId())).willReturn(notionfolder);
+
+        // when, then
+        assertThatThrownBy(() -> notionFolderService.deleteNotionFolder(user, notionfolder.getId()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("권한이 없습니다.");
+    }
 
     @Nested
     class 노션_합치기 {
@@ -152,7 +188,7 @@ class NotionFolderServiceTest extends ServiceTest {
             Notion notionB = 노션_생성(2L, "B", "과일", 알맵이의_노션_폴더_알파벳);
             Notion notionC = 노션_생성(3L, "C", "과일", 알맵이의_노션_폴더_알파벳);
 
-            User user = 유저_생성(1L,TEST_EMAIL,TEST_PASSWORD);
+            User user = 유저_생성(1L, TEST_EMAIL, TEST_PASSWORD);
 
             NotionFolder newNotionFolder = 노션_폴더_생성(1L, user, "new");
 

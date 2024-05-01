@@ -17,7 +17,7 @@ import rmap.repository.EdgeRepository;
 import rmap.repository.NotionFolderRepository;
 import rmap.repository.NotionRepository;
 import rmap.response.GraphResponse;
-import rmap.response.NotionFolderResponse;
+import rmap.response.OpenNotionFolderResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -61,12 +61,16 @@ public class NotionFolderService {
     }
 
     @Transactional
-    public void mergeNotionFolderWithNew(User loginedUser, String newNotionFolderName, List<Long> targetNotionFolderIds) {
+    public void mergeNotionFolderWithNew(
+            User loginedUser, String newNotionFolderName, List<Long> targetNotionFolderIds
+    ) {
         NotionFolder newNotionFolder = createNotionFolder(loginedUser, newNotionFolderName);
         changeNotionFoldersToNew(loginedUser, newNotionFolder, targetNotionFolderIds);
     }
 
-    private void changeNotionFoldersToNew(User loginedUser, NotionFolder newNotionFolder, List<Long> targetNotionFolderIds) {
+    private void changeNotionFoldersToNew(
+            User loginedUser, NotionFolder newNotionFolder, List<Long> targetNotionFolderIds
+    ) {
         for (Long id : targetNotionFolderIds) {
             NotionFolder notionFolder = notionFolderRepository.findByIdOrThrow(id);
             validateNotionFolderOwner(notionFolder, loginedUser);
@@ -78,8 +82,9 @@ public class NotionFolderService {
     }
 
     @Transactional
-    public void deleteNotionFolder(Long notionFolderId) {
+    public void deleteNotionFolder(User loginedUser, Long notionFolderId) {
         NotionFolder notionFolder = notionFolderRepository.findByIdOrThrow(notionFolderId);
+        validateNotionFolderOwner(notionFolder, loginedUser);
         List<Notion> notions = notionRepository.findAllInNotionFolder(notionFolderId);
         for (Notion notion : notions) {
             List<Edge> edges = edgeRepository.findAllByNotionId(notion.getId());
@@ -90,17 +95,14 @@ public class NotionFolderService {
         // 중복 생김 , 도메인에서 처리 할려 했으나 양뱡향에 걸려버림. 중복 제거 방법은??
     }
 
-    public NotionFolder readNotionFolder(Long notionFolderId) {
-        return notionFolderRepository.findByIdOrThrow(notionFolderId);
-    }
-
-    public NotionFolderResponse readNotionFolderInfo(Long notionFolderId) {
-        NotionFolder notionFolder = readNotionFolder(notionFolderId);
+    public OpenNotionFolderResponse openNotionFolder(User loginedUser, Long notionFolderId) {
+        NotionFolder notionFolder = notionFolderRepository.findByIdOrThrow(notionFolderId);
+        validateNotionFolderOwner(notionFolder, loginedUser);
         List<Notion> notions = notionRepository.findAllInNotionFolder(notionFolder.getId());
         List<Notion> sortedNotions = notions.stream()
                 .sorted(Comparator.comparing(Notion::getName))
                 .toList();
-        return NotionFolderResponse.of(notionFolder, sortedNotions);
+        return OpenNotionFolderResponse.of(notionFolder, sortedNotions);
     }
 
     public List<GraphResponse> readAllGraphs(Long notionFolderId) {
