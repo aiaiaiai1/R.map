@@ -105,8 +105,9 @@ public class NotionFolderService {
         return OpenNotionFolderResponse.of(notionFolder, sortedNotions);
     }
 
-    public List<GraphResponse> readAllGraphs(Long notionFolderId) {
+    public List<GraphResponse> readAllGraphsIn(User loginedUser, Long notionFolderId) {
         NotionFolder notionFolder = notionFolderRepository.findByIdOrThrow(notionFolderId);
+        validateNotionFolderOwner(notionFolder, loginedUser);
         List<Notion> notions = notionRepository.findAllInNotionFolder(notionFolder.getId());
         List<List<Notion>> graphs = NotionSearcher.convertToGraphs(notions);
         return graphs.stream()
@@ -120,8 +121,9 @@ public class NotionFolderService {
         }
     }
 
-    public void editNotionFolderName(Long notionFolderId, String name) {
+    public void editNotionFolderName(User loginedUser, Long notionFolderId, String notionFolderName) {
         NotionFolder notionFolder = notionFolderRepository.findByIdOrThrow(notionFolderId);
-        notionFolder.changeName(name);
+        validateNotionFolderOwner(notionFolder, loginedUser);
+        notionFolder.changeName(notionFolderName);
     }
 }

@@ -83,8 +83,11 @@ public class NotionFolderController {
     }
 
     @GetMapping("/{id}/graphs")
-    public ResponseEntity<List<GraphResponse>> readGraphsInNotionFolder(@PathVariable("id") Long notionFolderId) {
-        List<GraphResponse> responses = notionFolderService.readAllGraphs(notionFolderId);
+    public ResponseEntity<List<GraphResponse>> readGraphsInNotionFolder(
+            @Logined User user,
+            @PathVariable("id") Long notionFolderId
+    ) {
+        List<GraphResponse> responses = notionFolderService.readAllGraphsIn(user, notionFolderId);
         return ResponseEntity.ok().body(responses);
     }
 
@@ -101,10 +104,11 @@ public class NotionFolderController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<Void> editNotionFolderName(
+            @Logined User user,
             @PathVariable("id") Long notionFolderId,
             @RequestBody EditNotionFolderNameRequest request
     ) {
-        notionFolderService.editNotionFolderName(notionFolderId, request.getName());
+        notionFolderService.editNotionFolderName(user, notionFolderId, request.getName());
         return ResponseEntity.ok().build();
     }
 

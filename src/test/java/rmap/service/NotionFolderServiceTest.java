@@ -208,26 +208,56 @@ class NotionFolderServiceTest extends ServiceTest {
         @Test
         void 노션_폴더에_속하지_않는_그래프인_경우_예외가_발생한다() {
             // given
-            Notion notionA = 노션_생성(1L, "A", "a", 알맵이의_노션_폴더_알파벳);
-            Notion notionB = 노션_생성(2L, "B", "과일", 알맵이의_노션_폴더_알파벳);
-            Notion notionC = 노션_생성(3L, "C", "과일", 알맵이의_노션_폴더_알파벳);
+            NotionFolder notionFolder1 = 알맵이의_노션_폴더_알파벳;
+            Notion notionA = 노션_생성(1L, "A", "a", notionFolder1);
+            Notion notionB = 노션_생성(2L, "B", "과일", notionFolder1);
+            Notion notionC = 노션_생성(3L, "C", "과일", notionFolder1);
 
-            User user = 알맵이의_노션_폴더_알파벳.getOwner();
+            User user = notionFolder1.getOwner();
 
             NotionFolder newNotionFolder = 노션_폴더_생성(1L, user, "new");
 
             notionB.connect(notionC, "");
             notionC.connect(notionB, "");
 
-            given(notionFolderRepository.findByIdOrThrow(알맵이의_노션_폴더_음식.getId())).willReturn(알맵이의_노션_폴더_음식);
+            NotionFolder notionFolder2 = 알맵이의_노션_폴더_음식;
+            given(notionFolderRepository.findByIdOrThrow(notionFolder2.getId())).willReturn(notionFolder2);
             given(notionRepository.findByIdOrThrow(notionB.getId())).willReturn(notionB);
 
             // when, then
             assertThatThrownBy(
                     () -> notionFolderService.splitNotionFolderWithNew(
-                            user, newNotionFolder.getName(), 알맵이의_노션_폴더_음식.getId(), notionB.getId()
+                            user, newNotionFolder.getName(), notionFolder2.getId(), notionB.getId()
                     )
             ).isInstanceOf(DataConsistencyException.class);
+        }
+
+        @Test
+        void 노션_폴더_수정시_소유자가_아닌_경우_예외가_발생한다() {
+            // given
+            NotionFolder notionFolder = 알맵이의_노션_폴더_음식;
+            User user = 유저_생성(1L, TEST_EMAIL, TEST_PASSWORD);
+
+            given(notionFolderRepository.findByIdOrThrow(notionFolder.getId())).willReturn(notionFolder);
+
+            // when, then
+            assertThatThrownBy(() -> notionFolderService.editNotionFolderName(user, notionFolder.getId(), "new"))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("권한이 없습니다.");
+        }
+
+        @Test
+        void 노션_폴더의_그래프_조회시_소유자가_아닌_경우_예외가_발생한다() {
+            // given
+            NotionFolder notionFolder = 알맵이의_노션_폴더_음식;
+            User user = 유저_생성(1L, TEST_EMAIL, TEST_PASSWORD);
+
+            given(notionFolderRepository.findByIdOrThrow(notionFolder.getId())).willReturn(notionFolder);
+
+            // when, then
+            assertThatThrownBy(() -> notionFolderService.readAllGraphsIn(user, notionFolder.getId()))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("권한이 없습니다.");
         }
 
     }
