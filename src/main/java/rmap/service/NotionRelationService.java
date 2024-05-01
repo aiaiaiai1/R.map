@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import rmap.entity.Edge;
 import rmap.entity.Notion;
 import rmap.entity.NotionFolder;
+import rmap.entity.User;
 import rmap.exception.EtcException;
 import rmap.exception.type.EtcExceptionType;
 import rmap.repository.EdgeRepository;
@@ -27,18 +28,24 @@ public class NotionRelationService {
 
 
     @Transactional
-    public void disconnectNotionRelation(Long notionAId, Long notionBId) {
+    public void disconnectNotionRelation(User loginedUser, Long notionAId, Long notionBId) {
         Notion notionA = notionRepository.findByIdOrThrow(notionAId);
         Notion notionB = notionRepository.findByIdOrThrow(notionBId);
+
+        Validator.validateNotionOwner(notionA, loginedUser);
+        Validator.validateNotionOwner(notionB, loginedUser);
 
         notionA.disconnect(notionB);
         notionB.disconnect(notionA);
     }
 
     @Transactional
-    public NotionIdResponse createNotionConnectedWithRelatedNotion(BuildNotionRequest request) {
+    public NotionIdResponse createNotionConnectedWithRelatedNotion(User loginedUser, BuildNotionRequest request) {
         NotionFolder notionFolder = notionFolderRepository.findByIdOrThrow(request.getNotionFolderId());
+        Validator.validateNotionFolderOwner(notionFolder, loginedUser);
+
         Notion relatedNotion = notionRepository.findByIdOrThrow(request.getRelatedNotion().getId());
+        Validator.validateNotionOwner(relatedNotion, loginedUser);
 
         Notion notion = new Notion(request.getName(), request.getContent(), notionFolder);
         Notion savedNotion = notionRepository.save(notion);
@@ -51,8 +58,9 @@ public class NotionRelationService {
     }
 
     @Transactional
-    public void editNotionRelations(Long notionId, List<PatchRelatedNotionRequest> requests) {
-        Notion notion = notionRepository.findByIdOrThrow(notionId);
+    public void editNotionRelations(User loginedUser, Long targetNotionId, List<PatchRelatedNotionRequest> requests) {
+        Notion notion = notionRepository.findByIdOrThrow(targetNotionId);
+        Validator.validateNotionOwner(notion, loginedUser);
 
         List<Long> relatedNotionIds = getRelatedNotionIds(notion);
         List<Long> requestIds = getRequestIds(requests);
@@ -63,8 +71,8 @@ public class NotionRelationService {
         List<Long> editingRequestIds = filterCommonIds(relatedNotionIds, requestIds);
         List<Long> disconnectionRequestIds = subtractIds(relatedNotionIds, requestIds);
 
-        connectAndEditAll(notion, requests, connectionRequestIds, editingRequestIds);
-        disconnectAll(notion, disconnectionRequestIds);
+        connectAndEditAll(loginedUser, notion, requests, connectionRequestIds, editingRequestIds);
+        disconnectAll(loginedUser, notion, disconnectionRequestIds);
     }
 
     private List<Long> getRequestIds(List<PatchRelatedNotionRequest> requests) {
@@ -81,6 +89,7 @@ public class NotionRelationService {
     }
 
     private void connectAndEditAll(
+            User loginedUser,
             Notion notion,
             List<PatchRelatedNotionRequest> requests,
             List<Long> connectionRequestIds,
@@ -88,6 +97,7 @@ public class NotionRelationService {
     ) {
         for (PatchRelatedNotionRequest request : requests) {
             Notion relatedNotion = notionRepository.findByIdOrThrow(request.getId());
+            Validator.validateNotionOwner(relatedNotion, loginedUser);
             if (editingRequestIds.contains(request.getId())) {
                 notion.editDescription(relatedNotion, request.getRelevance());
                 relatedNotion.editDescription(notion, request.getReverseRelevance());
@@ -102,9 +112,10 @@ public class NotionRelationService {
         }
     }
 
-    private void disconnectAll(Notion notion, List<Long> disconnectionRequestIds) {
+    private void disconnectAll(User loginedUser, Notion notion, List<Long> disconnectionRequestIds) {
         for (Long notionId : disconnectionRequestIds) {
             Notion relatedNotion = notionRepository.findByIdOrThrow(notionId);
+            Validator.validateNotionOwner(relatedNotion, loginedUser);
             notion.disconnect(relatedNotion);
             relatedNotion.disconnect(notion);
         }
