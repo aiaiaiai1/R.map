@@ -58,4 +58,5 @@ public class SignUpController {
         }
         return ResponseEntity.ok("로그인 성공");
     }
+
 }
