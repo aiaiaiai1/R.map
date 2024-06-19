@@ -7,3 +7,9 @@ spring:
       hibernate:
         format_sql: true
     show-sql: true
+
+
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
