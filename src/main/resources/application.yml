@@ -15,7 +15,7 @@ server:
       cookie:
         name: JSESSIONID
         domain: ${A}
-        http-only: true
+        http-only: ${D}
         secure: true
         same-site: ${B}
         max-age: ${C}

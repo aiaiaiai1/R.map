@@ -19,7 +19,6 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedMethods(ALLOWED_METHOD_NAMES.split(","))
                 .allowedOriginPatterns("*")
                 .allowedHeaders("*")
-                .exposedHeaders(HttpHeaders.SET_COOKIE)
                 .allowCredentials(true);
     }
 
