@@ -18,7 +18,7 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedMethods(ALLOWED_METHOD_NAMES.split(","))
                 .allowedOriginPatterns("*")
-                .allowedHeaders(HttpHeaders.COOKIE,HttpHeaders.REFERER)
+                .allowedHeaders("*")
                 .exposedHeaders(HttpHeaders.COOKIE)
                 .allowCredentials(true);
     }
