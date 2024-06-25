@@ -14,7 +14,9 @@ server:
     session:
       cookie:
         name: JSESSIONID
-        domain: rmap.store
+        domain: ${A}
         http-only: true
         secure: true
-        same-site: none
+        same-site: ${B}
+        max-age: ${C}
+
