@@ -10,6 +10,10 @@ spring:
 
 
 server:
-  error:
-    include-message: always
-    include-binding-errors: always
+  servlet:
+    session:
+      cookie:
+        name: JSESSIONID
+        domain: rmap.store
+        http-only: true
+        secure: true
