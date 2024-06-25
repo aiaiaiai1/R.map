@@ -17,3 +17,4 @@ server:
         domain: rmap.store
         http-only: true
         secure: true
+        same-site: none
