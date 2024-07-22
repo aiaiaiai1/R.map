@@ -17,7 +17,7 @@ server:
         http-only: true
         secure: true
         same-site: none
-        max-age: 3600
-        path: "/"
+        max-age: ${A}
+        domain: ${B}
 
 
