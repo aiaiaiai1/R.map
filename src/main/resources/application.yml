@@ -14,9 +14,10 @@ server:
     session:
       cookie:
         name: JSESSIONID
-        domain: ${A}
-        http-only: ${D}
+        http-only: true
         secure: true
-        same-site: ${B}
-        max-age: ${C}
+        same-site: none
+        max-age: 3600
+        path: "/"
+
 
