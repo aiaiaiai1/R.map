@@ -6,6 +6,7 @@ import static rmap.EntityCreationSupporter.노션_폴더_생성;
 import static rmap.Fixtures.알맵이;
 
 import org.junit.jupiter.api.Test;
+import org.mindrot.jbcrypt.BCrypt;
 import rmap.exception.BusinessRuleException;
 
 class EdgeTest {
