@@ -7,14 +7,11 @@ import rmap.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    default User findByEmailAndPasswordOrThrow(String email, String password) {
-        User user = findByEmailAndPassword(email, password)
-                .orElseThrow(() -> new IllegalArgumentException("아이디와 비밀번호를 확인해주세요"));
+    default User getByEmail(String email) {
+        User user = findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 입니다."));
         return user;
     }
-
-    @Query("select ua from User as ua where ua.email = :email and ua.password = :password")
-    Optional<User> findByEmailAndPassword(String email, String password);
 
 //    @Query(value = "select exists (select * from user_account as ua where ua.email = :email)",
 //            nativeQuery = true)

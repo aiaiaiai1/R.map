@@ -1,18 +1,14 @@
 package rmap.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import java.time.LocalDateTime;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -41,11 +37,19 @@ public class User {
 
     public User(String email, String password, LocalDateTime createdAt) {
         this.email = email;
-        this.password = password;
+        this.password = encryptPassword(password);
         this.createdAt = createdAt;
     }
 
     public Long getId() {
         return id;
+    }
+
+    private String encryptPassword(String plainPassword) {
+        return BCrypt.hashpw(plainPassword, BCrypt.gensalt());
+    }
+
+    public boolean matchesPassword(String plainPassword) {
+        return BCrypt.checkpw(plainPassword, password);
     }
 }

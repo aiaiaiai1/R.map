@@ -1,6 +1,5 @@
 package rmap.service;
 
-import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -8,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import rmap.entity.User;
 import rmap.repository.UserRepository;
+
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -68,8 +69,12 @@ public class SignUpService {
         }
     }
 
-    public User logIn(String email, String password) {
-        User user = userAccountRepository.findByEmailAndPasswordOrThrow(email, password);
+    public User logIn(String email, String plainPassword) {
+        User user = userAccountRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 이메일 입니다."));
+        if (!user.matchesPassword(plainPassword)) {
+            throw new IllegalArgumentException("비밀번호를 확인해 주세요.");
+        }
         return user;
     }
 
