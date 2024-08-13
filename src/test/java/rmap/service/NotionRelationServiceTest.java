@@ -7,7 +7,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
 import static rmap.EntityCreationSupporter.노션_생성;
-import static rmap.Fixtures.노션_폴더_알파벳;
+import static rmap.Fixtures.알맵이의_노션_폴더_알파벳;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +17,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import rmap.entity.Edge;
 import rmap.entity.Notion;
+import rmap.entity.NotionFolder;
+import rmap.entity.User;
 import rmap.exception.EtcException;
 import rmap.repository.EdgeRepository;
 import rmap.repository.NotionFolderRepository;
@@ -43,7 +45,10 @@ class NotionRelationServiceTest extends ServiceTest {
         @Test
         void request에서_여러개의_노션_중_id_중복이_존재하는_경우_예외가_발생한다() {
             // given
-            Notion notionA = 노션_생성(1L, "A", "", 노션_폴더_알파벳);
+            NotionFolder notionFolder = 알맵이의_노션_폴더_알파벳;
+            User user = notionFolder.getOwner();
+
+            Notion notionA = 노션_생성(1L, "A", "", notionFolder);
 
             List<PatchRelatedNotionRequest> requests = new ArrayList<>();
             requests.add(new PatchRelatedNotionRequest(1L, "", ""));
@@ -52,18 +57,21 @@ class NotionRelationServiceTest extends ServiceTest {
             given(notionRepository.findByIdOrThrow(notionA.getId())).willReturn(notionA);
 
             // when, then
-            assertThatThrownBy(() -> notionRelationService.editNotionRelations(1L, requests))
+            assertThatThrownBy(() -> notionRelationService.editNotionRelations(user, 1L, requests))
                     .isInstanceOf(EtcException.class);
         }
 
         @Test
         void 하나의_노션에서_여러개의_연결관계를_수정한다() {
             // given
-            Notion notionA = 노션_생성(1L, "A", "", 노션_폴더_알파벳);
-            Notion notionB = 노션_생성(2L, "B", "", 노션_폴더_알파벳);
-            Notion notionC = 노션_생성(3L, "C", "", 노션_폴더_알파벳);
-            Notion notionD = 노션_생성(4L, "D", "", 노션_폴더_알파벳);
-            Notion notionE = 노션_생성(5L, "E", "", 노션_폴더_알파벳);
+            NotionFolder notionFolder = 알맵이의_노션_폴더_알파벳;
+            User user = notionFolder.getOwner();
+
+            Notion notionA = 노션_생성(1L, "A", "", notionFolder);
+            Notion notionB = 노션_생성(2L, "B", "", notionFolder);
+            Notion notionC = 노션_생성(3L, "C", "", notionFolder);
+            Notion notionD = 노션_생성(4L, "D", "", notionFolder);
+            Notion notionE = 노션_생성(5L, "E", "", notionFolder);
              /*
                 A - <B> - E
                     |    |
@@ -89,7 +97,7 @@ class NotionRelationServiceTest extends ServiceTest {
             given(edgeRepository.save(any(Edge.class))).willReturn(null);
 
             // when
-            notionRelationService.editNotionRelations(notionB.getId(), requests);
+            notionRelationService.editNotionRelations(user, notionB.getId(), requests);
 
             // then
             then(edgeRepository).should(times(2)).save(any(Edge.class));
@@ -116,25 +124,27 @@ class NotionRelationServiceTest extends ServiceTest {
     @Test
     void 관계를_맺는_새로운_노션을_생셩한다() {
         // given
+        NotionFolder notionFolder = 알맵이의_노션_폴더_알파벳;
+        User user = notionFolder.getOwner();
 
-        Notion relatedNotion = 노션_생성(1L, "B", "b", 노션_폴더_알파벳);
+        Notion relatedNotion = 노션_생성(1L, "B", "b", notionFolder);
         BuildNotionRequest request = new BuildNotionRequest(
-                노션_폴더_알파벳.getId(),
+                notionFolder.getId(),
                 "A",
                 "a",
                 new RelatedNotionInfo(relatedNotion.getId(), "", "")
         );
 
-        Notion newNotion = 노션_생성(2L, "A", "a", 노션_폴더_알파벳);
+        Notion newNotion = 노션_생성(2L, "A", "a", notionFolder);
 
-        given(notionFolderRepository.findByIdOrThrow(노션_폴더_알파벳.getId())).willReturn(노션_폴더_알파벳);
+        given(notionFolderRepository.findByIdOrThrow(notionFolder.getId())).willReturn(notionFolder);
         given(notionRepository.findByIdOrThrow(relatedNotion.getId())).willReturn(relatedNotion);
         given(notionRepository.save(any(Notion.class))).willReturn(newNotion);
         given(edgeRepository.save(any(Edge.class))).willReturn(null);
 
         // when
         NotionIdResponse response = notionRelationService
-                .createNotionConnectedWithRelatedNotion(request);
+                .createNotionConnectedWithRelatedNotion(user,request);
 
         // then
         assertThat(response.getId()).isEqualTo(newNotion.getId());

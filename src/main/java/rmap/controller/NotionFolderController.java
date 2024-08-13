@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import rmap.entity.NotionFolder;
+import rmap.entity.User;
+import rmap.global.Logined;
 import rmap.request.EditNotionFolderNameRequest;
 import rmap.request.NotionFolderRequest;
 import rmap.request.SplitNotionFolderRequest;
@@ -22,7 +24,7 @@ import rmap.response.GraphResponse;
 import rmap.response.IdResponse;
 import rmap.response.MergingNotinFolderRequest;
 import rmap.response.NotionFolderCompactResponse;
-import rmap.response.NotionFolderResponse;
+import rmap.response.OpenNotionFolderResponse;
 import rmap.service.NotionFolderService;
 
 @RestController
@@ -33,8 +35,10 @@ public class NotionFolderController {
     private final NotionFolderService notionFolderService;
 
     @GetMapping
-    public ResponseEntity<List<NotionFolderCompactResponse>> readNotionFolders() {
-        List<NotionFolder> notionFolders = notionFolderService.readAllNotionFolders();
+    public ResponseEntity<List<NotionFolderCompactResponse>> readNotionFolders(
+            @Logined User user
+    ) {
+        List<NotionFolder> notionFolders = notionFolderService.readAllNotionFoldersOf(user);
         List<NotionFolderCompactResponse> responses = notionFolders.stream()
                 .map(NotionFolderCompactResponse::new)
                 .toList();
@@ -42,54 +46,69 @@ public class NotionFolderController {
     }
 
     @PostMapping
-    public ResponseEntity<IdResponse> createNotionFolder(@RequestBody @Valid NotionFolderRequest request) {
-        NotionFolder notionFolder = notionFolderService.createNotionFolder(request.getName());
+    public ResponseEntity<IdResponse> createNotionFolder(
+            @Logined User user,
+            @RequestBody @Valid NotionFolderRequest request
+    ) {
+        NotionFolder notionFolder = notionFolderService.createNotionFolder(user, request.getName());
         return ResponseEntity.created(URI.create("/notionFolders/" + notionFolder.getId()))
                 .body(new IdResponse(notionFolder.getId()));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<NotionFolderResponse> readNotionFolder(
+    public ResponseEntity<OpenNotionFolderResponse> openNotionFolder(
+            @Logined User user,
             @PathVariable("id") Long notionFolderId
     ) {
-        NotionFolderResponse responses = notionFolderService.readNotionFolderInfo(notionFolderId);
+        OpenNotionFolderResponse responses = notionFolderService.openNotionFolder(user, notionFolderId);
         return ResponseEntity.ok(responses);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteNotionFolder(@PathVariable("id") Long notionFolderId) {
-        notionFolderService.deleteNotionFolder(notionFolderId);
+    public ResponseEntity<Void> deleteNotionFolder(
+            @Logined User user,
+            @PathVariable("id") Long notionFolderId
+    ) {
+        notionFolderService.deleteNotionFolder(user, notionFolderId);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/merge")
-    public ResponseEntity<Void> mergeNotionFolder(@RequestBody MergingNotinFolderRequest request) {
-        notionFolderService.mergeNotionFolderWithNew(request.getName(), request.getNotionFolderIds());
+    public ResponseEntity<Void> mergeNotionFolder(
+            @Logined User user,
+            @RequestBody MergingNotinFolderRequest request
+    ) {
+        notionFolderService.mergeNotionFolderWithNew(user, request.getName(), request.getNotionFolderIds());
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{id}/graphs")
-    public ResponseEntity<List<GraphResponse>> readGraphsInNotionFolder(@PathVariable("id") Long notionFolderId) {
-        List<GraphResponse> responses = notionFolderService.readAllGraphs(notionFolderId);
+    public ResponseEntity<List<GraphResponse>> readGraphsInNotionFolder(
+            @Logined User user,
+            @PathVariable("id") Long notionFolderId
+    ) {
+        List<GraphResponse> responses = notionFolderService.readAllGraphsIn(user, notionFolderId);
         return ResponseEntity.ok().body(responses);
     }
 
     @PostMapping("/{id}")
     public ResponseEntity<Void> splitNotionFolder(
+            @Logined User user,
             @PathVariable("id") Long notionFolderId,
             @RequestParam Long notionId,
             @RequestBody SplitNotionFolderRequest request
     ) {
-        notionFolderService.splitNotionFolderWithNew(request.getName(), notionFolderId, notionId);
+        notionFolderService.splitNotionFolderWithNew(user, request.getName(), notionFolderId, notionId);
         return ResponseEntity.ok().build();
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<Void> editNotionFolderName(
+            @Logined User user,
             @PathVariable("id") Long notionFolderId,
             @RequestBody EditNotionFolderNameRequest request
     ) {
-        notionFolderService.editNotionFolderName(notionFolderId, request.getName());
+        notionFolderService.editNotionFolderName(user, notionFolderId, request.getName());
         return ResponseEntity.ok().build();
     }
 

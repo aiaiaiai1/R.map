@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import rmap.entity.Edge;
 import rmap.entity.Notion;
 import rmap.entity.NotionFolder;
+import rmap.entity.User;
 import rmap.repository.EdgeRepository;
 import rmap.repository.NotionFolderRepository;
 import rmap.repository.NotionRepository;
@@ -22,29 +23,33 @@ public class NotionService {
     private final EdgeRepository edgeRepository;
     private final NotionFolderRepository notionFolderRepository;
 
-    public NotionResponse readNotion(Long notionId) {
+    public NotionResponse openNotion(User loginedUser, Long notionId) {
         Notion notion = notionRepository.findByIdOrThrow(notionId);
+        Validator.validateNotionOwner(notion, loginedUser);
         return NotionResponse.from(notion);
     }
 
-    public NotionIdResponse createInitialNotion(BuildNotionRequest request) {
+    public NotionIdResponse createInitialNotion(User loginedUser, BuildNotionRequest request) {
         NotionFolder notionFolder = notionFolderRepository.findByIdOrThrow(request.getNotionFolderId());
+        Validator.validateNotionFolderOwner(notionFolder, loginedUser);
         Notion notion = new Notion(request.getName(), request.getContent(), notionFolder);
         return new NotionIdResponse(notionRepository.save(notion).getId());
     }
 
     @Transactional
-    public void demolishNotion(Long notionId) {
+    public void editNotion(User loginedUser, Long notionId, String notionName, String content) {
         Notion notion = notionRepository.findByIdOrThrow(notionId);
-        List<Edge> edges = edgeRepository.findAllByNotionId(notion.getId());
-        edgeRepository.deleteAllInBatch(edges);
-        notionRepository.delete(notion);
+        Validator.validateNotionOwner(notion, loginedUser);
+        notion.editName(notionName);
+        notion.editContent(content);
     }
 
     @Transactional
-    public void editNotion(Long notionId, String name, String content) {
+    public void demolishNotion(User loginedUser, Long notionId) {
         Notion notion = notionRepository.findByIdOrThrow(notionId);
-        notion.editName(name);
-        notion.editContent(content);
+        Validator.validateNotionOwner(notion, loginedUser);
+        List<Edge> edges = edgeRepository.findAllByNotionId(notion.getId());
+        edgeRepository.deleteAllInBatch(edges);
+        notionRepository.delete(notion);
     }
 }

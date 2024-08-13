@@ -39,4 +39,11 @@ public class ExceptionController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ErrorResponse(e.getErrorCode(), e.getMessage()));
     }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> return5002(Exception e) {
+        log.info("예외발생", e);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ErrorResponse(123, e.getMessage()));
+    }
 }

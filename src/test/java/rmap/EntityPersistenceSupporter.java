@@ -7,7 +7,6 @@ import rmap.entity.Edge;
 import rmap.entity.Notion;
 import rmap.entity.NotionFolder;
 import rmap.entity.User;
-import rmap.entity.UserAccount;
 
 @Component
 public class EntityPersistenceSupporter {
@@ -18,8 +17,8 @@ public class EntityPersistenceSupporter {
         this.entityManager = entityManager;
     }
 
-    public NotionFolder 노션_폴더_저장(String name) {
-        NotionFolder notionFolder = new NotionFolder(name);
+    public NotionFolder 노션_폴더_저장(User user, String name) {
+        NotionFolder notionFolder = new NotionFolder(user, name);
         entityManager.persist(notionFolder);
         return notionFolder;
     }
@@ -36,12 +35,16 @@ public class EntityPersistenceSupporter {
         return edge;
     }
 
-    public UserAccount 유저_계정_저장(String email, String password) {
-        User user = new User();
+    public User 유저_저장(String email, String password, LocalDateTime localDateTime) {
+        User user = new User(email, password, localDateTime);
         entityManager.persist(user);
-        UserAccount userAccount = new UserAccount(user, email, password, LocalDateTime.now());
-        entityManager.persist(userAccount);
-        return userAccount;
+        return user;
+    }
+
+    public User 유저_저장(String email, String password) {
+        User user = new User(email, password);
+        entityManager.persist(user);
+        return user;
     }
 
 }

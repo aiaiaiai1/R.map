@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttribute;
-import rmap.entity.UserAccount;
+import rmap.entity.User;
 import rmap.request.LoginRequest;
 import rmap.request.SendAuthenticationRequest;
 import rmap.request.SignUpRequest;
@@ -43,19 +43,20 @@ public class SignUpController {
 
     @PostMapping("/user/hello")
     public ResponseEntity<Void> logIn(@Valid @RequestBody LoginRequest loginRequest, HttpServletRequest request) {
-        UserAccount userAccount = signUpService.logIn(loginRequest.getEmail(), loginRequest.getPassword());
+        User user = signUpService.logIn(loginRequest.getEmail(), loginRequest.getPassword());
         HttpSession session = request.getSession();
-        session.setAttribute("logined", userAccount);
+        session.setAttribute("logined", user);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/testing-sesstion")
     public ResponseEntity<String> test(
-            @SessionAttribute(name = "logined", required = false) UserAccount userAccount
+            @SessionAttribute(name = "logined", required = false) Long userAccountId
     ) {
-        if (userAccount == null) {
+        if (userAccountId == null) {
             return ResponseEntity.badRequest().body("로그인 실패");
         }
         return ResponseEntity.ok("로그인 성공");
     }
+
 }
