@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.SessionAttribute;
 import rmap.entity.User;
 import rmap.request.LoginRequest;
 import rmap.request.SendAuthenticationRequest;
 import rmap.request.SignUpRequest;
 import rmap.request.VerificationRequest;
+import rmap.response.IsLoginedResponse;
 import rmap.service.SignUpService;
 
 @RestController
@@ -49,14 +49,10 @@ public class SignUpController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/testing-sesstion")
-    public ResponseEntity<String> test(
-            @SessionAttribute(name = "logined", required = false) Long userAccountId
-    ) {
-        if (userAccountId == null) {
-            return ResponseEntity.badRequest().body("로그인 실패");
-        }
-        return ResponseEntity.ok("로그인 성공");
+    @GetMapping("/user/auth")
+    public ResponseEntity<IsLoginedResponse> isLogined(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        return ResponseEntity.ok().body(new IsLoginedResponse(session == null));
     }
 
 }
