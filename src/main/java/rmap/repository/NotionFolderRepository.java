@@ -9,7 +9,7 @@ import rmap.exception.EntityNotFoundException;
 import rmap.exception.type.NotionFolderExceptionType;
 
 @Repository
-public interface NotionFolderRepository extends JpaRepository<NotionFolder, Long> {
+public interface NotionFolderRepository extends JpaRepository<NotionFolder, Long>, NotionFolderCustomRepository {
 
     default NotionFolder findByIdOrThrow(Long notionFolderId) {
         NotionFolder notionFolder = findById(notionFolderId)
