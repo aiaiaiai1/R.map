@@ -25,7 +25,10 @@ public class NotionService {
 
     public NotionResponse openNotion(User loginedUser, Long notionId) {
         Notion notion = notionRepository.findByIdOrThrow(notionId);
-        Validator.validateNotionOwner(notion, loginedUser);
+        NotionFolder notionFolder = notion.getNotionFolder();
+        if (!notionFolder.isAccessibleBy(loginedUser)) {
+            throw new IllegalArgumentException("비공개 노션입니다.");
+        }
         return NotionResponse.from(notion);
     }
 

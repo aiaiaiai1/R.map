@@ -1,7 +1,5 @@
 package rmap.service;
 
-import java.util.Comparator;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +16,9 @@ import rmap.repository.NotionFolderRepository;
 import rmap.repository.NotionRepository;
 import rmap.response.GraphResponse;
 import rmap.response.OpenNotionFolderResponse;
+
+import java.util.Comparator;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -97,7 +98,10 @@ public class NotionFolderService {
 
     public OpenNotionFolderResponse openNotionFolder(User loginedUser, Long notionFolderId) {
         NotionFolder notionFolder = notionFolderRepository.findByIdOrThrow(notionFolderId);
-        validateNotionFolderOwner(notionFolder, loginedUser);
+        if (!notionFolder.isAccessibleBy(loginedUser)) {
+            throw new IllegalArgumentException("비공개 노션입니다.");
+        }
+
         List<Notion> notions = notionRepository.findAllInNotionFolder(notionFolder.getId());
         List<Notion> sortedNotions = notions.stream()
                 .sorted(Comparator.comparing(Notion::getName))

@@ -1,27 +1,10 @@
 package rmap.service;
 
-import static java.util.List.of;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.BDDMockito.willDoNothing;
-import static org.mockito.Mockito.times;
-import static rmap.EntityCreationSupporter.노션_생성;
-import static rmap.EntityCreationSupporter.노션_폴더_생성;
-import static rmap.EntityCreationSupporter.유저_생성;
-import static rmap.Fixtures.TEST_EMAIL;
-import static rmap.Fixtures.TEST_PASSWORD;
-import static rmap.Fixtures.알맵이;
-import static rmap.Fixtures.알맵이의_노션_폴더_알파벳;
-import static rmap.Fixtures.알맵이의_노션_폴더_음식;
-
-import java.util.List;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import rmap.NotionMother;
 import rmap.entity.Notion;
 import rmap.entity.NotionFolder;
 import rmap.entity.User;
@@ -30,6 +13,17 @@ import rmap.repository.NotionFolderRepository;
 import rmap.repository.NotionRepository;
 import rmap.response.NotionCompactResponse;
 import rmap.response.OpenNotionFolderResponse;
+
+import java.util.List;
+
+import static java.util.List.of;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.*;
+import static org.mockito.Mockito.times;
+import static rmap.EntityCreationSupporter.*;
+import static rmap.Fixtures.*;
 
 class NotionFolderServiceTest extends ServiceTest {
     @Mock
@@ -66,34 +60,50 @@ class NotionFolderServiceTest extends ServiceTest {
         }
 
         @Test
-        void 노션_폴더_소유자가_아닌_경우_예외가_발생_한다() {
-            NotionFolder notionFolder = 알맵이의_노션_폴더_음식;
+        void 비공개_노션_폴더는_노션_폴더_소유자만_열람_할_수_있으며_소유자가_아닌_경우_예외가_발생한다() {
+            // given
             User user = 유저_생성(1L, TEST_EMAIL, TEST_PASSWORD);
+            User user1 = 유저_생성(2L, TEST_EMAIL_1, TEST_PASSWORD);
 
-            Notion 노션_사과 = 노션_생성(1L, "사과", "", notionFolder);
-            Notion 노션_배 = 노션_생성(2L, "배", "", notionFolder);
+            NotionFolder notionFolder = 노션_폴더_생성(1L, user, "노션 폴더");
+            notionFolder.setPrivateBy(user);
 
             given(notionFolderRepository.findByIdOrThrow(notionFolder.getId())).willReturn(notionFolder);
 
             // when, then
-            assertThatThrownBy(() -> notionFolderService.openNotionFolder(user, notionFolder.getId()))
+            notionFolderService.openNotionFolder(user, notionFolder.getId());
+            assertThatThrownBy(() -> notionFolderService.openNotionFolder(user1, notionFolder.getId()))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("비공개 노션입니다.");
+        }
+
+        @Test
+        void 공개된_노션_폴더는_누구든지_열람_할_수_있다() {
+            // given
+            User user = 유저_생성(1L, TEST_EMAIL, TEST_PASSWORD);
+            User user1 = 유저_생성(2L, TEST_EMAIL_1, TEST_PASSWORD);
+
+            NotionFolder notionFolder = 노션_폴더_생성(1L, user, "노션 폴더");
+
+            given(notionFolderRepository.findByIdOrThrow(notionFolder.getId())).willReturn(notionFolder);
+
+            // when, then
+            notionFolderService.openNotionFolder(user, notionFolder.getId());
+            notionFolderService.openNotionFolder(user1, notionFolder.getId());
+        }
+
+        @Test
+        void 노션_폴더_삭제시_소유자가_아닌_경우_예외가_발생한다() {
+            // given
+            User user = 유저_생성(1L, TEST_EMAIL, TEST_PASSWORD);
+            NotionFolder notionfolder = 알맵이의_노션_폴더_음식;
+            given(notionFolderRepository.findByIdOrThrow(notionfolder.getId())).willReturn(notionfolder);
+
+            // when, then
+            assertThatThrownBy(() -> notionFolderService.deleteNotionFolder(user, notionfolder.getId()))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("권한이 없습니다.");
         }
-
-    }
-
-    @Test
-    void 노션_폴더_삭제시_소유자가_아닌_경우_예외가_발생한다() {
-        // given
-        User user = 유저_생성(1L, TEST_EMAIL, TEST_PASSWORD);
-        NotionFolder notionfolder = 알맵이의_노션_폴더_음식;
-        given(notionFolderRepository.findByIdOrThrow(notionfolder.getId())).willReturn(notionfolder);
-
-        // when, then
-        assertThatThrownBy(() -> notionFolderService.deleteNotionFolder(user, notionfolder.getId()))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("권한이 없습니다.");
     }
 
     @Nested
@@ -260,6 +270,15 @@ class NotionFolderServiceTest extends ServiceTest {
                     .hasMessage("권한이 없습니다.");
         }
 
+        @Test
+        void s() {
+            // given
+            Notion notion = NotionMother.notion().create();
+            // when
+
+            // then
+
+        }
     }
 
 
