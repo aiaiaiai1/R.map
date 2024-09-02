@@ -1,4 +1,4 @@
-CREATE TABLE notion_folder
+CREATE TABLE IF NOT EXISTS notion_folder
 (
     id      BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT       NOT NULL,
@@ -6,7 +6,7 @@ CREATE TABLE notion_folder
     FOREIGN KEY (user_id) REFERENCES uuser (id)
 );
 
-CREATE TABLE notion
+CREATE TABLE IF NOT EXISTS notion
 (
     id               BIGINT AUTO_INCREMENT PRIMARY KEY,
     notion_folder_id BIGINT                   NOT NULL,
@@ -15,7 +15,7 @@ CREATE TABLE notion
     FOREIGN KEY (notion_folder_id) REFERENCES notion_folder (id)
 );
 
-CREATE TABLE edge
+CREATE TABLE IF NOT EXISTS edge
 (
     id               BIGINT AUTO_INCREMENT PRIMARY KEY,
     source_notion_id BIGINT                  NOT NULL,
@@ -26,7 +26,7 @@ CREATE TABLE edge
     FOREIGN KEY (target_notion_id) REFERENCES notion (id)
 );
 
-CREATE TABLE uuser
+CREATE TABLE IF NOT EXISTS uuser
 (
     created_at DATETIME(3) NOT NULL,
     id         BIGINT AUTO_INCREMENT PRIMARY KEY,

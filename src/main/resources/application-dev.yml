@@ -5,7 +5,7 @@ spring:
 
   flyway:
     enabled: true
-    baseline-on-migrate: true
+    baseline-on-migrate: false
 
   jpa:
     hibernate:
@@ -17,10 +17,6 @@ spring:
     url: ${DEV_DATASOURCE_URL}
     username: ${DEV_USERNAME}
     password: ${DEV_PASSWORD}
-
-  sql:
-    init:
-      mode: never
 
   mail:
     host: smtp.gmail.com
