@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import rmap.NotionMother;
 import rmap.entity.Notion;
 import rmap.entity.NotionFolder;
 import rmap.entity.User;
@@ -268,16 +267,6 @@ class NotionFolderServiceTest extends ServiceTest {
             assertThatThrownBy(() -> notionFolderService.readAllGraphsIn(user, notionFolder.getId()))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("권한이 없습니다.");
-        }
-
-        @Test
-        void s() {
-            // given
-            Notion notion = NotionMother.notion().create();
-            // when
-
-            // then
-
         }
     }
 

@@ -46,7 +46,7 @@ public class NotionFolder {
         return this.owner.equals(user) || this.isPublic();
     }
 
-    public void setPublic(User owner) {
+    public void setPublicBy(User owner) {
         if (!this.owner.equals(owner)) {
             throw new IllegalArgumentException();
         }
@@ -67,6 +67,5 @@ public class NotionFolder {
     public boolean isPublic() {
         return !this.isPrivate;
     }
-
 
 }
