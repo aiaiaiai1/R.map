@@ -6,7 +6,6 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
-    defer-datasource-initialization: true
 
   h2:
     console:

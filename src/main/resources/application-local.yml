@@ -3,10 +3,12 @@ spring:
     activate:
       on-profile: local
 
+  flyway:
+    enabled: false
+
   jpa:
     hibernate:
       ddl-auto: create
-    defer-datasource-initialization: true
 
   h2:
     console:

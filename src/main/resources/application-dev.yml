@@ -3,9 +3,13 @@ spring:
     activate:
       on-profile: dev
 
+  flyway:
+    enabled: true
+    baseline-on-migrate: false
+
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
     database-platform: org.hibernate.dialect.MySQLDialect
 
   datasource:
@@ -13,10 +17,6 @@ spring:
     url: ${DEV_DATASOURCE_URL}
     username: ${DEV_USERNAME}
     password: ${DEV_PASSWORD}
-
-  sql:
-    init:
-      mode: never
 
   mail:
     host: smtp.gmail.com
