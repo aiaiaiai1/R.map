@@ -1,20 +1,23 @@
 package rmap.response;
 
-import java.util.List;
 import lombok.Getter;
 import rmap.entity.Notion;
 import rmap.entity.NotionFolder;
+
+import java.util.List;
 
 @Getter
 public class OpenNotionFolderResponse {
 
     private final Long id;
     private final String name;
+    private final Long ownerId;
     private final List<NotionCompactResponse> notions;
 
-    public OpenNotionFolderResponse(Long id, String name, List<NotionCompactResponse> notions) {
+    public OpenNotionFolderResponse(Long id, String name, Long ownerId, List<NotionCompactResponse> notions) {
         this.id = id;
         this.name = name;
+        this.ownerId = ownerId;
         this.notions = notions;
     }
 
@@ -22,6 +25,7 @@ public class OpenNotionFolderResponse {
         return new OpenNotionFolderResponse(
                 notionFolder.getId(),
                 notionFolder.getName(),
+                notionFolder.getOwner().getId(),
                 notions.stream()
                         .map(NotionCompactResponse::new)
                         .toList()
