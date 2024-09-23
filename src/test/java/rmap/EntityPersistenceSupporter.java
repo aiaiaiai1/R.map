@@ -35,12 +35,6 @@ public class EntityPersistenceSupporter {
         return edge;
     }
 
-    public User 유저_저장(String email, String password, LocalDateTime localDateTime) {
-        User user = new User(email, password, localDateTime);
-        entityManager.persist(user);
-        return user;
-    }
-
     public User 유저_저장(String email, String password) {
         User user = new User(email, password);
         entityManager.persist(user);

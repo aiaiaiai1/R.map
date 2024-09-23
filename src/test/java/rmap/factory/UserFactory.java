@@ -41,7 +41,7 @@ public class UserFactory {
         }
 
         public User create() {
-            User user = new User(email, password, createdAt);
+            User user = new User(email, password);
             ReflectionTestUtils.setField(user, "id", id);
             return user;
         }

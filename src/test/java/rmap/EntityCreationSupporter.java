@@ -1,11 +1,12 @@
 package rmap;
 
-import java.time.LocalDateTime;
 import org.springframework.test.util.ReflectionTestUtils;
 import rmap.entity.Edge;
 import rmap.entity.Notion;
 import rmap.entity.NotionFolder;
 import rmap.entity.User;
+
+import java.time.LocalDateTime;
 
 public class EntityCreationSupporter {
 
@@ -28,12 +29,6 @@ public class EntityCreationSupporter {
         Edge edge = new Edge(sourceNotion, targetNotion, description);
         ReflectionTestUtils.setField(edge, "id", id);
         return edge;
-    }
-
-    public static User 유저_생성(Long id, String email, String password, LocalDateTime createdAt) {
-        User user = new User(email, password, createdAt);
-        ReflectionTestUtils.setField(user, "id", id);
-        return user;
     }
 
     public static User 유저_생성(Long id, String email, String password) {
