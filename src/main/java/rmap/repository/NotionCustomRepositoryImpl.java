@@ -14,18 +14,18 @@ public class NotionCustomRepositoryImpl implements NotionCustomRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<Notion> findAllWithKeyword(String keyword) {
+    public List<Notion> findAllWithKeyword(Long userId, String keyword) {
         return jpaQueryFactory.select(notion)
                 .from(notion)
-                .where(search(keyword))
+                .where(search(userId, keyword))
                 .fetch();
     }
 
-    private BooleanExpression search(String keyword) {
+    private BooleanExpression search(Long userId, String keyword) {
         if (keyword == null) {
             return null;
         }
-        return notion.name.like(keyword);
+        return (notion.name.contains(keyword).or(notion.content.contains(keyword))).and(notion.notionFolder.owner.id.eq(userId).not());
     }
 
 }

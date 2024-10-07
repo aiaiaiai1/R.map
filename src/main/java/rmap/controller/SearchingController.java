@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import rmap.entity.SearchingType;
+import rmap.entity.User;
+import rmap.global.Logined;
 import rmap.response.SearchingResponse;
 import rmap.service.SearchingService;
 
@@ -19,10 +21,11 @@ public class SearchingController {
 
     @GetMapping("/search-list")
     public ResponseEntity<List<SearchingResponse>> search(
+            @Logined User user,
             @RequestParam("type") SearchingType searchingType,
             @RequestParam("keyword") String keyword
     ) {
-        List<SearchingResponse> responses = searchingService.search(searchingType, keyword);
+        List<SearchingResponse> responses = searchingService.search(user, searchingType, keyword);
         return ResponseEntity.ok().body(responses);
     }
 }

@@ -24,7 +24,7 @@ class NotionFolderRepositoryTest extends RepositoryTest {
         NotionFolder notionFolder1 = supporter.노션_폴더_저장(user1, "알파벳");
 
         // when
-        List<NotionFolder> notionFolders = notionFolderRepository.findAllWithKeyword("알파벳");
+        List<NotionFolder> notionFolders = notionFolderRepository.findAllWithKeyword(-1L, "알파벳");
 
         // then
         assertThat(notionFolders).hasSize(2);
