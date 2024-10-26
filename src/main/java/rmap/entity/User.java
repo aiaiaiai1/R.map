@@ -5,17 +5,12 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.mindrot.jbcrypt.BCrypt;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EqualsAndHashCode(of = {"id"})
-@EntityListeners(AuditingEntityListener.class)
+@EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Table(name = "uuser")
-public class User {
+public class User extends TimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,18 +22,9 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @CreatedDate
-    @Column(columnDefinition = "datetime(3)", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
-
     public User(String email, String password) {
-        this(email, password, null);
-    }
-
-    public User(String email, String password, LocalDateTime createdAt) {
         this.email = email;
         this.password = encryptPassword(password);
-        this.createdAt = createdAt;
     }
 
     public Long getId() {
@@ -52,4 +38,5 @@ public class User {
     public boolean matchesPassword(String plainPassword) {
         return BCrypt.checkpw(plainPassword, password);
     }
+
 }

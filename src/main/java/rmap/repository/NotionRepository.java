@@ -16,10 +16,6 @@ public interface NotionRepository extends JpaRepository<Notion, Long>, NotionCus
         return notion;
     }
 
-    @Query(value = "select n.id, n.notion_folder_id, n.name, n.content "
-            + "from notion_folder as nf "
-            + "join notion as n on nf.id = n.notion_folder_id "
-            + "where nf.id = :notionFolderId", nativeQuery = true)
+    @Query("select n from Notion n where n.notionFolder.id =:notionFolderId")
     List<Notion> findAllInNotionFolder(Long notionFolderId);
-
 }
