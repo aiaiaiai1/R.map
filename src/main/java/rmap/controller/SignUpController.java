@@ -52,7 +52,11 @@ public class SignUpController {
     @GetMapping("/user/auth")
     public ResponseEntity<IsLoginedResponse> isLogined(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        return ResponseEntity.ok().body(new IsLoginedResponse(session != null));
+        if (session == null) {
+            return ResponseEntity.ok().body(new IsLoginedResponse(false, null));
+        }
+        User user = (User) session.getAttribute("logined");
+        return ResponseEntity.ok().body(new IsLoginedResponse(true, user.getId()));
     }
 
 }
