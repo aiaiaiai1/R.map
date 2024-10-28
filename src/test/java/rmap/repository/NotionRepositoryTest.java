@@ -43,7 +43,7 @@ class NotionRepositoryTest extends RepositoryTest {
         Notion notionC = supporter.노션_저장("A", "", notionFolder1);
 
         // when
-        List<Notion> notions = notionRepository.findAllWithKeyword("A");
+        List<Notion> notions = notionRepository.findAllWithKeyword(-1L, "A");
 
         // then
         assertThat(notions).hasSize(2);
