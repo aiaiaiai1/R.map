@@ -125,6 +125,7 @@ public class NotionFolderService {
         }
     }
 
+    @Transactional
     public void editNotionFolderName(User loginedUser, Long notionFolderId, String notionFolderName) {
         NotionFolder notionFolder = notionFolderRepository.findByIdOrThrow(notionFolderId);
         validateNotionFolderOwner(notionFolder, loginedUser);
