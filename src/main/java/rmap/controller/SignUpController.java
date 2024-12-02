@@ -14,6 +14,7 @@ import rmap.request.LoginRequest;
 import rmap.request.SendAuthenticationRequest;
 import rmap.request.SignUpRequest;
 import rmap.request.VerificationRequest;
+import rmap.response.IdResponse;
 import rmap.response.IsLoginedResponse;
 import rmap.service.SignUpService;
 
@@ -42,11 +43,11 @@ public class SignUpController {
     }
 
     @PostMapping("/user/hello")
-    public ResponseEntity<Void> logIn(@Valid @RequestBody LoginRequest loginRequest, HttpServletRequest request) {
+    public ResponseEntity<IdResponse> logIn(@Valid @RequestBody LoginRequest loginRequest, HttpServletRequest request) {
         User user = signUpService.logIn(loginRequest.getEmail(), loginRequest.getPassword());
         HttpSession session = request.getSession();
         session.setAttribute("logined", user);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(new IdResponse(user.getId()));
     }
 
     @GetMapping("/user/auth")

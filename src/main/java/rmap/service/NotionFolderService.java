@@ -131,4 +131,10 @@ public class NotionFolderService {
         validateNotionFolderOwner(notionFolder, loginedUser);
         notionFolder.changeName(notionFolderName);
     }
+
+    @Transactional
+    public void togglePrivateOrNot(User loginedUser, Long notionFolderId, boolean isPrivate) {
+        NotionFolder notionFolder = notionFolderRepository.findByIdOrThrow(notionFolderId);
+        notionFolder.setDisclosure(loginedUser, !isPrivate);
+    }
 }

@@ -60,6 +60,13 @@ public class NotionFolder extends TimeEntity {
         this.isPrivate = true;
     }
 
+    public void setDisclosure(User owner, boolean isPrivate) {
+        if (!this.owner.equals(owner)) {
+            throw new IllegalArgumentException();
+        }
+        this.isPrivate = isPrivate;
+    }
+
     public boolean isPrivate() {
         return this.isPrivate;
     }

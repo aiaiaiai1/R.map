@@ -19,6 +19,7 @@ import rmap.entity.User;
 import rmap.global.Logined;
 import rmap.request.EditNotionFolderNameRequest;
 import rmap.request.NotionFolderRequest;
+import rmap.request.PriavteOrNotRequest;
 import rmap.request.SplitNotionFolderRequest;
 import rmap.response.GraphResponse;
 import rmap.response.IdResponse;
@@ -109,6 +110,16 @@ public class NotionFolderController {
             @RequestBody EditNotionFolderNameRequest request
     ) {
         notionFolderService.editNotionFolderName(user, notionFolderId, request.getName());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/{id}/disclosure")
+    public ResponseEntity<Void> togglePrivateOrNot(
+            @Logined User user,
+            @PathVariable("id") Long notionFolderId,
+            @RequestBody PriavteOrNotRequest request
+    ) {
+        notionFolderService.togglePrivateOrNot(user, notionFolderId, request.getIsPrivate());
         return ResponseEntity.ok().build();
     }
 
