@@ -10,9 +10,17 @@ public class IsLoginedResponse {
     private Long userId;
     private String userName;
 
-    public IsLoginedResponse(Boolean isLogined, Long userId) {
+    public IsLoginedResponse(Boolean isLogined, Long userId, String userName) {
         this.isLogined = isLogined;
         this.userId = userId;
-        this.userName = "임시 닉네임";
+        this.userName = userName;
+    }
+
+    public static IsLoginedResponse falseResponse() {
+        return new IsLoginedResponse(false, null, null);
+    }
+
+    public static IsLoginedResponse trueResponse(User user) {
+        return new IsLoginedResponse(false, user.getId(), user.getNickname());
     }
 }

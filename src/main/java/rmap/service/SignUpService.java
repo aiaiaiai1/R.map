@@ -59,14 +59,23 @@ public class SignUpService {
         if (!verifiedEmailCash.containsKey(email)) {
             throw new IllegalArgumentException("인증되지 않았습니다");
         }
-        User userAccount = new User(email, password);
-        userAccountRepository.save(userAccount);
+        User user = new User(email, password);
+        String nickname;
+        do {
+            nickname = RandomNicknameGenerator.generate();
+        } while (isAlreadyUsed(nickname));
+        user.setNickname(nickname);
+        userAccountRepository.save(user);
     }
 
     private void validateAlreadyRegistered(String email) {
         if (userAccountRepository.findByEmail(email).isPresent()) {
             throw new IllegalArgumentException("이미 가입된 이메일 입니다.");
         }
+    }
+
+    private boolean isAlreadyUsed(String nickname) {
+        return userAccountRepository.findByNickname(nickname).isPresent();
     }
 
     public User logIn(String email, String plainPassword) {
