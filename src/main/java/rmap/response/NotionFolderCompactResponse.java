@@ -9,13 +9,13 @@ import rmap.entity.NotionFolder;
 public class NotionFolderCompactResponse {
     private final Long id;
     private final String name;
-    private final Long ownerId;
+    private final OwnerResponse owner;
     private final Boolean isPrivate;
 
     public NotionFolderCompactResponse(NotionFolder notionFolder) {
         this.id = notionFolder.getId();
         this.name = notionFolder.getName();
-        this.ownerId = notionFolder.getOwner().getId();
+        this.owner = new OwnerResponse(notionFolder.getOwner());
         this.isPrivate = notionFolder.isPrivate();
     }
 
