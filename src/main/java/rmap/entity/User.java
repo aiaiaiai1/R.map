@@ -22,13 +22,25 @@ public class User extends TimeEntity {
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false)
+    private String nickname;
+
     public User(String email, String password) {
         this.email = email;
         this.password = encryptPassword(password);
+        this.nickname = "";
     }
 
     public Long getId() {
         return id;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     private String encryptPassword(String plainPassword) {

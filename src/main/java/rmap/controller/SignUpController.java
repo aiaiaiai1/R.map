@@ -54,10 +54,10 @@ public class SignUpController {
     public ResponseEntity<IsLoginedResponse> isLogined(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session == null) {
-            return ResponseEntity.ok().body(new IsLoginedResponse(false, null));
+            return ResponseEntity.ok().body(IsLoginedResponse.falseResponse());
         }
         User user = (User) session.getAttribute("logined");
-        return ResponseEntity.ok().body(new IsLoginedResponse(true, user.getId()));
+        return ResponseEntity.ok().body(IsLoginedResponse.trueResponse(user));
     }
 
 }

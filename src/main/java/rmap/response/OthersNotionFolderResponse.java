@@ -13,7 +13,7 @@ public class OthersNotionFolderResponse {
 
     public OthersNotionFolderResponse(User owner, List<NotionFolderResponse> folderList) {
         this.ownerId = owner.getId();
-        this.ownerName = OwnerResponse.임시_닉네임;
+        this.ownerName = owner.getNickname();
         this.folderList = folderList;
     }
 
