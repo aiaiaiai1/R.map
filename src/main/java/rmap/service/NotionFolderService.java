@@ -14,8 +14,11 @@ import rmap.exception.type.NotionFolderExceptionType;
 import rmap.repository.EdgeRepository;
 import rmap.repository.NotionFolderRepository;
 import rmap.repository.NotionRepository;
+import rmap.repository.UserRepository;
 import rmap.response.GraphResponse;
+import rmap.response.NotionFolderResponse;
 import rmap.response.OpenNotionFolderResponse;
+import rmap.response.OthersNotionFolderResponse;
 
 import java.util.Comparator;
 import java.util.List;
@@ -27,9 +30,20 @@ public class NotionFolderService {
     private final NotionFolderRepository notionFolderRepository;
     private final NotionRepository notionRepository;
     private final EdgeRepository edgeRepository;
+    private final UserRepository userRepository;
 
     public List<NotionFolder> readAllNotionFoldersOf(User loginedUser) {
         return notionFolderRepository.findAllOf(loginedUser.getId());
+    }
+
+    public OthersNotionFolderResponse readOthersNotionFolders(Long targetUserId) {
+        User targetUser = userRepository.getByUserId(targetUserId);
+        List<NotionFolder> notionFolders = notionFolderRepository.findAllOf(targetUser.getId());
+        List<NotionFolderResponse> responses = notionFolders.stream()
+                .filter(NotionFolder::isPublic)
+                .map(NotionFolderResponse::new)
+                .toList();
+        return new OthersNotionFolderResponse(targetUser, responses);
     }
 
     public NotionFolder createNotionFolder(User loginedUser, String notionFolderName) {
