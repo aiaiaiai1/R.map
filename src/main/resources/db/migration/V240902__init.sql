@@ -1,11 +1,3 @@
-CREATE TABLE IF NOT EXISTS uuser
-(
-    created_at DATETIME(3) NOT NULL,
-    id         BIGINT AUTO_INCREMENT PRIMARY KEY,
-    password   VARCHAR(30)  NOT NULL,
-    email      VARCHAR(150) NOT NULL
-    );
-
 CREATE TABLE IF NOT EXISTS notion_folder
 (
     id      BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -34,3 +26,10 @@ CREATE TABLE IF NOT EXISTS edge
     FOREIGN KEY (target_notion_id) REFERENCES notion (id)
 );
 
+CREATE TABLE IF NOT EXISTS uuser
+(
+    created_at DATETIME(3) NOT NULL,
+    id         BIGINT AUTO_INCREMENT PRIMARY KEY,
+    password   VARCHAR(30)  NOT NULL,
+    email      VARCHAR(150) NOT NULL
+);
