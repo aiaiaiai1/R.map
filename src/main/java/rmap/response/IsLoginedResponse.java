@@ -21,6 +21,6 @@ public class IsLoginedResponse {
     }
 
     public static IsLoginedResponse trueResponse(User user) {
-        return new IsLoginedResponse(false, user.getId(), user.getNickname());
+        return new IsLoginedResponse(true, user.getId(), user.getNickname());
     }
 }
