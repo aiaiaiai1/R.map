@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rmap.entity.User;
+import rmap.global.Logined;
 import rmap.request.*;
 import rmap.response.IdResponse;
 import rmap.response.IsLoginedResponse;
@@ -29,6 +30,15 @@ public class SignUpController {
             @Valid @RequestBody ResetPasswordRequest request
     ) {
         signUpService.resetPassword(request.getEmail());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/user/bye")
+    public ResponseEntity<Void> logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.removeAttribute("logined");
+        }
         return ResponseEntity.ok().build();
     }
 
