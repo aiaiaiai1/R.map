@@ -51,4 +51,7 @@ public class User extends TimeEntity {
         return BCrypt.checkpw(plainPassword, password);
     }
 
+    public void resetPassword(String plainPassword) {
+        this.password = encryptPassword(plainPassword);
+    }
 }

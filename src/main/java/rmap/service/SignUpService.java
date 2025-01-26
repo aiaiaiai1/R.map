@@ -31,10 +31,9 @@ public class SignUpService {
         emailAuthenticationCodeCache.put(email, code);
     }
 
-
     private void sendMessage(String email, String code) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setSubject("rmap 회원가입 인증 코드");
+        message.setSubject("[Rmap] 인증 코드");
         message.setText("[Rmap] 인증코드: " + code
                 + System.lineSeparator() +
                 "이 인증코드는 3분간 유효합니다.");
@@ -66,6 +65,22 @@ public class SignUpService {
         } while (isAlreadyUsed(nickname));
         user.setNickname(nickname);
         userAccountRepository.save(user);
+    }
+
+    @Transactional
+    public void resetPassword(String email) {
+        validateAlreadyRegistered(email);
+        if (!verifiedEmailCash.containsKey(email)) {
+            throw new IllegalArgumentException("인증되지 않았습니다");
+        }
+        User user = userAccountRepository.getByEmail(email);
+        String password = RandomPasswordGenerator.generate();
+        user.resetPassword(password);
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setSubject("[Rmap] 비밀번호 초기화");
+        message.setText("[Rmap] 새 비밀번호: " + password);
+        message.setTo(email);
+        mailSender.send(message);
     }
 
     private void validateAlreadyRegistered(String email) {

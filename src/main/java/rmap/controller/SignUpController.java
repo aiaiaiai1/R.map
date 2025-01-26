@@ -5,15 +5,9 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import rmap.entity.User;
-import rmap.request.LoginRequest;
-import rmap.request.SendAuthenticationRequest;
-import rmap.request.SignUpRequest;
-import rmap.request.VerificationRequest;
+import rmap.request.*;
 import rmap.response.IdResponse;
 import rmap.response.IsLoginedResponse;
 import rmap.service.SignUpService;
@@ -27,6 +21,14 @@ public class SignUpController {
     @PostMapping("/user/email/auth-request")
     public ResponseEntity<Void> sendAuthentication(@Valid @RequestBody SendAuthenticationRequest request) {
         signUpService.sendAuthenticationTo(request.getEmail());
+        return ResponseEntity.ok().build();
+    }
+
+    @PatchMapping("/user/email/password")
+    public ResponseEntity<Void> resetPassword(
+            @Valid @RequestBody ResetPasswordRequest request
+    ) {
+        signUpService.resetPassword(request.getEmail());
         return ResponseEntity.ok().build();
     }
 
