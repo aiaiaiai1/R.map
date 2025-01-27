@@ -7,10 +7,13 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-@RequiredArgsConstructor
 public class ResetPasswordRequest {
 
     @NotBlank(message = "email is blank")
     private String email;
 
+
+    public ResetPasswordRequest(String email) {
+        this.email = email;
+    }
 }
