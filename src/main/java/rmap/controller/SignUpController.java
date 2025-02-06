@@ -7,10 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rmap.entity.User;
-import rmap.global.Logined;
 import rmap.request.*;
-import rmap.response.IdResponse;
 import rmap.response.IsLoginedResponse;
+import rmap.response.LoginResponse;
 import rmap.service.SignUpService;
 
 @RestController
@@ -55,11 +54,11 @@ public class SignUpController {
     }
 
     @PostMapping("/user/hello")
-    public ResponseEntity<IdResponse> logIn(@Valid @RequestBody LoginRequest loginRequest, HttpServletRequest request) {
+    public ResponseEntity<LoginResponse> logIn(@Valid @RequestBody LoginRequest loginRequest, HttpServletRequest request) {
         User user = signUpService.logIn(loginRequest.getEmail(), loginRequest.getPassword());
         HttpSession session = request.getSession();
         session.setAttribute("logined", user);
-        return ResponseEntity.ok().body(new IdResponse(user.getId()));
+        return ResponseEntity.ok().body(new LoginResponse(user));
     }
 
     @GetMapping("/user/auth")
