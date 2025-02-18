@@ -115,6 +115,9 @@ public class SignUpService {
 
     @Transactional
     public void changeNickname(User loginedUser, String nickname) {
+        if (userAccountRepository.findByNickname(nickname).isPresent()) {
+            throw new IllegalArgumentException("이미 존재하는 닉네임 입니다.");
+        }
         loginedUser.changeNickname(nickname);
     }
 }
