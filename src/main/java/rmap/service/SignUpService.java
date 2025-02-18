@@ -75,7 +75,7 @@ public class SignUpService {
         }
         User user = userAccountRepository.getByEmail(email);
         String password = RandomPasswordGenerator.generate();
-        user.resetPassword(password);
+        user.changePassword(password);
         SimpleMailMessage message = new SimpleMailMessage();
         message.setSubject("[Rmap] 비밀번호 초기화");
         message.setText("[Rmap] 새 비밀번호: " + password);
@@ -106,5 +106,10 @@ public class SignUpService {
     @Transactional
     public void resign(User loginedUser) {
         loginedUser.resign();
+    }
+
+    @Transactional
+    public void changePassword(User loginedUser, String password) {
+        loginedUser.changePassword(password);
     }
 }

@@ -33,6 +33,15 @@ public class SignUpController {
         return ResponseEntity.ok().build();
     }
 
+    @PatchMapping("/user/password")
+    public ResponseEntity<Void> changePassword(
+            @Logined User user,
+            @Valid @RequestBody ChangePasswordRequest request
+    ) {
+        signUpService.changePassword(user, request.getPassword());
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/user/bye")
     public ResponseEntity<Void> logout(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
