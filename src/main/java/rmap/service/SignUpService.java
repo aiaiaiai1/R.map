@@ -106,11 +106,13 @@ public class SignUpService {
     @Transactional
     public void resign(User loginedUser) {
         loginedUser.resign();
+        userAccountRepository.save(loginedUser);
     }
 
     @Transactional
     public void changePassword(User loginedUser, String password) {
         loginedUser.changePassword(password);
+        userAccountRepository.save(loginedUser);
     }
 
     @Transactional
@@ -119,5 +121,6 @@ public class SignUpService {
             throw new IllegalArgumentException("이미 존재하는 닉네임 입니다.");
         }
         loginedUser.changeNickname(nickname);
+        userAccountRepository.save(loginedUser);
     }
 }
