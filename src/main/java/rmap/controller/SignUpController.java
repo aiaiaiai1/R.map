@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rmap.entity.User;
+import rmap.global.Logined;
 import rmap.request.*;
 import rmap.response.IsLoginedResponse;
 import rmap.response.LoginResponse;
@@ -69,6 +70,16 @@ public class SignUpController {
         }
         User user = (User) session.getAttribute("logined");
         return ResponseEntity.ok().body(IsLoginedResponse.trueResponse(user));
+    }
+
+    @DeleteMapping("/user/farewell")
+    public ResponseEntity<Void> resign(@Logined User user, HttpServletRequest request) {
+        signUpService.resign(user);
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.removeAttribute("logined");
+        }
+        return ResponseEntity.ok().build();
     }
 
 }

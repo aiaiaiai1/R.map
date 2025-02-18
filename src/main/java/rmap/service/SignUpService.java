@@ -103,4 +103,8 @@ public class SignUpService {
     }
 
 
+    @Transactional
+    public void resign(User loginedUser) {
+        loginedUser.resign();
+    }
 }

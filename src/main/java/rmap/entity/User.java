@@ -25,10 +25,14 @@ public class User extends TimeEntity {
     @Column(nullable = false)
     private String nickname;
 
+    @Column(nullable = false)
+    private boolean isResigned;
+
     public User(String email, String password) {
         this.email = email;
         this.password = encryptPassword(password);
         this.nickname = "";
+        this.isResigned = false;
     }
 
     public Long getId() {
@@ -41,6 +45,11 @@ public class User extends TimeEntity {
 
     public void setNickname(String nickname) {
         this.nickname = nickname;
+    }
+
+    public void resign() {
+        this.setNickname("탈퇴한 사용자");
+        isResigned = true;
     }
 
     private String encryptPassword(String plainPassword) {

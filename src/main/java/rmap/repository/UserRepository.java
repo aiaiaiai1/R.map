@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     default User getByEmail(String email) {
-        User user = findByEmail(email)
+        User user = findByEmailAndResigned(email)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 입니다."));
         return user;
     }
@@ -20,6 +20,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("select u from User as u where u.email = :email")
     Optional<User> findByEmail(String email);
+
+    @Query("select u from User as u where u.email = :email and u.isResigned = false")
+    Optional<User> findByEmailAndResigned(String email);
 
     @Query("select u from User u where u.nickname = :nickname")
     Optional<User> findByNickname(String nickname);
