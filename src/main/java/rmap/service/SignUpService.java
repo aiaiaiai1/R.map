@@ -63,7 +63,7 @@ public class SignUpService {
         do {
             nickname = RandomNicknameGenerator.generate();
         } while (isAlreadyUsed(nickname));
-        user.setNickname(nickname);
+        user.changeNickname(nickname);
         userAccountRepository.save(user);
     }
 
@@ -111,5 +111,10 @@ public class SignUpService {
     @Transactional
     public void changePassword(User loginedUser, String password) {
         loginedUser.changePassword(password);
+    }
+
+    @Transactional
+    public void changeNickname(User loginedUser, String nickname) {
+        loginedUser.changeNickname(nickname);
     }
 }

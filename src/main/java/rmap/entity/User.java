@@ -43,12 +43,12 @@ public class User extends TimeEntity {
         return nickname;
     }
 
-    public void setNickname(String nickname) {
+    public void changeNickname(String nickname) {
         this.nickname = nickname;
     }
 
     public void resign() {
-        this.setNickname("탈퇴한 사용자");
+        this.changeNickname("탈퇴한 사용자");
         isResigned = true;
     }
 

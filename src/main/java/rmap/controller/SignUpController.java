@@ -42,6 +42,15 @@ public class SignUpController {
         return ResponseEntity.ok().build();
     }
 
+    @PatchMapping("/user/nickname")
+    public ResponseEntity<Void> changeNickname(
+            @Logined User user,
+            @Valid @RequestBody ChangeNicknameRequest request
+    ) {
+        signUpService.changeNickname(user, request.getNickname());
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/user/bye")
     public ResponseEntity<Void> logout(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
